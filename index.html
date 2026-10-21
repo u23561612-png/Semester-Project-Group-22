@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pick n Pay Wolmaransstad - Receiving Stock System</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  
+  <style>
+    :root {
+      --pnp-red: #e2001a;
+      --pnp-dark-blue: #002b49;
+      --sidebar-bg: #ffffff;
+      --bg-main: #f4f6f9;
+      --border-color: #dee2e6;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-main);
+      color: #333333;
+      overflow-x: hidden;
+      margin: 0;
+    }
+
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 260px;
+      background-color: var(--sidebar-bg);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      z-index: 100;
+    }
+
+    .sidebar-header {
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .sidebar-nav {
+      padding: 1rem 0;
+      list-style: none;
+      margin: 0;
+    }
+
+    .sidebar-nav .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1.5rem;
+      color: #495057;
+      font-weight: 600;
+      text-decoration: none;
+      border-left: 4px solid transparent;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .sidebar-nav .nav-link:hover, 
+    .sidebar-nav .nav-link.active {
+      background-color: #f8f9fa;
+      color: var(--pnp-dark-blue);
+      border-left-color: var(--pnp-dark-blue);
+    }
+
+    .main-content {
+      margin-left: 260px;
+      flex: 1;
+      padding: 2rem;
+    }
+
+    .top-header {
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.75rem 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-metric {
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+
+    .card-metric .metric-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    .badge-sufficient {
+      background-color: #d1e7dd;
+      color: #0f5132;
+      font-weight: 600;
+    }
+
+    .badge-insufficient {
+      background-color: #f8d7da;
+      color: #842029;
+      font-weight: 600;
+    }
+
+    .priority-high { background-color: #dc3545; color: white; }
+    .priority-medium { background-color: #fd7e14; color: white; }
+    .priority-low { background-color: #ffc107; color: #212529; }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- LEFT SIDEBAR NAVIGATION -->
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <i class="bi bi-box-seam-fill text-warning fs-3"></i>
+        <div>
+          <span class="fw-bold text-dark fs-6">Receiving System</span>
+          <small class="text-muted d-block" style="font-size: 0.75rem;">Pick n Pay Wolmaransstad</small>
+        </div>
+      </div>
+
+      <ul class="sidebar-nav" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" data-bs-toggle="tab" data-bs-target="#dashboard-panel">
+            <i class="bi bi-grid-fill"></i> Dashboard
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" data-bs-target="#search-panel">
+            <i class="bi bi-search"></i> Stock Search
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" data-bs-target="#tasks-panel">
+            <i class="bi bi-clipboard-check"></i> Replenishment Tasks <span class="badge bg-danger ms-1" id="taskBadgeCount">1</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" data-bs-target="#performance-panel">
+            <i class="bi bi-bar-chart-fill"></i> Performance
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" data-bs-target="#users-panel">
+            <i class="bi bi-people-fill"></i> Users
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- MAIN CONTENT VIEW -->
+    <main class="main-content">
+      
+      <header class="top-header shadow-sm">
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge bg-dark fs-6">1</span>
+          <h1 class="h5 fw-bold mb-0 text-dark">Receiving Inventory Dashboard</h1>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn btn-light position-relative border"><i class="bi bi-bell"></i></button>
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-person-circle fs-4 text-danger"></i>
+            <span class="fw-bold small">Floor Manager</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="tab-content">
+        
+        <!-- 1. DASHBOARD PANEL -->
+        <div class="tab-pane fade show active" id="dashboard-panel">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <p class="text-muted mb-0">Overview of shelf requirements vs receiving area stock</p>
+            <button class="btn btn-primary trigger-modal-btn" data-product="General Stock" data-qty="10" data-priority="Medium">
+              <i class="bi bi-plus-lg me-1"></i> New Replenishment Task
+            </button>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-3"><div class="card-metric shadow-sm"><span class="text-muted small fw-semibold">Total products</span><div class="metric-value">158</div></div></div>
+            <div class="col-md-3"><div class="card-metric shadow-sm"><span class="text-muted small fw-semibold">Receiving stock</span><div class="metric-value">47</div></div></div>
+            <div class="col-md-3"><div class="card-metric shadow-sm border-danger"><span class="text-muted small fw-semibold">Insufficient stock items</span><div class="metric-value text-danger">12</div></div></div>
+            <div class="col-md-3"><div class="card-metric shadow-sm border-success"><span class="text-muted small fw-semibold">Sufficient stock items</span><div class="metric-value text-success">9</div></div></div>
+          </div>
+
+          <div class="row g-4">
+            <div class="col-lg-8">
+              <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                  <h2 class="h6 fw-bold mb-0">Stock Replenishment Table</h2>
+                  <input type="text" id="tableSearchInput" class="form-control form-control-sm w-50" placeholder="Filter table products...">
+                </div>
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle mb-0" id="inventoryTable">
+                    <thead class="table-dark">
+                      <tr>
+                        <th>Product</th>
+                        <th>Shelf Qty</th>
+                        <th>Required Shelf Qty</th>
+                        <th>Quantity Needed</th>
+                        <th>Receiving Stock</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="fw-bold">Coke 2L</td>
+                        <td>8</td>
+                        <td>25</td>
+                        <td class="text-primary fw-bold">17</td>
+                        <td>34</td>
+                        <td><span class="badge badge-sufficient">Sufficient</span></td>
+                      </tr>
+                      <tr>
+                        <td class="fw-bold">Milk 2L</td>
+                        <td>5</td>
+                        <td>20</td>
+                        <td class="text-danger fw-bold">15</td>
+                        <td>6</td>
+                        <td><span class="badge badge-insufficient">Insufficient</span></td>
+                      </tr>
+                      <tr>
+                        <td class="fw-bold">Coco Pops</td>
+                        <td>3</td>
+                        <td>12</td>
+                        <td class="text-primary fw-bold">9</td>
+                        <td>18</td>
+                        <td><span class="badge badge-sufficient">Sufficient</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Priority Items Widget with Working Buttons -->
+            <div class="col-lg-4">
+              <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3"><h2 class="h6 fw-bold mb-0">Priority Items</h2></div>
+                <div class="card-body">
+                  <div class="p-2 mb-2 bg-light border-start border-4 border-danger rounded">
+                    <div class="d-flex justify-content-between"><span class="fw-bold">Milk 2L</span><span class="badge priority-high">High</span></div>
+                    <small class="text-muted">Quantity needed: 15</small>
+                    <button class="btn btn-outline-danger btn-sm w-100 mt-2 trigger-modal-btn" data-product="Milk 2L" data-qty="15" data-priority="High">Create Urgent Task</button>
+                  </div>
+                  <div class="p-2 mb-2 bg-light border-start border-4 border-warning rounded">
+                    <div class="d-flex justify-content-between"><span class="fw-bold">Bread</span><span class="badge priority-medium">Medium</span></div>
+                    <small class="text-muted">Quantity needed: 20</small>
+                    <button class="btn btn-outline-warning btn-sm w-100 mt-2 text-dark trigger-modal-btn" data-product="Bread" data-qty="20" data-priority="Medium">Create Task</button>
+                  </div>
+                  <div class="p-2 bg-light border-start border-4 border-info rounded">
+                    <div class="d-flex justify-content-between"><span class="fw-bold">Canned tuna</span><span class="badge priority-low">Low</span></div>
+                    <small class="text-muted">Quantity needed: 8</small>
+                    <button class="btn btn-outline-secondary btn-sm w-100 mt-2 trigger-modal-btn" data-product="Canned tuna" data-qty="8" data-priority="Low">Create Task</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. STOCK SEARCH PANEL -->
+        <div class="tab-pane fade" id="search-panel">
+          <div class="card border-0 shadow-sm p-4">
+            <h3 class="h5 fw-bold mb-3">Product Search</h3>
+            <input type="text" id="productSearchInput" class="form-control form-control-lg" placeholder="Search product name, barcode...">
+          </div>
+        </div>
+
+        <!-- 3. TASKS PANEL -->
+        <div class="tab-pane fade" id="tasks-panel">
+          <div class="card border-0 shadow-sm p-4">
+            <h3 class="h5 fw-bold mb-3">Active Replenishment Tasks</h3>
+            <div id="tasksContainer">
+              <div class="card mb-3 border-start border-4 border-danger shadow-sm">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                  <div>
+                    <h5 class="fw-bold mb-1">Milk 2L</h5>
+                    <p class="text-muted small mb-0">Quantity Needed: <strong>15</strong> | Shelf Location: <strong>Aisle 2, Shelf 3</strong> | Priority: <span class="badge priority-high">High</span></p>
+                  </div>
+                  <button class="btn btn-success btn-sm mark-complete-btn">Mark Complete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. PERFORMANCE PANEL -->
+        <div class="tab-pane fade" id="performance-panel">
+          <div class="card border-0 shadow-sm p-4">
+            <h3 class="h5 fw-bold mb-3">Performance Monitoring</h3>
+            <div class="row">
+              <div class="col-md-4"><div class="card p-3 shadow-sm bg-light">Pending Tasks: <span id="perfPending" class="fw-bold text-warning fs-4">1</span></div></div>
+              <div class="col-md-4"><div class="card p-3 shadow-sm bg-light">Completed Today: <span id="perfCompleted" class="fw-bold text-success fs-4">24</span></div></div>
+              <div class="col-md-4"><div class="card p-3 shadow-sm bg-light">Avg Response Time: <span class="fw-bold text-primary fs-4">12 mins</span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. USERS PANEL -->
+        <div class="tab-pane fade" id="users-panel">
+          <div class="card border-0 shadow-sm p-4"><h3 class="h5 fw-bold">User Role Management</h3><p class="text-muted">Manage system users and access privileges.</p></div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Create Task Modal -->
+  <div class="modal fade" id="createTaskModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title fw-bold">Create Replenishment Task</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="replenishmentTaskForm">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Product Name</label>
+              <input type="text" id="modalProductName" class="form-control" required>
+            </div>
+            <div class="row g-2 mb-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Quantity Needed</label>
+                <input type="number" id="modalQtyNeeded" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Priority Level</label>
+                <select id="modalPriority" class="form-select">
+                  <option value="High">High</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Low">Low</option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Shelf Location</label>
+              <input type="text" id="modalShelfLoc" class="form-control" value="Aisle 1, Shelf 2" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Dispatch Task</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // 1. Sidebar tab switching
+      document.querySelectorAll('.sidebar-nav .nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          document.querySelectorAll('.sidebar-nav .nav-link').forEach(l => l.classList.remove('active'));
+          document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('show', 'active'));
+          this.classList.add('active');
+          const target = document.querySelector(this.getAttribute('data-bs-target'));
+          if(target) target.classList.add('show', 'active');
+        });
+      });
+
+      // 2. Table filtering
+      const tableSearch = document.getElementById('tableSearchInput');
+      const table = document.getElementById('inventoryTable');
+      if(tableSearch && table) {
+        tableSearch.addEventListener('input', function(e) {
+          const term = e.target.value.toLowerCase();
+          table.querySelectorAll('tbody tr').forEach(row => {
+            row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+          });
+        });
+      }
+
+      // 3. Modal Trigger Handling (Pre-fill modal inputs based on clicked button)
+      const taskModal = new bootstrap.Modal(document.getElementById('createTaskModal'));
+      document.querySelectorAll('.trigger-modal-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.getElementById('modalProductName').value = this.getAttribute('data-product');
+          document.getElementById('modalQtyNeeded').value = this.getAttribute('data-qty');
+          document.getElementById('modalPriority').value = this.getAttribute('data-priority');
+          taskModal.show();
+        });
+      });
+
+      // 4. Task Form Dispatch Logic
+      const taskForm = document.getElementById('replenishmentTaskForm');
+      const tasksContainer = document.getElementById('tasksContainer');
+      const taskBadgeCount = document.getElementById('taskBadgeCount');
+      const perfPending = document.getElementById('perfPending');
+      const perfCompleted = document.getElementById('perfCompleted');
+
+      if(taskForm) {
+        taskForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const prodName = document.getElementById('modalProductName').value;
+          const qtyNeeded = document.getElementById('modalQtyNeeded').value;
+          const priority = document.getElementById('modalPriority').value;
+          const shelfLoc = document.getElementById('modalShelfLoc').value;
+
+          const badgeClass = priority === 'High' ? 'priority-high' : (priority === 'Medium' ? 'priority-medium' : 'priority-low');
+
+          // Append new task dynamically to the Tasks tab
+          const newTaskHTML = `
+            <div class="card mb-3 border-start border-4 ${priority === 'High' ? 'border-danger' : 'border-warning'} shadow-sm task-card">
+              <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                  <h5 class="fw-bold mb-1">${prodName}</h5>
+                  <p class="text-muted small mb-0">Quantity Needed: <strong>${qtyNeeded}</strong> | Shelf Location: <strong>${shelfLoc}</strong> | Priority: <span class="badge ${badgeClass}">${priority}</span></p>
+                </div>
+                <button class="btn btn-success btn-sm mark-complete-btn">Mark Complete</button>
+              </div>
+            </div>
+          `;
+          tasksContainer.insertAdjacentHTML('beforeend', newTaskHTML);
+
+          // Update Counters
+          let currentPending = parseInt(taskBadgeCount.textContent || '0') + 1;
+          taskBadgeCount.textContent = currentPending;
+          perfPending.textContent = currentPending;
+
+          attachCompleteHandlers();
+          alert(`Success! Task dispatched for ${prodName}. Check the Replenishment Tasks tab.`);
+        });
+      }
+
+      // 5. Mark Complete Handlers
+      function attachCompleteHandlers() {
+        document.querySelectorAll('.mark-complete-btn').forEach(btn => {
+          btn.onclick = function() {
+            const card = this.closest('.task-card') || this.closest('.card');
+            card.remove();
+            
+            let currentPending = Math.max(0, parseInt(taskBadgeCount.textContent || '1') - 1);
+            taskBadgeCount.textContent = currentPending;
+            perfPending.textContent = currentPending;
+            perfCompleted.textContent = parseInt(perfCompleted.textContent || '24') + 1;
+          };
+        });
+      }
+      attachCompleteHandlers();
+    });
+  </script>
+</body>
+</html>
