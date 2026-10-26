@@ -1,69 +1,70 @@
-"""
-Supply Chain Module: Economic Order Quantity (EOQ)
-Pick n Pay Wolmaransstad Receiving System
-"""
-
+#Economic order quantity model for the Pick N pay Wolmaransstad store
 import math
 
-def calculate_eoq(demand, order_cost, hold_cost):
-    # EOQ formula: square root of (2 * D * S / H)[cite: 18]
-    return math.sqrt((2 * demand * order_cost) / hold_cost)
+def calculate_eoq (demand, ordering_cost, holding_cost):
+    # Entering EOQ FORMULA square root of (2 x D x S / H)
+    
+    return math.sqrt((2 * demand * ordering_cost) / holding_cost)
 
-def total_annual_cost(demand, order_cost, hold_cost, order_qty):
-    # Total cost = Ordering cost + Holding cost[cite: 18, 19]
-    ordering = (demand / order_qty) * order_cost
-    holding = (order_qty / 2) * hold_cost
-    return ordering + holding
+def total_annual_cost (demand, ordering_cost, holding_cost, order_qty):
+    # Total cost formula  = Ordering cost + Holding cost
+    ordering_cost = (demand / order_qty) * ordering_cost
+    
+    holding_cost = (order_qty / 2) * holding_cost
+    
+    return ordering_cost + holding_cost
 
-# Sample data for Pick n Pay products
-inventory_items = {
-    "PnP Full Cream Milk 2L": {"demand": 14600, "order_cost": 50, "hold_cost": 2.50},
-    "Albany Superior White Bread 700g": {"demand": 18250, "order_cost": 40, "hold_cost": 1.50},
-    "Coca-Cola Original 2L": {"demand": 21900, "order_cost": 50, "hold_cost": 1.80},
-    "PnP Large Eggs 30s": {"demand": 8760, "order_cost": 45, "hold_cost": 3.00},
-    "Sasko Brown Bread 700g": {"demand": 14600, "order_cost": 40, "hold_cost": 1.50},
-    "Nescafe Ricoffy 750g": {"demand": 7300, "order_cost": 50, "hold_cost": 4.00},
-    "Tastic Long Grain Rice 2kg": {"demand": 5475, "order_cost": 50, "hold_cost": 2.00},
-    "White Star Maize Meal 2.5kg": {"demand": 12775, "order_cost": 45, "hold_cost": 1.80},
-    "Flora Light Spread 500g": {"demand": 6570, "order_cost": 40, "hold_cost": 2.20},
-    "Clover Gouda Cheese 850g": {"demand": 4380, "order_cost": 50, "hold_cost": 5.00},
-    "PnP Fresh Chicken Pack 1kg": {"demand": 10950, "order_cost": 60, "hold_cost": 6.00},
-    "Koo Baked Beans 410g": {"demand": 18250, "order_cost": 35, "hold_cost": 1.00},
-    "All Gold Tomato Sauce 700ml": {"demand": 8030, "order_cost": 40, "hold_cost": 1.50},
-    "Huletts White Sugar 2kg": {"demand": 10950, "order_cost": 45, "hold_cost": 2.00},
-    "Sunfoil Sunflower Oil 2L": {"demand": 9125, "order_cost": 50, "hold_cost": 2.50},
-    "Simba Potato Chips 120g": {"demand": 25550, "order_cost": 35, "hold_cost": 1.20},
-    "Cadbury Dairy Milk 150g": {"demand": 14600, "order_cost": 35, "hold_cost": 2.00},
-    "Five Roses Tea Bags 100s": {"demand": 7300, "order_cost": 40, "hold_cost": 2.50},
-    "Jacobs Kronung Coffee 200g": {"demand": 5475, "order_cost": 50, "hold_cost": 6.00},
-    "Danone Ultra Mel Custard 1L": {"demand": 8760, "order_cost": 45, "hold_cost": 2.00},
-    "McCain Cut Green Beans 1kg": {"demand": 4380, "order_cost": 45, "hold_cost": 3.50},
-    "PnP Beef Sausage 1kg": {"demand": 7300, "order_cost": 60, "hold_cost": 5.00},
-    "Handy Andy Cleaner 750ml": {"demand": 7300, "order_cost": 40, "hold_cost": 1.50},
-    "Omo Auto Washing Powder 2kg": {"demand": 5840, "order_cost": 50, "hold_cost": 3.00},
-    "Colgate Triple Action 100ml": {"demand": 10950, "order_cost": 35, "hold_cost": 1.00},
-    "Baby Soft Toilet Paper 9s": {"demand": 12775, "order_cost": 50, "hold_cost": 2.50},
-    "Kellogg's Corn Flakes 1kg": {"demand": 9125, "order_cost": 45, "hold_cost": 2.20},
-    "Bokomo Weet-Bix 450g": {"demand": 10220, "order_cost": 45, "hold_cost": 2.00},
-    "Dettol Antiseptic 500ml": {"demand": 5475, "order_cost": 40, "hold_cost": 3.00},
-    "Jungle Oats 1kg": {"demand": 7300, "order_cost": 45, "hold_cost": 2.00}
+# examples of products sold in the Pick n Pay
+# demand, ordering cost and holding cost data estimation has been changed to keep pick n pay data confidential
+items_in_inventory = {
+    "PnP Full Cream Milk 2L":           {"demand": 14600, "ordering_cost": 50, "holding_cost": 2.50},
+    "Albany Superior White Bread 700g": {"demand": 18250, "ordering_cost": 40, "holding_cost": 1.50},
+    "Coca-Cola Original 2L":            {"demand": 21900, "ordering_cost": 50, "holding_cost": 1.80},
+    "PnP Large Eggs 30s":               {"demand": 8760,  "ordering_cost": 45, "holding_cost": 3.00},
+    "Sasko Brown Bread 700g":           {"demand": 14600, "ordering_cost": 40, "holding_cost": 1.50}, 
+    "Nescafe Ricoffy 750g":             {"demand": 7300,  "ordering_cost": 50, "holding_cost": 2.00},
+    "White Star Maize Meal 2.5kg":      {"demand": 12775, "ordering_cost": 45, "holding_cost": 1.80},
+    "Flora Light Spread 500g":          {"demand": 6570,  "ordering_cost": 40, "holding_cost": 2.20},
+    "Clover Gouda Cheese 850g":         {"demand": 4380,  "ordering_cost": 50, "holding_cost": 5.00},
+    "PnP Fresh Chicken Pack 1kg":       {"demand": 10950, "ordering_cost": 60, "holding_cost": 6.00},
+    "Koo Baked Beans 410g":             {"demand": 18250, "ordering_cost": 35, "holding_cost": 1.00},
+    "All Gold Tomato Sauce 700ml":      {"demand": 8030,  "ordering_cost": 40, "holding_cost": 1.50},
+    "Huletts White Sugar 2kg":          {"demand": 10950, "ordering_cost": 45, "holding_cost": 2.00},
+    "Simba Potato Chips 120g":          {"demand": 25550, "ordering_cost": 35, "holding_cost": 1.20},
+    "Cadbury Dairy Milk 150g":          {"demand": 14600, "ordering_cost": 35, "holding_cost": 2.00},
+    "Five Roses Tea Bags 100s":         {"demand": 7300,  "ordering_cost": 40, "holding_cost": 2.50},
+    "Jacobs Kronung Coffee 200g":       {"demand": 5475,  "ordering_cost": 50, "holding_cost": 6.00},
+    "McCain Cut Green Beans 1kg":       {"demand": 4380,  "ordering_cost": 45, "holding_cost": 3.50},
+    "PnP Beef Sausage 1kg":             {"demand": 7300,  "ordering_cost": 60, "holding_cost": 5.00},
+    "Handy Andy Cleaner 750ml":         {"demand": 7300,  "ordering_cost": 40, "holding_cost": 1.50},
+    "Omo Auto Washing Powder 2kg":      {"demand": 5840,  "ordering_cost": 50, "holding_cost": 3.00},
+    "Colgate Triple Action 100ml":      {"demand": 10950, "ordering_cost": 35, "holding_cost": 1.00},
+    "Baby Soft Toilet Paper 9s":        {"demand": 12775, "ordering_cost": 50, "holding_cost": 2.50},
+    "Kellogg's Corn Flakes 1kg":        {"demand": 9125,  "ordering_cost": 45, "holding_cost": 2.20},
+    "Bokomo Weet-Bix 450g":             {"demand": 10220, "ordering_cost": 45, "holding_cost": 2.00},
+    "Dettol Antiseptic 500ml":          {"demand": 5475,  "ordering_cost": 40, "holding_cost": 3.00},
+    "Jungle Oats 1kg":                  {"demand": 7300,  "ordering_cost": 45, "holding_cost": 2.00}
+    
 }
 
-if __name__ == "__main__":
-    print("--- EOQ Calculations for Pick n Pay Wolmaransstad ---")
+if __name__ == "__main__": 
     
-    for item, data in inventory_items.items():
+    print("----------- EOQ Calculations for Pick n Pay Wolmaransstad ----------- ")
+    
+    for item, data in items_in_inventory.items(): 
+        
         d = data["demand"]
-        s = data["order_cost"]
-        h = data["hold_cost"]
+        s = data["ordering_cost"]
+        h = data["holding_cost"]
         
-        eoq = calculate_eoq(d, s, h)
-        orders = d / eoq
-        days = 365 / orders
-        cost = total_annual_cost(d, s, h, eoq)
+        eoq = calculate_eoq(d, s, h)           #testing function by entering parameters into the eoq function
+        orders = d / eoq                       #entering order formula
+        days = 365 / orders                    # calculating the days inbetween orders
+        cost = total_annual_cost(d, s, h, eoq) #calculating annual cost
         
+        #Printing results
         print(f"\nProduct: {item}")
-        print(f"Optimal Order Quantity (EOQ): {round(eoq, 1)}")
-        print(f"Orders per year: {round(orders, 1)}")
-        print(f"Days between orders: {round(days, 1)}")
-        print(f"Total annual cost: R{round(cost, 2)}")
+        print(f"Optimal Order Quantity (EOQ): {round(eoq, 1)}")  #rounding eoq to 1 decimal place
+        print(f"Orders per year: {round(orders, 1)}")            #rounding orders to 1 decimal place
+        print(f"Days between orders: {round(days, 1)}")          #rounding days to 1 decimal place
+        print(f"Total annual cost: R{round(cost, 2)}")           #rounding cost to 2 decimal places
