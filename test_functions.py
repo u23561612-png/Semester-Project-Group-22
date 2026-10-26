@@ -12,9 +12,9 @@ from inventory_logic import (
 )
 
 def run_custom_test():
-    print("==================================================")
-    print("      TESTING INVENTORY & REPLENISHMENT LOGIC     ")
-    print("==================================================")
+    print("-------------------------------------------------------------------------------------------")
+    print("                     TESTING INVENTORY & REPLENISHMENT LOGIC     ")
+    print("-------------------------------------------------------------------------------------------")
 
     # 1. ENTER YOUR CUSTOM PARAMETERS HERE
     product_name = "PnP Full Cream Milk 2L"
