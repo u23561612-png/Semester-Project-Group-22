@@ -653,5 +653,160 @@
       }
     });
   </script>
+ <script>
+(function () {
+  const searchInput = document.getElementById('productSearchInput');
+  const inventoryTable = document.getElementById('inventoryTable');
+
+  if (!searchInput || !inventoryTable) {
+    console.error('Search box or inventory table not found.');
+    return;}
+
+  searchInput.placeholder = 'Search for a product, e.g. milk...';
+
+  // Remove any previous search results.
+  const previousResults = document.getElementById('productSearchResults');
+  if (previousResults) previousResults.remove();
+
+  const results = document.createElement('div');
+  results.id = 'productSearchResults';
+  results.className = 'mt-3';
+  searchInput.insertAdjacentElement('afterend', results);
+
+  searchInput.addEventListener('input', function () {
+    const query = searchInput.value.trim().toLowerCase();
+    results.replaceChildren();
+
+    if (!query) return;
+
+    const rows = Array.from(
+      inventoryTable.querySelectorAll('tbody tr'));
+
+    const matches = rows.filter(function (row) {
+      const productName = row.cells[0].textContent.toLowerCase();
+      return productName.includes(query);});
+
+    if (matches.length === 0) {
+      results.textContent = 'No products found. Try milk or bread.';
+      return;}
+
+    const message = document.createElement('p');
+    message.textContent = matches.length + ' product(s) found';
+    results.appendChild(message);
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'table-responsive';
+
+    const table = document.createElement('table');
+    table.className = 'table table-hover align-middle';
+
+    // Copy the stock table headings without the Action column.
+    const heading = inventoryTable.tHead.cloneNode(true);
+    heading.querySelector('tr').lastElementChild.remove();
+    table.appendChild(heading);
+
+    const body = document.createElement('tbody');
+
+    matches.forEach(function (row) {
+      const copy = row.cloneNode(true);
+
+      // Show the result even if the main table filters it out.
+      copy.style.display = '';
+
+      // Remove the Action column from search results.
+      copy.lastElementChild.remove();
+      body.appendChild(copy);});
+
+    table.appendChild(body);
+    wrapper.appendChild(table);
+    results.appendChild(wrapper);});})();
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const usersPanel = document.getElementById('users-panel');
+
+  if (!usersPanel) return;
+
+  // Sample users — change these names to your own.
+  const users = [
+    {name: 'Sam',
+      role: 'Store Manager',
+      duties: 'Oversees the store, checks stock and reviews performance.'},
+    {name: 'Alex',
+      role: 'Floor Manager',
+      duties: 'Checks shelf shortages and creates replenishment tasks.'},
+    {name: 'Jamie',
+      role: 'Staff Member',
+      duties: 'Moves stock from receiving to the shelves and completes tasks.'}];
+
+  usersPanel.innerHTML = `
+    <div class="card border-0 shadow-sm p-4">
+      <h3 class="h5 fw-bold mb-2">System Users</h3>
+      <p class="text-muted">
+        View the team and select a user for this demonstration.
+      </p>
+
+      <label for="demoUserSelect" class="form-label fw-bold">
+        Select a demo user
+      </label>
+      <select id="demoUserSelect" class="form-select mb-3"></select>
+
+      <div id="selectedUserInfo"
+           class="alert alert-info"
+           aria-live="polite"></div>
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-dark">
+            <tr>
+              <th>Name</th>
+              <th>Role</th>
+              <th>Main duties</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+  const userSelect = document.getElementById('demoUserSelect');
+  const tableBody = document.getElementById('usersTableBody');
+  const selectedInfo = document.getElementById('selectedUserInfo');
+  const headerUser = document.querySelector(
+    '.top-header .fw-bold.small');
+
+  users.forEach(function (user, index) {
+    // Add the user to the dropdown.
+    const option = document.createElement('option');
+    option.value = index;
+    option.textContent = user.name + ' — ' + user.role;
+    userSelect.appendChild(option);
+
+    // Add the user to the table.
+    const row = document.createElement('tr');
+
+    [user.name, user.role, user.duties].forEach(function (value) {
+      const cell = document.createElement('td');
+      cell.textContent = value;
+      row.appendChild(cell);});
+
+    tableBody.appendChild(row);});
+
+  function showSelectedUser() {
+    const user = users[Number(userSelect.value)];
+
+    selectedInfo.textContent =
+      user.name + ' | ' + user.role + ': ' + user.duties;
+
+    if (headerUser) {
+      headerUser.textContent = user.name + ' — ' + user.role;}}
+
+  // Start with the Floor Manager selected.
+  userSelect.value = '1';
+  showSelectedUser();
+
+  userSelect.addEventListener('change', showSelectedUser);});
+</script>
 </body>
 </html>
