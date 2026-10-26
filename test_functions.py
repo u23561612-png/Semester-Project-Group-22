@@ -13,7 +13,7 @@ from inventory_logic import (
 
 def run_custom_test():
     print("-------------------------------------------------------------------------------------------")
-    print("                     TESTING INVENTORY & REPLENISHMENT LOGIC     ")
+    print("                     TESTING INVENTORY & REPLENISHMENT LOGIC                               ")
     print("-------------------------------------------------------------------------------------------")
 
     # 1. ENTER YOUR CUSTOM PARAMETERS HERE
