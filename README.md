@@ -1,410 +1,61 @@
-## REST API Documentation
+# Pick n Pay Wolmaransstad – Receiving Stock System
 
-The Pick n Pay Receiving Stock System uses a REST API developed
-with Flask to communicate between the web application and the
-MySQL database.
+**Semester Project – Group 22**
 
-The API returns information in JSON format and supports the
-creation, retrieval and updating of products, inventory records
-and replenishment tasks.
+## 1. Project Overview
 
-### Base URL
+- Manages receiving stock and shop floor inventory.
+- Tracks stock shortages and replenishment tasks.
+- Records stock movements and displays performance statistics.
+- Recommends supplier order quantities using the Economic Order Quantity (EOQ) model.
+- Uses Flask, Python and MySQL.
 
-http://127.0.0.1:5001
-
-### API Endpoints
-
-| Method | Endpoint | Description | Success Status |
-|---|---|---|---|
-| GET | /api/products | Retrieve all products and inventory information | 200 |
-| GET | /api/products/<id> | Retrieve a specific product | 200 |
-| POST | /api/products | Create a new product and inventory record | 201 |
-| PATCH | /api/products/<id> | Update existing product information | 200 |
-| GET | /api/tasks | Retrieve replenishment tasks | 200 |
-| GET | /api/tasks/<id> | Retrieve a specific replenishment task | 200 |
-| POST | /api/tasks | Dispatch a new replenishment task | 201 |
-| PATCH | /api/tasks/<id> | Complete a replenishment task | 200 |
-| PATCH | /api/inventory/<id> | Process an inventory transaction | 200 |
-| GET | /api/stock-movements | Retrieve stock movement history | 200 |
-| GET | /api/users | Retrieve system users | 200 |
-| GET | /api/locations | Retrieve shelf and receiving locations | 200 |
-| GET | /api/dashboard | Retrieve inventory and performance KPIs | 200 |
-
-### Pagination and Filtering
-
-The products endpoint supports optional pagination and filtering
-through query parameters.
-
-| Parameter | Purpose | Example |
-|---|---|---|
-| page | Select the page number | page=1 |
-| size | Specify the number of records per page | size=10 |
-| search | Search by name, product code or barcode | search=milk |
-| status | Filter according to stock availability | status=insufficient |
-
-Examples:
-
-- `/api/products?page=1&size=10`
-- `/api/products?page=2&size=10`
-- `/api/products?search=milk`
-- `/api/products?status=sufficient`
-- `/api/products?status=insufficient`
-- `/api/products?status=out_of_stock`
-
-Valid page sizes range from 1 to 100.
-
-If pagination parameters are not provided, the API returns all
-matching products.
-
-The tasks endpoint supports filtering by status and priority:
-
-- `/api/tasks?status=pending`
-- `/api/tasks?status=completed`
-- `/api/tasks?priority=high`
-
-The locations endpoint supports filtering by location type:
-
-- `/api/locations?type=shelf`
-- `/api/locations?type=receiving`
-
-### Example JSON Requests and Responses
-
-#### Retrieve an Individual Product
-
-GET /api/products/1
-
-Example response:
-
-```json
-{
-    "product_id": 1,
-    "product_code": "PRD-001",
-    "product_name": "PnP Full Cream Milk 2L",
-    "barcode": null,
-    "shelf_qty": 5,
-    "required_shelf_qty": 25,
-    "receiving_qty": 20,
-    "quantity_needed": 20,
-    "shelf_location_id": 1,
-    "receiving_location_id": 41,
-    "shelf_location": "Aisle 1, Shelf 1",
-    "receiving_location": "Receiving - Refrigerated Dairy"
-}
-```
-
-#### Create a Product
-
-POST /api/products
-
-Request:
-
-```json
-{
-    "product_code": "PRD-031",
-    "product_name": "PnP Orange Juice 1L",
-    "receiving_location_id": 43,
-    "shelf_location_id": 9,
-    "required_shelf_qty": 25
-}
-```
-
-Response:
-
-```json
-{
-    "message": "Product created successfully.",
-    "product_id": 31
-}
-```
-
-#### Update a Product
-
-PATCH /api/products/31
-
-Request:
-
-```json
-{
-    "product_name": "PnP Orange Juice 2L"
-}
-```
-
-Response:
-
-```json
-{
-    "message": "Product updated successfully.",
-    "product_id": 31
-}
-```
-
-#### Dispatch a Replenishment Task
-
-POST /api/tasks
-
-Request:
-
-```json
-{
-    "product_id": 1,
-    "quantity": 20,
-    "priority": "High",
-    "username": "alex"
-}
-```
-
-Response:
-
-```json
-{
-    "message": "Replenishment task created.",
-    "task_id": 5
-}
-```
-
-#### Complete a Replenishment Task
-
-PATCH /api/tasks/5
-
-Request:
-
-```json
-{
-    "username": "jamie"
-}
-```
-
-Response:
-
-```json
-{
-    "message": "Replenishment task completed.",
-    "receiving_qty": 0,
-    "shelf_qty": 25
-}
-```
-
-#### Receive Supplier Stock
-
-PATCH /api/inventory/1
-
-Request:
-
-```json
-{
-    "action": "receive",
-    "quantity": 30,
-    "username": "jordan",
-    "reason": "Supplier delivery received."
-}
-```
-
-The inventory endpoint supports four transaction types:
-
-- receive
-- damage
-- reconcile
-- shelf
-
-A stock movement record is created for every successful
-inventory transaction.
-
-### GET Response Structures
-
-| Endpoint | JSON response |
-|---|---|
-| /api/products | Array of product and inventory objects |
-| /api/products/<id> | Individual product and inventory object |
-| /api/tasks | Array of replenishment task objects |
-| /api/tasks/<id> | Individual replenishment task object |
-| /api/users | Array of user objects containing ID, name, username and role |
-| /api/locations | Array of location objects containing ID, code, name and type |
-| /api/stock-movements | Array of stock movement objects containing before-and-after quantities, user, reason and timestamp |
-| /api/dashboard | Object containing calculated inventory and performance metrics |
-
-The example IDs and quantities represent sample data and may
-differ after inventory transactions have been performed.
-
-### HTTP Status Codes
-
-| Code | Meaning |
-|---|---|
-| 200 | Request completed successfully |
-| 201 | Record created successfully |
-| 400 | Invalid request or input |
-| 404 | Requested resource not found |
-| 405 | HTTP method not allowed |
-| 500 | Internal server or database error |
-
-Example error response:
-
-```json
-{
-    "error": "Product not found."
-}
-```
-
-### Input Validation
-
-The backend validates incoming requests to maintain inventory
-accuracy and database integrity.
-
-Validation includes:
-
-- Required fields and valid data types.
-- Unique product codes and barcodes.
-- Positive replenishment quantities.
-- Non-negative inventory quantities.
-- Valid shelf and receiving locations.
-- Prevention of duplicate pending replenishment tasks.
-- Prevention of replenishment beyond available receiving stock.
-- Prevention of replenishment beyond shelf requirements.
-- Valid pagination and filtering parameters.
-
-### Error Handling and Logging
-
-Centralised error handlers return consistent JSON error
-responses.
-
-Python logging records application events, invalid requests
-and database errors.
-
-SQL queries use parameterised values. Database transactions
-are used when multiple related records must be updated
-together. Uncommitted changes are rolled back if an operation
-fails.
-
-### Flask Blueprint Structure
-
-The application separates its API routes from the main
-Flask application using a Blueprint.
-
-| File | Responsibility |
-|---|---|
-| app.py | Application startup and Blueprint registration |
-| routes/api.py | REST API endpoints, validation and error handling |
-| routes/__init__.py | Python package initialisation |
-| config.py | Environment-specific configuration |
-| db.py | MySQL connection management |
-| templates/index.html | Web application interface |
-
-### Application Environments
-
-The application supports three configuration environments:
-
-| Environment | Purpose |
-|---|---|
-| Development | Local development and debugging |
-| Testing | Testing against a separate database |
-| Production | Normal operation with debugging disabled |
-
-Configuration settings are loaded from environment variables.
-
-The `.env.example` file provides the required configuration
-variables without exposing actual database credentials.
-
-The current application uses a local user-selection feature
-for demonstration purposes. This is not password-based
-authentication.
-
-### API Testing
-
-The registered endpoints can be inspected by running:
-
-```bash
-python -m flask --app app routes
-```
-
-API endpoints can be tested through a browser, PowerShell,
-Postman or the Flask test client.
-
-## Supply Chain Model Integration
-
-The Economic Order Quantity (EOQ) model is integrated
-into the Inventory Control section of the web application.
-
-The system retrieves the selected product from MySQL
-and calculates its recommended supplier order quantity
-using the functions defined in EOQ.py.
-
-API endpoint:
-
-GET /api/products/<id>/eoq
-
-The model calculates:
-
-- Economic order quantity
-- Orders per year
-- Days between orders
-- Total annual inventory cost
-
-The model assists supplier ordering decisions without
-automatically increasing receiving inventory.
-
-Demand and cost inputs are estimated for demonstration
-purposes to protect confidential store information.
-
-Actual ordering decisions must also consider shelf life,
-storage capacity and supplier constraints.
-
-## Installation and Application Setup
-
-### System Requirements
-
-The following software is required to run the application:
+## 2. Software Requirements
 
 - Python 3.12
-- MySQL Server 8.0 or later
+- MySQL Server 8.0.16 or later
 - MySQL Workbench
 - Git
 - A web browser
+- Visual Studio Code (recommended)
 
-Visual Studio Code is recommended for development.
+## 3. Installation and Setup
 
-### Step 1: Clone the Repository
+### 3.1 Download the project
+
+- Open your terminal and run:
 
 ```bash
 git clone https://github.com/u23561612-png/Semester-Project-Group-22.git
 cd Semester-Project-Group-22
 ```
 
-### Step 2: Install Python Dependencies
+### 3.2 Install Python packages
 
-On macOS:
+- macOS:
 
 ```bash
 python3 -m pip install -r requirements.txt
 ```
 
-On Windows:
+- Windows:
 
 ```powershell
 py -m pip install -r requirements.txt
 ```
 
-### Step 3: Configure the MySQL Database
+### 3.3 Set up the database
 
-1. Start MySQL Server.
-2. Open MySQL Workbench.
-3. Connect to the local MySQL server.
-4. Open and execute schema.sql.
-5. Open and execute seed.sql.
+- Start MySQL Server and open MySQL Workbench.
+- Connect to your local MySQL server.
+- Open and run `schema.sql` to create the database and its tables.
+- Open and run `seed.sql` to add sample data.
+- Only run these scripts on a fresh database to avoid duplicate records.
 
-The schema script creates the pnp_receiving database
-and its six related tables.
+### 3.4 Set up the `.env` file
 
-The seed script populates the database with sample
-products, users, inventory records, locations,
-replenishment tasks and stock movements.
-
-These scripts should only be executed on a fresh
-database to avoid duplicate sample records.
-
-### Step 4: Configure Environment Variables
-
-Create a file named .env in the main project folder.
-
-Use .env.example as a template.
+- Create a file called `.env` in the main project folder.
+- Use `.env.example` as a guide:
 
 ```env
 DB_HOST=127.0.0.1
@@ -416,78 +67,219 @@ APP_ENV=development
 DB_TEST_NAME=pnp_receiving_test
 ```
 
-Replace the username and password with the local
-MySQL connection details.
+- Enter your own MySQL username and password.
+- Never upload your `.env` file to GitHub. It contains private information.
 
-The .env file is excluded from version control
-to protect database credentials.
+### 3.5 Test the database connection
 
-### Step 5: Test the Database Connection
+- macOS: `python3 test_db.py`
+- Windows: `py test_db.py`
+- A successful connection should show the `pnp_receiving` database and 30 products when using fresh sample data.
 
-On macOS:
+### 3.6 Start the website
 
-```bash
-python3 test_db.py
-```
+- macOS: `python3 app.py`
+- Windows: `py app.py`
+- Open [http://127.0.0.1:5001](http://127.0.0.1:5001).
+- Keep the terminal open while using the website.
+- Press `Ctrl + C` to stop the server.
 
-On Windows:
-
-```powershell
-py test_db.py
-```
-
-Expected result for a fresh database:
-
-Successfully connected to MySQL!
-Database: pnp_receiving
-Total products: 30
-
-### Step 6: Start the Application
-
-On macOS:
-
-```bash
-python3 app.py
-```
-
-On Windows:
-
-```powershell
-py app.py
-```
-
-Open the following URL in a web browser:
-
-http://127.0.0.1:5001
-
-Keep the terminal running while using the application.
-
-### Demonstration Users
+## 4. Demo Users
 
 | User | Role |
-|---|---|
+| --- | --- |
 | Sam | Store Manager |
 | Alex | Floor Manager |
 | Jamie | Staff Member |
 | Jordan | Receiving Manager |
 
-Users can be selected from the Users tab or by
-clicking the user profile in the top-right corner.
+- Select a user from the Users tab or the profile in the top-right corner.
+- This is a demo user-selection feature, not a secure login system.
 
-The current prototype uses user selection rather
-than password-based authentication.
+## 5. Database Structure
 
-### Deployment Approach
+The `pnp_receiving` database contains six tables:
 
-The application is deployed locally using Flask
-and MySQL. It supports Windows and macOS.
+- `products` – product names, codes and barcodes.
+- `locations` – shelf and receiving locations.
+- `users` – users and their roles.
+- `inventory` – current stock and required shelf quantities.
+- `replenishment_tasks` – tasks for moving stock to shelves.
+- `stock_movements` – history of stock changes.
 
-The local development server is intended for
-demonstration and testing purposes.
-
-A production deployment would require a production
-WSGI server, secure hosting and authentication.
-
-### Entity Relationship Diagram
+### 5.1 Entity Relationship Diagram (ERD)
 
 ![Receiving Stock System ERD](docs/ERD.png)
+
+## 6. API Documentation
+
+- The REST API connects the website to the database through Flask.
+- It sends and receives data in JSON format.
+- Base URL: `http://127.0.0.1:5001`
+
+### 6.1 API endpoints
+
+| Method | Endpoint | Purpose | Success code |
+| --- | --- | --- | --- |
+| GET | `/api/products` | View products and stock | 200 |
+| GET | `/api/products/<id>` | View one product | 200 |
+| POST | `/api/products` | Add a product and inventory record | 201 |
+| PATCH | `/api/products/<id>` | Update a product | 200 |
+| GET | `/api/tasks` | View replenishment tasks | 200 |
+| GET | `/api/tasks/<id>` | View one task | 200 |
+| POST | `/api/tasks` | Create a task | 201 |
+| PATCH | `/api/tasks/<id>` | Complete a task | 200 |
+| PATCH | `/api/inventory/<id>` | Update stock | 200 |
+| GET | `/api/stock-movements` | View stock history | 200 |
+| GET | `/api/users` | View users | 200 |
+| GET | `/api/locations` | View locations | 200 |
+| GET | `/api/dashboard` | View dashboard statistics | 200 |
+| GET | `/api/products/<id>/eoq` | Get an EOQ recommendation | 200 |
+
+### 6.2 Searching, filtering and pages
+
+- `/api/products?page=1&size=10` – show the first 10 products.
+- `/api/products?search=milk` – search by name, code or barcode.
+- `/api/products?status=insufficient` – filter by stock status (`sufficient`, `insufficient` or `out_of_stock`).
+- `/api/tasks?status=pending` – filter tasks by status, such as `pending` or `completed`.
+- `/api/tasks?priority=high` – filter tasks by priority.
+- `/api/locations?type=shelf` – filter locations by `shelf` or `receiving`.
+- Page sizes must be between 1 and 100. Without page settings, all matching products are returned.
+
+### 6.3 Example API requests and responses
+
+**View a product:** `GET /api/products/1`
+
+Example response:
+
+```json
+{
+  "product_id": 1,
+  "product_code": "PRD-001",
+  "product_name": "PnP Full Cream Milk 2L",
+  "barcode": null,
+  "shelf_qty": 5,
+  "required_shelf_qty": 25,
+  "receiving_qty": 20,
+  "quantity_needed": 20,
+  "shelf_location_id": 1,
+  "receiving_location_id": 41,
+  "shelf_location": "Aisle 1, Shelf 1",
+  "receiving_location": "Receiving - Refrigerated Dairy"
+}
+```
+
+**Add a product:** `POST /api/products`
+
+```json
+{"product_code":"PRD-031","product_name":"PnP Orange Juice 1L","receiving_location_id":43,"shelf_location_id":9,"required_shelf_qty":25}
+```
+
+Response: `{"message":"Product created successfully.","product_id":31}`
+
+**Update a product:** `PATCH /api/products/31`
+
+```json
+{"product_name":"PnP Orange Juice 2L"}
+```
+
+Response: `{"message":"Product updated successfully.","product_id":31}`
+
+**Create a task:** `POST /api/tasks`
+
+```json
+{"product_id":1,"quantity":20,"priority":"High","username":"alex"}
+```
+
+Response: `{"message":"Replenishment task created.","task_id":5}`
+
+**Complete a task:** `PATCH /api/tasks/5`
+
+```json
+{"username":"jamie"}
+```
+
+Response: `{"message":"Replenishment task completed.","receiving_qty":0,"shelf_qty":25}`
+
+**Receive stock:** `PATCH /api/inventory/1`
+
+```json
+{"action":"receive","quantity":30,"username":"jordan","reason":"Supplier delivery received."}
+```
+
+- Stock actions: `receive`, `damage`, `reconcile` and `shelf`.
+- Each successful stock transaction creates a stock movement record.
+- Example IDs and quantities may change as the system is used.
+
+### 6.4 API status codes
+
+| Code | Meaning |
+| --- | --- |
+| 200 | Request successful |
+| 201 | Record created |
+| 400 | Invalid input |
+| 404 | Record not found |
+| 405 | Method not allowed |
+| 500 | Server or database error |
+
+Example error: `{"error":"Product not found."}`
+
+## 7. Validation and Error Handling
+
+- Checks required fields, data types and valid locations.
+- Prevents duplicate product codes, barcodes and pending tasks.
+- Prevents negative stock and invalid task quantities.
+- Prevents moving more stock than is available or needed.
+- Checks search filters and page settings.
+- Uses safe SQL queries with separate input values.
+- Uses database transactions to undo unfinished changes when an operation fails.
+- Returns clear JSON errors and records errors using Python logging.
+
+## 8. Project Files and Configuration
+
+| File | Purpose |
+| --- | --- |
+| `app.py` | Starts Flask and registers the Blueprint |
+| `routes/api.py` | Handles API requests and errors |
+| `routes/__init__.py` | Makes routes a Python package |
+| `config.py` | Stores application settings |
+| `db.py` | Connects to MySQL |
+| `templates/index.html` | Displays the website |
+| `EOQ.py` | Calculates supplier order recommendations |
+| `schema.sql` | Creates database tables |
+| `seed.sql` | Adds sample records |
+| `test_db.py` | Tests the database connection |
+| `requirements.txt` | Lists Python packages |
+
+The application has three settings:
+
+- **Development:** for building and testing locally.
+- **Testing:** uses a separate test database.
+- **Production:** runs with debugging disabled.
+
+## 9. Economic Order Quantity (EOQ)
+
+EOQ helps decide how much stock to order from suppliers.
+
+- Open Inventory Control.
+- Select a product, such as Milk 2L.
+- Scroll to EOQ Supplier Order Recommendation.
+- Click Calculate EOQ Recommendation.
+
+The model calculates:
+
+- Recommended order quantity.
+- Number of orders per year.
+- Days between orders.
+- Total annual ordering and holding costs.
+
+The model uses estimated demand and costs to protect store information. It does not automatically order or add stock. Real orders must also consider shelf life, storage space and supplier limits.
+
+## 10. Testing and Deployment
+
+- Start Flask before testing the website or API.
+- View registered API routes with `python3 -m flask --app app routes` (macOS) or `py -m flask --app app routes` (Windows).
+- Test GET requests using a browser, and other requests using Postman, PowerShell or the Flask test client.
+- The project runs locally on Windows and macOS for demos and testing.
+- A live website would need secure hosting, proper login security and a production WSGI server.
+
