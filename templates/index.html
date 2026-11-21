@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Pick n Pay Wolmaransstad - Receiving Stock System</title>
 
   <!-- Bootstrap CSS -->
@@ -12,6 +13,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
   <style>
+
     :root {
       --pnp-red: #e2001a;
       --pnp-dark-blue: #002b49;
@@ -82,6 +84,7 @@
     .main-content {
       margin-left: 260px;
       flex: 1;
+      min-width: 0;
       padding: 2rem;
     }
 
@@ -140,49 +143,73 @@
       background-color: #ffc107;
       color: #212529;
     }
+
   </style>
+
 </head>
 
 <body>
 
   <!-- Out of stock notification -->
+
   <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+
     <div id="outOfStockToast" class="toast align-items-center text-white bg-danger border-0" role="alert">
+
       <div class="d-flex">
+
         <div class="toast-body" id="toastMessage">
-          <strong>ALERT:</strong> Item is now Out of Stock!
+          WARNING: Item is now out of stock!
         </div>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+
+        <button type="button"
+                class="btn-close btn-close-white me-2 m-auto"
+                data-bs-dismiss="toast">
+        </button>
+
       </div>
+
     </div>
+
   </div>
 
   <div class="app-container">
 
     <!-- SIDEBAR -->
+
     <nav class="sidebar">
 
       <div class="sidebar-header">
+
         <i class="bi bi-box-seam-fill text-warning fs-3"></i>
+
         <div>
-          <span class="fw-bold text-dark fs-6">Receiving System</span>
+
+          <span class="fw-bold text-dark fs-6">
+            Receiving System
+          </span>
+
           <small class="text-muted d-block" style="font-size: 0.75rem;">
             Pick n Pay Wolmaransstad
           </small>
+
         </div>
+
       </div>
 
       <ul class="sidebar-nav">
 
-         ="nav-item">
+        <li class="nav-item">
           <a class="nav-link active" data-bs-target="#dashboard-panel">
-            <i class="bi bi-grid-fill"></i> Dashboard
+            <i class="bi bi-grid-fill"></i>
+            Dashboard
           </a>
         </li>
 
         <li class="nav-item">
           <a class="nav-link" data-bs-target="#search-panel">
-            <i class="bi bi-search"></i> Stock Search
+            <i class="bi bi-search"></i>
+            Stock Search
           </a>
         </li>
 
@@ -195,110 +222,159 @@
         </li>
 
         <li class="nav-item">
-         <a class="nav-link" data-bs-target="#inventory-panel">
-          <i class="bi bi-boxes"></i> Inventory Control
-         </a>
+          <a class="nav-link" data-bs-target="#inventory-panel">
+            <i class="bi bi-boxes"></i>
+            Inventory Control
+          </a>
         </li>
 
         <li class="nav-item">
           <a class="nav-link" data-bs-target="#performance-panel">
-            <i class="bi bi-bar-chart-fill"></i> Performance
+            <i class="bi bi-bar-chart-fill"></i>
+            Performance
           </a>
         </li>
 
         <li class="nav-item">
           <a class="nav-link" data-bs-target="#users-panel">
-            <i class="bi bi-people-fill"></i> Users
+            <i class="bi bi-people-fill"></i>
+            Users
           </a>
         </li>
 
       </ul>
+
     </nav>
 
     <!-- MAIN CONTENT -->
+
     <main class="main-content">
 
       <header class="top-header shadow-sm">
 
         <div class="d-flex align-items-center gap-2">
+
           <span class="badge bg-dark fs-6">1</span>
+
           <h1 class="h5 fw-bold mb-0 text-dark">
             Receiving Inventory Dashboard
           </h1>
+
         </div>
 
         <div class="d-flex align-items-center gap-3">
 
-          <button class="btn btn-light position-relative border">
+          <button class="btn btn-light position-relative border"
+                  id="notificationButton"
+                  type="button">
+
             <i class="bi bi-bell"></i>
+
           </button>
 
-          <div id="userProfile" class="d-flex align-items-center gap-2" style="cursor: pointer;">
+          <div id="userProfile"
+               class="d-flex align-items-center gap-2"
+               style="cursor: pointer;"
+               role="button"
+               tabindex="0">
+
             <i class="bi bi-person-circle fs-4 text-danger"></i>
+
             <span id="headerUser" class="fw-bold small">
-              Alex — Floor Manager
+              Loading user...
             </span>
+
           </div>
 
         </div>
+
       </header>
 
       <div class="tab-content">
 
-        <!-- 1. DASHBOARD -->
+        <!-- DASHBOARD -->
+
         <div class="tab-pane fade show active" id="dashboard-panel">
 
           <div class="d-flex justify-content-between align-items-center mb-4">
+
             <p class="text-muted mb-0">
               Overview of shelf requirements vs receiving area stock
             </p>
 
             <button class="btn btn-primary" id="openNewTaskModalBtn">
+
               <i class="bi bi-plus-lg me-1"></i>
               New Replenishment Task
+
             </button>
+
           </div>
 
-          <!-- KPI Cards -->
+          <!-- Dashboard KPI cards -->
+
           <div class="row g-3 mb-4">
 
             <div class="col-md-3">
+
               <div class="card-metric shadow-sm">
-                <span class="text-muted small fw-semibold">Total products</span>
-                <div class="metric-value" id="kpiTotalProducts">30</div>
+
+                <span class="text-muted small fw-semibold">
+                  Total products
+                </span>
+
+                <div class="metric-value" id="kpiTotalProducts">0</div>
+
               </div>
+
             </div>
 
             <div class="col-md-3">
+
               <div class="card-metric shadow-sm">
-                <span class="text-muted small fw-semibold">Receiving stock</span>
+
+                <span class="text-muted small fw-semibold">
+                  Receiving stock
+                </span>
+
                 <div class="metric-value" id="kpiReceivingStock">0</div>
+
               </div>
+
             </div>
 
             <div class="col-md-3">
+
               <div class="card-metric shadow-sm border-danger">
+
                 <span class="text-muted small fw-semibold">
                   Insufficient stock items
                 </span>
+
                 <div class="metric-value text-danger" id="kpiInsufficient">0</div>
+
               </div>
+
             </div>
 
             <div class="col-md-3">
+
               <div class="card-metric shadow-sm border-success">
+
                 <span class="text-muted small fw-semibold">
                   Sufficient stock items
                 </span>
+
                 <div class="metric-value text-success" id="kpiSufficient">0</div>
+
               </div>
+
             </div>
 
           </div>
 
           <div class="row g-4">
 
-            <!-- Stock Replenishment Table -->
             <div class="col-lg-8">
 
               <div class="card border-0 shadow-sm">
@@ -309,9 +385,10 @@
                     Stock Replenishment Table
                   </h2>
 
-                  <input type="text" id="tableSearchInput"
+                  <input type="text"
+                         id="tableSearchInput"
                          class="form-control form-control-sm w-50"
-                         placeholder="Filter 30 products...">
+                         placeholder="Filter products...">
 
                 </div>
 
@@ -320,6 +397,7 @@
                   <table class="table table-hover align-middle mb-0" id="inventoryTable">
 
                     <thead class="table-dark sticky-top">
+
                       <tr>
                         <th>Product</th>
                         <th>Shelf Qty</th>
@@ -329,6 +407,7 @@
                         <th>Status</th>
                         <th>Action</th>
                       </tr>
+
                     </thead>
 
                     <tbody id="inventoryTableBody"></tbody>
@@ -341,15 +420,18 @@
 
             </div>
 
-            <!-- Critical Stock Alerts -->
+            <!-- Critical stock alerts -->
+
             <div class="col-lg-4">
 
               <div class="card border-0 shadow-sm">
 
                 <div class="card-header bg-white py-3">
+
                   <h2 class="h6 fw-bold mb-0">
                     Critical Stock Alerts
                   </h2>
+
                 </div>
 
                 <div class="card-body" id="priorityWidgetBody"></div>
@@ -362,16 +444,20 @@
 
         </div>
 
-        <!-- 2. STOCK SEARCH -->
+        <!-- STOCK SEARCH -->
+
         <div class="tab-pane fade" id="search-panel">
 
           <div class="card border-0 shadow-sm p-4">
 
-            <h3 class="h5 fw-bold mb-3">Product Search</h3>
+            <h3 class="h5 fw-bold mb-3">
+              Product Search
+            </h3>
 
-            <input type="text" id="productSearchInput"
+            <input type="text"
+                   id="productSearchInput"
                    class="form-control form-control-lg"
-                   placeholder="Search for a product, e.g. milk...">
+                   placeholder="Search product name, barcode or product code...">
 
             <div id="productSearchResults" class="mt-3"></div>
 
@@ -379,7 +465,8 @@
 
         </div>
 
-        <!-- 3. REPLENISHMENT TASKS -->
+        <!-- REPLENISHMENT TASKS -->
+
         <div class="tab-pane fade" id="tasks-panel">
 
           <div class="card border-0 shadow-sm p-4">
@@ -401,204 +488,268 @@
         </div>
 
         <!-- INVENTORY CONTROL -->
-<div class="tab-pane fade" id="inventory-panel">
 
-  <div class="card border-0 shadow-sm p-4 mb-4">
+        <div class="tab-pane fade" id="inventory-panel">
 
-    <h3 class="h5 fw-bold mb-2">
-      Inventory Control
-    </h3>
+          <div class="card border-0 shadow-sm p-4 mb-4">
 
-    <p class="text-muted">
-      Manage incoming stock, damaged products,
-      physical stock counts and shelf quantities.
-    </p>
+            <h3 class="h5 fw-bold mb-2">
+              Inventory Control
+            </h3>
 
-    <form id="inventoryControlForm">
+            <p class="text-muted">
+              Manage incoming stock, damaged products,
+              physical stock counts and shelf quantities.
+            </p>
 
-      <div class="row g-3 mb-3">
+            <form id="inventoryControlForm">
 
-        <div class="col-md-6">
+              <div class="row g-3 mb-3">
 
-          <label class="form-label fw-semibold">
-            Select Product
-          </label>
+                <div class="col-md-6">
 
-          <select id="controlProduct" class="form-select" required>
-            <option value="">Choose a product</option>
-          </select>
+                  <label class="form-label fw-semibold">
+                    Select Product
+                  </label>
+
+                  <select id="controlProduct" class="form-select" required>
+
+                    <option value="">Choose a product</option>
+
+                  </select>
+
+                </div>
+
+                <div class="col-md-6">
+
+                  <label class="form-label fw-semibold">
+                    Transaction Type
+                  </label>
+
+                  <select id="controlAction" class="form-select" required>
+
+                    <option value="receive">Receive Stock</option>
+
+                    <option value="damage">Record Damaged Stock</option>
+
+                    <option value="reconcile">Reconcile Receiving Stock</option>
+
+                    <option value="shelf">Update Shelf Count</option>
+
+                  </select>
+
+                </div>
+
+              </div>
+
+              <div id="currentStockInfo" class="alert alert-info">
+
+                Select a product to view its current stock quantities.
+
+              </div>
+
+              <div class="mb-3">
+
+                <label id="controlQuantityLabel" class="form-label fw-semibold">
+
+                  Quantity Received
+
+                </label>
+
+                <input type="number"
+                       id="controlQuantity"
+                       class="form-control"
+                       min="1"
+                       step="1"
+                       required>
+
+                <small id="controlHelp" class="text-muted">
+
+                  Enter the number of units physically received.
+
+                </small>
+
+              </div>
+
+              <div class="mb-3">
+
+                <label class="form-label fw-semibold">
+                  Reason / Reference
+                </label>
+
+                <textarea id="controlReason"
+                          class="form-control"
+                          rows="2"
+                          maxlength="255"
+                          placeholder="Enter the reason for this stock transaction..."
+                          required></textarea>
+
+              </div>
+
+              <button type="submit" class="btn btn-primary">
+
+                <i class="bi bi-check-circle me-1"></i>
+
+                Confirm Stock Transaction
+
+              </button>
+
+            </form>
+
+          </div>
+
+          <!-- Inventory accuracy cards -->
+
+          <div class="row g-3 mb-4">
+
+            <div class="col-md-4">
+
+              <div class="card-metric shadow-sm">
+
+                <span class="text-muted small fw-semibold">
+                  Stock Reconciliations
+                </span>
+
+                <div id="totalReconciliations" class="metric-value">0</div>
+
+              </div>
+
+            </div>
+
+            <div class="col-md-4">
+
+              <div class="card-metric shadow-sm">
+
+                <span class="text-muted small fw-semibold">
+                  Discrepancies Identified
+                </span>
+
+                <div id="totalDiscrepancies"
+                     class="metric-value text-danger">0</div>
+
+              </div>
+
+            </div>
+
+            <div class="col-md-4">
+
+              <div class="card-metric shadow-sm">
+
+                <span class="text-muted small fw-semibold">
+                  Inventory Record Accuracy
+                </span>
+
+                <div id="inventoryAccuracy"
+                     class="metric-value text-success">N/A</div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Stock movement history -->
+
+          <div class="card border-0 shadow-sm p-4">
+
+            <h3 class="h5 fw-bold mb-3">
+              Stock Movement History
+            </h3>
+
+            <div class="table-responsive">
+
+              <table class="table table-hover align-middle">
+
+                <thead class="table-dark">
+
+                  <tr>
+
+                    <th>Date &amp; Time</th>
+
+                    <th>Product</th>
+
+                    <th>Transaction</th>
+
+                    <th>Receiving Before</th>
+
+                    <th>Receiving After</th>
+
+                    <th>Shelf Before</th>
+
+                    <th>Shelf After</th>
+
+                    <th>User</th>
+
+                    <th>Reason</th>
+
+                  </tr>
+
+                </thead>
+
+                <tbody id="stockHistoryBody"></tbody>
+
+              </table>
+
+            </div>
+
+          </div>
 
         </div>
 
-        <div class="col-md-6">
+        <!-- PERFORMANCE -->
 
-          <label class="form-label fw-semibold">
-            Transaction Type
-          </label>
-
-          <select id="controlAction" class="form-select" required>
-
-            <option value="receive">Receive Stock</option>
-            <option value="damage">Record Damaged Stock</option>
-            <option value="reconcile">Reconcile Receiving Stock</option>
-            <option value="shelf">Update Shelf Count</option>
-
-          </select>
-
-        </div>
-
-      </div>
-
-      <div id="currentStockInfo" class="alert alert-info">
-        Select a product to view its current stock quantities.
-      </div>
-
-      <div class="mb-3">
-
-        <label id="controlQuantityLabel" class="form-label fw-semibold">
-          Quantity Received
-        </label>
-
-        <input type="number" id="controlQuantity"
-               class="form-control" min="1" step="1" required>
-
-        <small id="controlHelp" class="text-muted">
-          Enter the number of units physically received.
-        </small>
-
-      </div>
-
-      <div class="mb-3">
-
-        <label class="form-label fw-semibold">
-          Reason / Reference
-        </label>
-
-        <textarea id="controlReason"
-                  class="form-control" rows="2"
-                  placeholder="Enter the reason for this stock transaction..."
-                  required></textarea>
-
-      </div>
-
-      <button type="submit" class="btn btn-primary">
-        <i class="bi bi-check-circle me-1"></i>
-        Confirm Stock Transaction
-      </button>
-
-    </form>
-
-  </div>
-
-  <!-- Inventory Accuracy -->
-  <div class="row g-3 mb-4">
-
-    <div class="col-md-4">
-      <div class="card-metric shadow-sm">
-        <span class="text-muted small fw-semibold">
-          Stock Reconciliations
-        </span>
-        <div id="totalReconciliations" class="metric-value">0</div>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div class="card-metric shadow-sm">
-        <span class="text-muted small fw-semibold">
-          Discrepancies Identified
-        </span>
-        <div id="totalDiscrepancies"
-             class="metric-value text-danger">0</div>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div class="card-metric shadow-sm">
-        <span class="text-muted small fw-semibold">
-          Inventory Record Accuracy
-        </span>
-        <div id="inventoryAccuracy"
-             class="metric-value text-success">N/A</div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Stock Movement History -->
-  <div class="card border-0 shadow-sm p-4">
-
-    <h3 class="h5 fw-bold mb-3">
-      Stock Movement History
-    </h3>
-
-    <div class="table-responsive">
-
-      <table class="table table-hover align-middle">
-
-        <thead class="table-dark">
-
-          <tr>
-            <th>Date &amp; Time</th>
-            <th>Product</th>
-            <th>Transaction</th>
-            <th>Receiving Before</th>
-            <th>Receiving After</th>
-            <th>Shelf Before</th>
-            <th>Shelf After</th>
-            <th>User</th>
-            <th>Reason</th>
-          </tr>
-
-        </thead>
-
-        <tbody id="stockHistoryBody">
-
-          <tr>
-            <td colspan="9" class="text-muted">
-              No stock transactions recorded yet.
-            </td>
-          </tr>
-
-        </tbody>
-
-      </table>
-
-    </div>
-
-  </div>
-
-</div>
-
-        <!-- 4. PERFORMANCE -->
         <div class="tab-pane fade" id="performance-panel">
 
           <div class="card border-0 shadow-sm p-4">
 
             <h3 class="h5 fw-bold mb-3">
+
               Performance Monitoring
+
             </h3>
 
             <div class="row g-3">
 
               <div class="col-md-4">
+
                 <div class="card p-3 shadow-sm bg-light">
+
                   Pending Tasks:
-                  <span id="perfPending" class="fw-bold text-warning fs-4">0</span>
+
+                  <span id="perfPending" class="fw-bold text-warning fs-4">
+                    0
+                  </span>
+
                 </div>
+
               </div>
 
               <div class="col-md-4">
+
                 <div class="card p-3 shadow-sm bg-light">
+
                   Completed Today:
-                  <span id="perfCompleted" class="fw-bold text-success fs-4">0</span>
+
+                  <span id="perfCompleted" class="fw-bold text-success fs-4">
+                    0
+                  </span>
+
                 </div>
+
               </div>
 
               <div class="col-md-4">
+
                 <div class="card p-3 shadow-sm bg-light">
+
                   Avg Response Time:
-                  <span id="perfResponseTime" class="fw-bold text-primary fs-4">N/A</span>
+
+                  <span id="perfResponseTime" class="fw-bold text-primary fs-4">
+                    N/A
+                  </span>
+
                 </div>
+
               </div>
 
             </div>
@@ -607,12 +758,15 @@
 
         </div>
 
-        <!-- 5. USERS -->
+        <!-- USERS -->
+
         <div class="tab-pane fade" id="users-panel">
 
           <div class="card border-0 shadow-sm p-4">
 
-            <h3 class="h5 fw-bold mb-2">System Users</h3>
+            <h3 class="h5 fw-bold mb-2">
+              System Users
+            </h3>
 
             <p class="text-muted">
               View the team and select a user.
@@ -631,11 +785,13 @@
               <table class="table table-hover align-middle">
 
                 <thead class="table-dark">
+
                   <tr>
                     <th>Name</th>
                     <th>Role</th>
                     <th>Main duties</th>
                   </tr>
+
                 </thead>
 
                 <tbody id="usersTableBody"></tbody>
@@ -649,10 +805,13 @@
         </div>
 
       </div>
+
     </main>
+
   </div>
 
   <!-- DISPATCH REPLENISHMENT TASK MODAL -->
+
   <div class="modal fade" id="createTaskModal" tabindex="-1">
 
     <div class="modal-dialog modal-dialog-centered">
@@ -665,8 +824,10 @@
             Dispatch Replenishment Task
           </h5>
 
-          <button type="button" class="btn-close btn-close-white"
-                  data-bs-dismiss="modal"></button>
+          <button type="button"
+                  class="btn-close btn-close-white"
+                  data-bs-dismiss="modal">
+          </button>
 
         </div>
 
@@ -681,7 +842,9 @@
               </label>
 
               <select id="modalProductName" class="form-select" required>
+
                 <option value="">Select a product</option>
+
               </select>
 
             </div>
@@ -694,8 +857,12 @@
                   Quantity Needed
                 </label>
 
-                <input type="number" id="modalQtyNeeded"
-                       class="form-control" min="1" required>
+                <input type="number"
+                       id="modalQtyNeeded"
+                       class="form-control"
+                       min="1"
+                       step="1"
+                       required>
 
               </div>
 
@@ -708,7 +875,9 @@
                 <select id="modalPriority" class="form-select">
 
                   <option value="High">High Priority</option>
+
                   <option value="Medium" selected>Medium Priority</option>
+
                   <option value="Low">Low Priority</option>
 
                 </select>
@@ -724,26 +893,35 @@
               </label>
 
               <select id="modalShelfLoc" class="form-select" required>
+
                 <option value="">Select shelf location</option>
+
               </select>
 
             </div>
 
             <div id="taskStockInfo" class="alert alert-light border small">
+
               Select a product to view stock availability.
+
             </div>
 
           </div>
 
           <div class="modal-footer">
 
-            <button type="button" class="btn btn-secondary"
+            <button type="button"
+                    class="btn btn-secondary"
                     data-bs-dismiss="modal">
+
               Cancel
+
             </button>
 
             <button type="submit" class="btn btn-primary">
+
               Dispatch Task
+
             </button>
 
           </div>
@@ -756,7 +934,8 @@
 
   </div>
 
-  <!-- SUPPLIER STOCK MODAL -->
+  <!-- RECEIVE SUPPLIER STOCK MODAL -->
+
   <div class="modal fade" id="reorderModal" tabindex="-1">
 
     <div class="modal-dialog modal-dialog-centered">
@@ -766,12 +945,17 @@
         <div class="modal-header bg-danger text-white">
 
           <h5 class="modal-title fw-bold">
+
             <i class="bi bi-truck me-2"></i>
+
             Receive Supplier Stock
+
           </h5>
 
-          <button type="button" class="btn-close btn-close-white"
-                  data-bs-dismiss="modal"></button>
+          <button type="button"
+                  class="btn-close btn-close-white"
+                  data-bs-dismiss="modal">
+          </button>
 
         </div>
 
@@ -785,8 +969,10 @@
                 Product Name
               </label>
 
-              <input type="text" id="reorderProductName"
-                     class="form-control" readonly>
+              <input type="text"
+                     id="reorderProductName"
+                     class="form-control"
+                     readonly>
 
             </div>
 
@@ -796,8 +982,12 @@
                 Quantity Received
               </label>
 
-              <input type="number" id="reorderQty"
-                     class="form-control" min="1" value="50" required>
+              <input type="number"
+                     id="reorderQty"
+                     class="form-control"
+                     min="1"
+                     value="50"
+                     required>
 
             </div>
 
@@ -805,13 +995,18 @@
 
           <div class="modal-footer">
 
-            <button type="button" class="btn btn-secondary"
+            <button type="button"
+                    class="btn btn-secondary"
                     data-bs-dismiss="modal">
+
               Cancel
+
             </button>
 
             <button type="submit" class="btn btn-danger">
+
               Receive New Supplier Stock
+
             </button>
 
           </div>
@@ -825,30 +1020,56 @@
   </div>
 
   <!-- Bootstrap JavaScript -->
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
 
-    // 30 Fast-Moving Pick n Pay Grocery Products
+    // Application data retrieved from MySQL
 
     let productsData = [];
-
-    // System users
-
-    let users = [];
-
     let replenishmentTasks = [];
     let stockMovementHistory = [];
-    let reconciliationCount = 0;
-    let discrepancyCount = 0;
-    let accurateCount = 0;
-    let nextTaskId = 1;
+    let users = [];
     let selectedUser = null;
+    let selectedReceivingProductId = null;
 
     document.addEventListener('DOMContentLoaded', function() {
 
       const tbody = document.getElementById('inventoryTableBody');
-      const priorityWidget = document.getElementById('priorityWidgetBody');
+
+      const priorityWidget =
+        document.getElementById('priorityWidgetBody');
+
+      const productSelect =
+        document.getElementById('modalProductName');
+
+      const shelfSelect =
+        document.getElementById('modalShelfLoc');
+
+      const taskForm =
+        document.getElementById('replenishmentTaskForm');
+
+      const tasksContainer =
+        document.getElementById('tasksContainer');
+
+      const controlProduct =
+        document.getElementById('controlProduct');
+
+      const controlAction =
+        document.getElementById('controlAction');
+
+      const controlQuantity =
+        document.getElementById('controlQuantity');
+
+      const controlReason =
+        document.getElementById('controlReason');
+
+      const controlForm =
+        document.getElementById('inventoryControlForm');
+
+      const userSelect =
+        document.getElementById('userSelect');
 
       const taskModal = new bootstrap.Modal(
         document.getElementById('createTaskModal')
@@ -862,51 +1083,107 @@
         document.getElementById('outOfStockToast')
       );
 
-      const productSelect = document.getElementById('modalProductName');
-      const shelfSelect = document.getElementById('modalShelfLoc');
-      const taskForm = document.getElementById('replenishmentTaskForm');
-      const tasksContainer = document.getElementById('tasksContainer');
+      // Escape database text before displaying it in HTML
 
-      // Sidebar tab switching
+      function escapeHTML(value) {
+
+        return String(value ?? '').replace(
+          /[&<>"']/g,
+          character => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+          })[character]
+        );
+
+      }
+
+      // API request handling
+
+      async function apiRequest(url, options = {}) {
+
+        const response = await fetch(url, options);
+
+        const data = await response.json();
+
+        if (!response.ok) {
+
+          throw new Error(
+            data.error || 'Unable to complete the request.'
+          );
+
+        }
+
+        return data;
+
+      }
+
+      function getSelectedUsername() {
+
+        if (!selectedUser) {
+
+          throw new Error('Please select a user first.');
+
+        }
+
+        return selectedUser.username;
+
+      }
+
+      // Sidebar navigation
 
       function openTab(targetId) {
 
-        document.querySelectorAll('.sidebar-nav .nav-link').forEach(link => {
-          link.classList.remove('active');
+        document.querySelectorAll('.sidebar-nav .nav-link')
+          .forEach(function(link) {
 
-          if (link.getAttribute('data-bs-target') === targetId) {
-            link.classList.add('active');
-          }
-        });
+            link.classList.toggle(
+              'active',
+              link.getAttribute('data-bs-target') === targetId
+            );
 
-        document.querySelectorAll('.tab-pane').forEach(panel => {
-          panel.classList.remove('show', 'active');
-        });
+          });
+
+        document.querySelectorAll('.tab-pane')
+          .forEach(function(panel) {
+
+            panel.classList.remove('show', 'active');
+
+          });
 
         const target = document.querySelector(targetId);
 
         if (target) {
+
           target.classList.add('show', 'active');
+
         }
+
       }
 
-      document.querySelectorAll('.sidebar-nav .nav-link').forEach(link => {
+      document.querySelectorAll('.sidebar-nav .nav-link')
+        .forEach(function(link) {
 
-        link.addEventListener('click', function(e) {
+          link.addEventListener('click', function(e) {
 
-          e.preventDefault();
+            e.preventDefault();
 
-          openTab(this.getAttribute('data-bs-target'));
+            openTab(this.getAttribute('data-bs-target'));
+
+          });
 
         });
 
-      });
-
-      // Calculate quantity needed on shelf
+      // Calculate shelf replenishment requirements
 
       function calculateQuantityNeeded(product) {
 
-        return Math.max(0, product.reqQty - product.shelfQty);
+        return Math.max(
+          0,
+          product.reqQty - product.shelfQty
+        );
 
       }
 
@@ -921,70 +1198,84 @@
           : 0;
 
         if (shortageRatio >= 0.75) {
+
           return 'High';
+
         }
 
         if (shortageRatio >= 0.40) {
+
           return 'Medium';
+
         }
 
         return 'Low';
+
       }
 
-      // Render dashboard table and KPI cards
+      // Determine product stock status
+
+      function stockBadge(product) {
+
+        const shortage = calculateQuantityNeeded(product);
+
+        if (product.receivingQty === 0) {
+
+          return '<span class="badge badge-outofstock">OUT OF STOCK</span>';
+
+        }
+
+        if (product.receivingQty >= shortage) {
+
+          return '<span class="badge badge-sufficient">Sufficient</span>';
+
+        }
+
+        return '<span class="badge badge-insufficient">Insufficient</span>';
+
+      }
+
+      // Display dashboard inventory
 
       function renderTable() {
 
         tbody.innerHTML = '';
+
         priorityWidget.innerHTML = '';
 
         let sumReceiving = 0;
-        let insufficientCount = 0;
         let sufficientCount = 0;
+        let insufficientCount = 0;
 
         productsData.forEach(function(product) {
 
           const qtyNeeded = calculateQuantityNeeded(product);
 
-          const isSufficient = product.receivingQty >= qtyNeeded;
-          const isOutOfStock = product.receivingQty === 0;
+          const isSufficient =
+            product.receivingQty >= qtyNeeded;
 
           sumReceiving += product.receivingQty;
 
           if (isSufficient) {
+
             sufficientCount++;
+
           } else {
+
             insufficientCount++;
-          }
-
-          let badgeHTML = `
-            <span class="badge badge-sufficient">Sufficient</span>
-          `;
-
-          if (isOutOfStock) {
-
-            badgeHTML = `
-              <span class="badge badge-outofstock">OUT OF STOCK</span>
-            `;
-
-          } else if (!isSufficient) {
-
-            badgeHTML = `
-              <span class="badge badge-insufficient">Insufficient</span>
-            `;
 
           }
 
-          let actionBtn = `
+          let actionButton = `
             <button class="btn btn-sm btn-outline-primary restock-btn"
-                    data-product="${product.name}">
+                    data-product-id="${product.id}">
               Restock
             </button>
           `;
 
           if (qtyNeeded === 0) {
 
-            actionBtn = `
+            actionButton = `
               <button class="btn btn-sm btn-outline-success" disabled>
                 Shelf Full
               </button>
@@ -992,13 +1283,15 @@
 
           }
 
-          if (isOutOfStock) {
+          if (product.receivingQty === 0) {
 
-            actionBtn = `
+            actionButton = `
               <button class="btn btn-sm btn-danger reorder-btn"
-                      data-product="${product.name}">
+                      data-product-id="${product.id}">
+
                 <i class="bi bi-cart-plus me-1"></i>
                 Receive Stock
+
               </button>
             `;
 
@@ -1007,26 +1300,37 @@
           const row = document.createElement('tr');
 
           row.innerHTML = `
-            <td class="fw-bold">${product.name}</td>
+
+            <td class="fw-bold">
+              ${escapeHTML(product.name)}
+            </td>
+
             <td>${product.shelfQty}</td>
+
             <td>${product.reqQty}</td>
+
             <td class="${qtyNeeded > 0 ? 'text-danger fw-bold' : 'text-success'}">
               ${qtyNeeded}
             </td>
+
             <td>${product.receivingQty}</td>
-            <td>${badgeHTML}</td>
-            <td>${actionBtn}</td>
+
+            <td>${stockBadge(product)}</td>
+
+            <td>${actionButton}</td>
+
           `;
 
           tbody.appendChild(row);
 
         });
 
-        // Display the three most critical stock shortages
+        // Display critical stock alerts
 
-        const criticalProducts = productsData.filter(product => {
+        const criticalProducts = productsData.filter(function(product) {
 
-          return product.receivingQty < calculateQuantityNeeded(product);
+          return product.receivingQty <
+                 calculateQuantityNeeded(product);
 
         });
 
@@ -1046,7 +1350,7 @@
 
         criticalProducts.slice(0, 3).forEach(function(product) {
 
-          const isOutOfStock = product.receivingQty === 0;
+          const outOfStock = product.receivingQty === 0;
 
           const alertBox = document.createElement('div');
 
@@ -1054,28 +1358,34 @@
             'p-2 mb-2 bg-light border-start border-4 border-danger rounded';
 
           alertBox.innerHTML = `
+
             <div class="d-flex justify-content-between">
 
-              <span class="fw-bold">${product.name}</span>
+              <span class="fw-bold">
+                ${escapeHTML(product.name)}
+              </span>
 
               <span class="badge priority-high">
-                ${isOutOfStock ? 'OUT OF STOCK' : 'High Alert'}
+                ${outOfStock ? 'OUT OF STOCK' : 'High Alert'}
               </span>
 
             </div>
 
             <small class="text-muted">
+
               Receiving Stock:
               <strong>${product.receivingQty}</strong> units
+
             </small>
 
             <button class="btn btn-outline-danger btn-sm w-100 mt-2
-                           ${isOutOfStock ? 'reorder-btn' : 'restock-btn'}"
-                    data-product="${product.name}">
+                           ${outOfStock ? 'reorder-btn' : 'restock-btn'}"
+                    data-product-id="${product.id}">
 
-              ${isOutOfStock ? 'Receive Stock' : 'Create Urgent Task'}
+              ${outOfStock ? 'Receive Stock' : 'Create Urgent Task'}
 
             </button>
+
           `;
 
           priorityWidget.appendChild(alertBox);
@@ -1084,11 +1394,10 @@
 
         if (criticalProducts.length === 0) {
 
-          priorityWidget.textContent = 'No critical stock shortages.';
+          priorityWidget.textContent =
+            'No critical stock shortages.';
 
         }
-
-        // Update KPIs
 
         document.getElementById('kpiTotalProducts').textContent =
           productsData.length;
@@ -1096,28 +1405,30 @@
         document.getElementById('kpiReceivingStock').textContent =
           sumReceiving;
 
-        document.getElementById('kpiInsufficient').textContent =
-          insufficientCount;
-
         document.getElementById('kpiSufficient').textContent =
           sufficientCount;
 
+        document.getElementById('kpiInsufficient').textContent =
+          insufficientCount;
+
         filterTable();
+
         searchProducts();
 
       }
 
-      // Filter dashboard table
+      // Filter the dashboard table
 
       function filterTable() {
 
-        const searchTerm = document.getElementById('tableSearchInput')
-          .value.toLowerCase().trim();
+        const term =
+          document.getElementById('tableSearchInput')
+            .value.toLowerCase().trim();
 
         tbody.querySelectorAll('tr').forEach(function(row) {
 
           row.style.display =
-            row.textContent.toLowerCase().includes(searchTerm)
+            row.textContent.toLowerCase().includes(term)
               ? ''
               : 'none';
 
@@ -1128,37 +1439,55 @@
       document.getElementById('tableSearchInput')
         .addEventListener('input', filterTable);
 
-      // Product search page
+      // Search products by name, code or barcode
 
       function searchProducts() {
 
-        const query = document.getElementById('productSearchInput')
-          .value.toLowerCase().trim();
+        const query =
+          document.getElementById('productSearchInput')
+            .value.toLowerCase().trim();
 
-        const results = document.getElementById('productSearchResults');
+        const results =
+          document.getElementById('productSearchResults');
 
         results.innerHTML = '';
 
         if (!query) {
+
           return;
+
         }
 
-        const matches = productsData.filter(product => {
+        const matches = productsData.filter(function(product) {
 
-          return product.name.toLowerCase().includes(query);
+          return [
+
+            product.name,
+            product.code,
+            product.barcode
+
+          ].some(function(value) {
+
+            return String(value ?? '')
+              .toLowerCase()
+              .includes(query);
+
+          });
 
         });
 
         if (matches.length === 0) {
 
           results.textContent = 'No products found.';
+
           return;
 
         }
 
         const message = document.createElement('p');
 
-        message.textContent = matches.length + ' product(s) found';
+        message.textContent =
+          matches.length + ' product(s) found';
 
         results.appendChild(message);
 
@@ -1171,52 +1500,49 @@
         table.className = 'table table-hover align-middle';
 
         table.innerHTML = `
+
           <thead class="table-dark">
+
             <tr>
               <th>Product</th>
               <th>Shelf Qty</th>
               <th>Req. Shelf Qty</th>
               <th>Qty Needed</th>
               <th>Receiving Stock</th>
+              <th>Receiving Location</th>
               <th>Status</th>
             </tr>
+
           </thead>
+
           <tbody></tbody>
+
         `;
 
         matches.forEach(function(product) {
 
-          const qtyNeeded = calculateQuantityNeeded(product);
-
-          const sufficient = product.receivingQty >= qtyNeeded;
-
-          let badge = `
-            <span class="badge badge-sufficient">Sufficient</span>
-          `;
-
-          if (product.receivingQty === 0) {
-
-            badge = `
-              <span class="badge badge-outofstock">OUT OF STOCK</span>
-            `;
-
-          } else if (!sufficient) {
-
-            badge = `
-              <span class="badge badge-insufficient">Insufficient</span>
-            `;
-
-          }
-
           const row = document.createElement('tr');
 
           row.innerHTML = `
-            <td class="fw-bold">${product.name}</td>
+
+            <td class="fw-bold">
+              ${escapeHTML(product.name)}
+            </td>
+
             <td>${product.shelfQty}</td>
+
             <td>${product.reqQty}</td>
-            <td class="text-danger fw-bold">${qtyNeeded}</td>
+
+            <td class="text-danger fw-bold">
+              ${calculateQuantityNeeded(product)}
+            </td>
+
             <td>${product.receivingQty}</td>
-            <td>${badge}</td>
+
+            <td>${escapeHTML(product.receivingLocation)}</td>
+
+            <td>${stockBadge(product)}</td>
+
           `;
 
           table.querySelector('tbody').appendChild(row);
@@ -1224,6 +1550,7 @@
         });
 
         wrapper.appendChild(table);
+
         results.appendChild(wrapper);
 
       }
@@ -1231,29 +1558,89 @@
       document.getElementById('productSearchInput')
         .addEventListener('input', searchProducts);
 
-      // Populate product dropdown
+      // Retrieve all products from MySQL
 
-      productsData.forEach(function(product) {
+      async function loadProducts() {
 
-        const option = document.createElement('option');
+        const data = await apiRequest('/api/products');
 
-        option.value = product.name;
-        option.textContent = product.name;
+        const previousControlProduct = controlProduct.value;
 
-        productSelect.appendChild(option);
+        productsData = data.map(function(product) {
 
-      });
+          return {
 
-      // Update replenishment task details
+            id: product.product_id,
+
+            code: product.product_code,
+
+            barcode: product.barcode,
+
+            name: product.product_name,
+
+            shelfQty: Number(product.shelf_qty),
+
+            reqQty: Number(product.required_shelf_qty),
+
+            receivingQty: Number(product.receiving_qty),
+
+            aisle: product.shelf_location,
+
+            shelfLocationId: product.shelf_location_id,
+
+            receivingLocation: product.receiving_location
+
+          };
+
+        });
+
+        // Populate both product dropdowns
+
+        productSelect.innerHTML =
+          '<option value="">Select a product</option>';
+
+        controlProduct.innerHTML =
+          '<option value="">Choose a product</option>';
+
+        productsData.forEach(function(product) {
+
+          const option = document.createElement('option');
+
+          option.value = product.id;
+
+          option.textContent = product.name;
+
+          productSelect.appendChild(option);
+
+          controlProduct.appendChild(
+            option.cloneNode(true)
+          );
+
+        });
+
+        controlProduct.value = previousControlProduct;
+
+        renderTable();
+
+        updateStockInformation();
+
+      }
+
+      // Update replenishment quantity and shelf location
 
       function updateTaskDetails() {
 
-        const product = productsData.find(
-          p => p.name === productSelect.value
-        );
+        const product = productsData.find(function(p) {
 
-        const quantityInput = document.getElementById('modalQtyNeeded');
-        const stockInfo = document.getElementById('taskStockInfo');
+          return String(p.id) === productSelect.value;
+
+        });
+
+        const quantityInput =
+          document.getElementById('modalQtyNeeded');
+
+        const stockInfo =
+          document.getElementById('taskStockInfo');
 
         shelfSelect.innerHTML =
           '<option value="">Select shelf location</option>';
@@ -1261,6 +1648,7 @@
         if (!product) {
 
           quantityInput.value = '';
+
           quantityInput.removeAttribute('max');
 
           stockInfo.textContent =
@@ -1273,34 +1661,55 @@
         const shortage = calculateQuantityNeeded(product);
 
         const availableQuantity = Math.min(
-          shortage, product.receivingQty
+
+          shortage,
+
+          product.receivingQty
+
         );
 
         quantityInput.value = availableQuantity;
+
         quantityInput.max = availableQuantity;
 
         document.getElementById('modalPriority').value =
           calculatePriority(product);
 
+        // Add the product's assigned shelf from MySQL
+
+        if (product.aisle) {
+
+          const option = document.createElement('option');
+
+          option.value = product.shelfLocationId;
+
+          option.textContent = product.aisle;
+
+          shelfSelect.appendChild(option);
+
+          shelfSelect.value = String(product.shelfLocationId);
+
+        }
+
         stockInfo.textContent =
+
           'Shelf requirement: ' + shortage +
+
           ' units | Receiving stock available: ' +
+
           product.receivingQty + ' units';
-
-        // Shelf location dropdown - prototype locations
-
-        const option = document.createElement('option');
-
-        option.value = product.aisle;
-        option.textContent = product.aisle;
-        shelfSelect.appendChild(option);
-        shelfSelect.value = product.aisle;
 
       }
 
-      productSelect.addEventListener('change', updateTaskDetails);
+      productSelect.addEventListener(
 
-      // Open new replenishment task
+        'change',
+
+        updateTaskDetails
+
+      );
+
+      // Open a new replenishment task
 
       document.getElementById('openNewTaskModalBtn')
         .addEventListener('click', function() {
@@ -1315,26 +1724,29 @@
 
         });
 
-      // Dashboard restock and receiving buttons
+      // Dashboard Restock and Receive Stock buttons
 
       document.addEventListener('click', function(e) {
 
-        const restockButton = e.target.closest('.restock-btn');
+        const restockButton =
+          e.target.closest('.restock-btn');
 
-        const reorderButton = e.target.closest('.reorder-btn');
+        const reorderButton =
+          e.target.closest('.reorder-btn');
 
         if (restockButton) {
 
           taskForm.reset();
 
           productSelect.value =
-            restockButton.getAttribute('data-product');
+            restockButton.getAttribute('data-product-id');
 
           updateTaskDetails();
 
           if (restockButton.classList.contains('btn-outline-danger')) {
 
-            document.getElementById('modalPriority').value = 'High';
+            document.getElementById('modalPriority').value =
+              'High';
 
           }
 
@@ -1344,8 +1756,26 @@
 
         if (reorderButton) {
 
+          selectedReceivingProductId = Number(
+            reorderButton.getAttribute('data-product-id')
+          );
+
+          const product = productsData.find(function(p) {
+
+            return p.id === selectedReceivingProductId;
+
+          });
+
+          if (!product) {
+
+            return;
+
+          }
+
           document.getElementById('reorderProductName').value =
-            reorderButton.getAttribute('data-product');
+            product.name;
+
+          document.getElementById('reorderQty').value = 50;
 
           reorderModal.show();
 
@@ -1353,95 +1783,134 @@
 
       });
 
-// Dispatch replenishment task
+      // Dispatch replenishment task to MySQL
 
-taskForm.addEventListener('submit', async function(e) {
+      taskForm.addEventListener('submit', async function(e) {
 
-    e.preventDefault();
+        e.preventDefault();
 
-    const product = productsData.find(
-        p => p.name === productSelect.value
-    );
+        const product = productsData.find(function(p) {
 
-    const quantity = Number(
-        document.getElementById('modalQtyNeeded').value
-    );
+          return String(p.id) === productSelect.value;
 
-    const priority =
-        document.getElementById('modalPriority').value;
+        });
 
-    if (!product || !shelfSelect.value) {
+        const quantity = Number(
+          document.getElementById('modalQtyNeeded').value
+        );
 
-        alert('Please select a product and shelf location.');
-        return;
+        const priority =
+          document.getElementById('modalPriority').value;
 
-    }
+        if (!product || !shelfSelect.value) {
 
-    if (!Number.isInteger(quantity) || quantity <= 0) {
+          alert('Please select a product and shelf location.');
 
-        alert('Please enter a valid quantity.');
-        return;
+          return;
 
-    }
+        }
 
-    const submitButton = taskForm.querySelector(
-        'button[type="submit"]'
-    );
+        if (!Number.isInteger(quantity) || quantity <= 0) {
 
-    submitButton.disabled = true;
+          alert('Please enter a valid quantity.');
 
-    try {
+          return;
 
-        const response = await fetch('/api/tasks', {
+        }
+
+        const submitButton = taskForm.querySelector(
+          'button[type="submit"]'
+        );
+
+        submitButton.disabled = true;
+
+        try {
+
+          const result = await apiRequest('/api/tasks', {
 
             method: 'POST',
 
             headers: {
-                'Content-Type': 'application/json'
+              'Content-Type': 'application/json'
             },
 
             body: JSON.stringify({
 
-                product_id: product.id,
-                quantity: quantity,
-                priority: priority,
-                username: selectedUser.username
+              product_id: product.id,
+
+              quantity: quantity,
+
+              priority: priority,
+
+              username: getSelectedUsername()
 
             })
 
-        });
+          });
 
-        const result = await response.json();
+          taskModal.hide();
 
-        if (!response.ok) {
+          taskForm.reset();
 
-            throw new Error(result.error);
+          await loadTasks();
+
+          openTab('#tasks-panel');
+
+          alert(result.message);
+
+        } catch (error) {
+
+          alert(error.message);
+
+        } finally {
+
+          submitButton.disabled = false;
 
         }
 
-        taskForm.reset();
+      });
 
-        taskModal.hide();
+      // Retrieve replenishment tasks from MySQL
 
-        await loadTasks();
+      async function loadTasks() {
 
-        openTab('#tasks-panel');
+        const data = await apiRequest('/api/tasks');
 
-        alert('Replenishment task successfully saved to MySQL.');
+        replenishmentTasks = data.map(function(task) {
 
-    } catch (error) {
+          return {
 
-        alert(error.message);
+            id: task.task_id,
 
-    } finally {
+            productId: task.product_id,
 
-        submitButton.disabled = false;
+            product: task.product_name,
 
-    }
+            quantity: task.quantity,
 
-});
+            priority: task.priority,
 
-      // Display replenishment tasks
+            location: task.location_name,
+
+            status: task.status,
+
+            createdBy: task.created_by,
+
+            createdAt: task.created_at,
+
+            completedBy: task.completed_by,
+
+            completedAt: task.completed_at
+
+          };
+
+        });
+
+        renderTasks();
+
+      }
+
+      // Display pending and completed replenishment tasks
 
       function renderTasks() {
 
@@ -1456,9 +1925,13 @@ taskForm.addEventListener('submit', async function(e) {
         );
 
         const priorities = {
+
           High: 1,
+
           Medium: 2,
+
           Low: 3
+
         };
 
         pending.sort(function(a, b) {
@@ -1483,74 +1956,92 @@ taskForm.addEventListener('submit', async function(e) {
 
         pending.forEach(function(task) {
 
-          const badgeClass = task.priority === 'High'
-            ? 'priority-high'
-            : task.priority === 'Medium'
-              ? 'priority-medium'
-              : 'priority-low';
-
           const borderClass = task.priority === 'High'
+
             ? 'border-danger'
+
             : task.priority === 'Medium'
+
               ? 'border-warning'
+
               : 'border-info';
+
+          const badgeClass = task.priority === 'High'
+
+            ? 'priority-high'
+
+            : task.priority === 'Medium'
+
+              ? 'priority-medium'
+
+              : 'priority-low';
 
           const card = document.createElement('div');
 
           card.className =
             'card mb-3 border-start border-4 shadow-sm ' + borderClass;
 
-          const body = document.createElement('div');
+          card.innerHTML = `
 
-          body.className =
-            'card-body d-flex justify-content-between align-items-center';
+            <div class="card-body d-flex justify-content-between align-items-center">
 
-          const details = document.createElement('div');
+              <div>
 
-          const title = document.createElement('h5');
+                <h5 class="fw-bold mb-1">
+                  ${escapeHTML(task.product)}
+                </h5>
 
-          title.className = 'fw-bold mb-1';
-          title.textContent = task.product;
+                <p class="text-muted small mb-1">
 
-          const information = document.createElement('p');
+                  Quantity: ${task.quantity}
 
-          information.className = 'text-muted small mb-1';
+                  | Location: ${escapeHTML(task.location)}
 
-          information.textContent =
-            'Quantity: ' + task.quantity +
-            ' | Location: ' + task.location;
+                </p>
 
-          const priorityBadge = document.createElement('span');
+                <span class="badge ${badgeClass}">
 
-          priorityBadge.className = 'badge ' + badgeClass;
+                  ${escapeHTML(task.priority)} Priority
 
-          priorityBadge.textContent = task.priority + ' Priority';
+                </span>
 
-          const created = document.createElement('p');
+                <p class="text-muted small mt-2 mb-0">
 
-          created.className = 'text-muted small mt-2 mb-0';
+                  Dispatched by: ${escapeHTML(task.createdBy)}
 
-          created.textContent =
-            'Dispatched by: ' + task.createdBy +
-            ' | ' + new Date(task.createdAt).toLocaleString();
+                  | ${escapeHTML(new Date(task.createdAt).toLocaleString())}
 
-          details.append(title, information, priorityBadge, created);
+                </p>
 
-          const button = document.createElement('button');
+              </div>
 
-          button.className = 'btn btn-success btn-sm';
+              <button class="btn btn-success btn-sm mark-complete-btn">
 
-          button.textContent = 'Mark Complete';
+                Mark Complete
 
-          button.addEventListener('click', function() {
+              </button>
 
-            completeTask(task.id);
+            </div>
+
+          `;
+
+          const button = card.querySelector('.mark-complete-btn');
+
+          button.addEventListener('click', async function() {
+
+            button.disabled = true;
+
+            try {
+
+              await completeTask(task.id);
+
+            } finally {
+
+              button.disabled = false;
+
+            }
 
           });
-
-          body.append(details, button);
-
-          card.appendChild(body);
 
           tasksContainer.appendChild(card);
 
@@ -1574,26 +2065,27 @@ taskForm.addEventListener('submit', async function(e) {
 
             card.className = 'card bg-light mb-2 p-3';
 
-            const title = document.createElement('strong');
+            card.innerHTML = `
 
-            title.textContent = task.product;
+              <strong>${escapeHTML(task.product)}</strong>
 
-            const details = document.createElement('small');
+              <small class="text-muted">
 
-            details.className = 'text-muted';
+                ${task.quantity} units replenished
 
-            details.textContent =
-              task.quantity + ' units replenished' +
-              ' | Completed by: ' + task.completedBy +
-              ' | ' + new Date(task.completedAt).toLocaleString();
+                | Completed by: ${escapeHTML(task.completedBy)}
 
-            const status = document.createElement('span');
+                | ${escapeHTML(new Date(task.completedAt).toLocaleString())}
 
-            status.className = 'text-success fw-bold';
+              </small>
 
-            status.textContent = 'Completed';
+              <span class="text-success fw-bold">
 
-            card.append(title, details, status);
+                Completed
+
+              </span>
+
+            `;
 
             tasksContainer.appendChild(card);
 
@@ -1605,170 +2097,627 @@ taskForm.addEventListener('submit', async function(e) {
 
       }
 
-      // Complete replenishment task
+      // Complete replenishment task through Flask
 
-async function completeTask(taskId) {
+      async function completeTask(taskId) {
 
-    const task = replenishmentTasks.find(
-        t => t.id === taskId
-    );
+        const task = replenishmentTasks.find(
+          t => t.id === taskId
+        );
 
-    if (!task || task.status !== 'Pending') {
+        if (!task || task.status !== 'Pending') {
 
-        return;
+          return;
 
-    }
+        }
 
-    try {
+        try {
 
-        const response = await fetch('/api/tasks/' + taskId, {
+          const result = await apiRequest('/api/tasks/' + taskId, {
 
             method: 'PATCH',
 
             headers: {
-                'Content-Type': 'application/json'
+              'Content-Type': 'application/json'
             },
 
             body: JSON.stringify({
 
-                username: selectedUser.username
+              username: getSelectedUsername()
 
             })
 
-        });
+          });
 
-        const result = await response.json();
+          await loadProducts();
 
-        if (!response.ok) {
+          await loadTasks();
 
-            throw new Error(result.error);
+          await loadStockMovements();
 
-        }
-
-        // Retrieve updated data from MySQL
-
-        await loadProducts();
-
-        await loadTasks();
-
-        await loadStockMovements();
-
-        // Out of stock notification
-
-        if (result.receiving_qty === 0) {
+          if (result.receiving_qty === 0) {
 
             document.getElementById('toastMessage').textContent =
-                'WARNING: ' + task.product +
-                ' is now OUT OF STOCK in Receiving!';
+
+              'WARNING: ' + task.product +
+
+              ' is now OUT OF STOCK in Receiving!';
 
             toast.show();
 
+          }
+
+          alert(result.message);
+
+        } catch (error) {
+
+          alert(error.message);
+
         }
 
-        alert('Replenishment task completed successfully.');
+      }
 
-    } catch (error) {
+      // Update stock information in Inventory Control
 
-        alert(error.message);
+      function updateStockInformation() {
 
-    }
+        const product = productsData.find(function(p) {
 
-}
+          return String(p.id) === controlProduct.value;
 
- 
+        });
+
+        const stockInfo =
+          document.getElementById('currentStockInfo');
+
+        if (!product) {
+
+          stockInfo.textContent =
+            'Select a product to view its current stock quantities.';
+
+          return;
+
+        }
+
+        stockInfo.textContent =
+
+          'Receiving stock: ' + product.receivingQty +
+
+          ' units | Current shelf stock: ' + product.shelfQty +
+
+          ' units | Required shelf stock: ' + product.reqQty +
+
+          ' units';
+
+      }
+
+      controlProduct.addEventListener(
+
+        'change',
+
+        updateStockInformation
+
+      );
+
+      // Change quantity instructions according to the transaction
+
+      function updateTransactionDetails() {
+
+        const label =
+          document.getElementById('controlQuantityLabel');
+
+        const help =
+          document.getElementById('controlHelp');
+
+        controlQuantity.value = '';
+
+        if (controlAction.value === 'receive') {
+
+          label.textContent = 'Quantity Received';
+
+          help.textContent =
+            'Enter the number of units physically received.';
+
+          controlQuantity.min = 1;
+
+        } else if (controlAction.value === 'damage') {
+
+          label.textContent = 'Damaged Quantity';
+
+          help.textContent =
+            'Enter the number of damaged units removed from receiving.';
+
+          controlQuantity.min = 1;
+
+        } else if (controlAction.value === 'reconcile') {
+
+          label.textContent = 'Physical Receiving Stock Count';
+
+          help.textContent =
+            'Enter the actual quantity physically counted in receiving.';
+
+          controlQuantity.min = 0;
+
+        } else if (controlAction.value === 'shelf') {
+
+          label.textContent = 'Actual Shelf Quantity';
+
+          help.textContent =
+            'Enter the actual number of units counted on the shop floor.';
+
+          controlQuantity.min = 0;
+
+        }
+
+      }
+
+      controlAction.addEventListener(
+
+        'change',
+
+        updateTransactionDetails
+
+      );
+
+      // Process Inventory Control transactions
+
+      controlForm.addEventListener('submit', async function(e) {
+
+        e.preventDefault();
+
+        const product = productsData.find(function(p) {
+
+          return String(p.id) === controlProduct.value;
+
+        });
+
+        const action = controlAction.value;
+
+        const quantity = Number(controlQuantity.value);
+
+        const reason = controlReason.value.trim();
+
+        if (!product) {
+
+          alert('Please select a product.');
+
+          return;
+
+        }
+
+        if (
+
+          controlQuantity.value === '' ||
+
+          !Number.isInteger(quantity) ||
+
+          quantity < 0
+
+        ) {
+
+          alert('Please enter a valid stock quantity.');
+
+          return;
+
+        }
+
+        if (!reason) {
+
+          alert('Please provide a transaction reason.');
+
+          return;
+
+        }
+
+        if (action === 'reconcile') {
+
+          const discrepancy =
+            quantity - product.receivingQty;
+
+          const confirmed = confirm(
+
+            'Recorded stock: ' + product.receivingQty +
+
+            '\nPhysical count: ' + quantity +
+
+            '\nDiscrepancy: ' + discrepancy +
+
+            '\nConfirm reconciliation?'
+
+          );
+
+          if (!confirmed) {
+
+            return;
+
+          }
+
+        }
+
+        const submitButton = controlForm.querySelector(
+          'button[type="submit"]'
+        );
+
+        submitButton.disabled = true;
+
+        try {
+
+          const result = await apiRequest(
+
+            '/api/inventory/' + product.id,
+
+            {
+
+              method: 'PATCH',
+
+              headers: {
+                'Content-Type': 'application/json'
+              },
+
+              body: JSON.stringify({
+
+                action: action,
+
+                quantity: quantity,
+
+                reason: reason,
+
+                username: getSelectedUsername()
+
+              })
+
+            }
+
+          );
+
+          await loadProducts();
+
+          await loadStockMovements();
+
+          controlProduct.value = String(product.id);
+
+          updateStockInformation();
+
+          controlQuantity.value = '';
+
+          controlReason.value = '';
+
+          alert(result.message);
+
+        } catch (error) {
+
+          alert(error.message);
+
+        } finally {
+
+          submitButton.disabled = false;
+
+        }
+
+      });
+
+      // Receive supplier stock through the dashboard
+
+      document.getElementById('reorderStockForm')
+        .addEventListener('submit', async function(e) {
+
+          e.preventDefault();
+
+          const quantity = Number(
+            document.getElementById('reorderQty').value
+          );
+
+          if (
+
+            selectedReceivingProductId === null ||
+
+            !Number.isInteger(quantity) ||
+
+            quantity <= 0
+
+          ) {
+
+            alert('Please enter a valid quantity.');
+
+            return;
+
+          }
+
+          const submitButton =
+            this.querySelector('button[type="submit"]');
+
+          submitButton.disabled = true;
+
+          try {
+
+            const result = await apiRequest(
+
+              '/api/inventory/' + selectedReceivingProductId,
+
+              {
+
+                method: 'PATCH',
+
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify({
+
+                  action: 'receive',
+
+                  quantity: quantity,
+
+                  username: getSelectedUsername(),
+
+                  reason: 'Supplier delivery recorded from dashboard.'
+
+                })
+
+              }
+
+            );
+
+            reorderModal.hide();
+
+            await loadProducts();
+
+            await loadStockMovements();
+
+            alert(result.message);
+
+          } catch (error) {
+
+            alert(error.message);
+
+          } finally {
+
+            submitButton.disabled = false;
+
+          }
+
+        });
+
+      // Retrieve stock movement history from MySQL
+
+      async function loadStockMovements() {
+
+        const data = await apiRequest('/api/stock-movements');
+
+        stockMovementHistory = data.map(function(movement) {
+
+          return {
+
+            date: movement.created_at,
+
+            product: movement.product_name,
+
+            transaction: movement.movement_type,
+
+            receivingBefore: movement.receiving_before,
+
+            receivingAfter: movement.receiving_after,
+
+            shelfBefore: movement.shelf_before,
+
+            shelfAfter: movement.shelf_after,
+
+            user: movement.full_name,
+
+            reason: movement.reason
+
+          };
+
+        });
+
+        renderStockHistory();
+
+        updateInventoryAccuracy();
+
+      }
+
+      // Display stock movement history
+
+      function renderStockHistory() {
+
+        const historyBody =
+          document.getElementById('stockHistoryBody');
+
+        historyBody.innerHTML = '';
+
+        if (stockMovementHistory.length === 0) {
+
+          historyBody.innerHTML = `
+
+            <tr>
+
+              <td colspan="9" class="text-muted">
+
+                No stock transactions recorded yet.
+
+              </td>
+
+            </tr>
+
+          `;
+
+          return;
+
+        }
+
+        stockMovementHistory.forEach(function(movement) {
+
+          const row = document.createElement('tr');
+
+          const values = [
+
+            new Date(movement.date).toLocaleString(),
+
+            movement.product,
+
+            movement.transaction,
+
+            movement.receivingBefore,
+
+            movement.receivingAfter,
+
+            movement.shelfBefore,
+
+            movement.shelfAfter,
+
+            movement.user,
+
+            movement.reason
+
+          ];
+
+          values.forEach(function(value) {
+
+            const cell = document.createElement('td');
+
+            cell.textContent = value;
+
+            row.appendChild(cell);
+
+          });
+
+          historyBody.appendChild(row);
+
+        });
+
+      }
+
+      // Calculate inventory record accuracy
+
+      function updateInventoryAccuracy() {
+
+        const reconciliations = stockMovementHistory.filter(
+
+          movement =>
+            movement.transaction === 'Stock Reconciliation'
+
+        );
+
+        const accurateCount = reconciliations.filter(
+
+          movement =>
+            movement.receivingBefore === movement.receivingAfter
+
+        ).length;
+
+        const discrepancyCount =
+
+          reconciliations.length - accurateCount;
+
+        document.getElementById('totalReconciliations').textContent =
+
+          reconciliations.length;
+
+        document.getElementById('totalDiscrepancies').textContent =
+
+          discrepancyCount;
+
+        const accuracy = reconciliations.length > 0
+
+          ? (accurateCount / reconciliations.length * 100).toFixed(1) + '%'
+
+          : 'N/A';
+
+        document.getElementById('inventoryAccuracy').textContent =
+
+          accuracy;
+
+      }
 
       // Performance monitoring
 
       function updatePerformance() {
 
         const pending = replenishmentTasks.filter(
+
           task => task.status === 'Pending'
+
         );
 
         const completed = replenishmentTasks.filter(
+
           task => task.status === 'Completed'
+
         );
 
         const today = new Date().toDateString();
 
-        const completedToday = completed.filter(task => {
+        const completedToday = completed.filter(function(task) {
 
           return new Date(task.completedAt).toDateString() === today;
 
         });
 
         document.getElementById('taskBadgeCount').textContent =
+
           pending.length;
 
         document.getElementById('perfPending').textContent =
+
           pending.length;
 
         document.getElementById('perfCompleted').textContent =
+
           completedToday.length;
 
         let totalMinutes = 0;
 
         completed.forEach(function(task) {
 
-          const responseTime = (
-            new Date(task.completedAt) -
-            new Date(task.createdAt)
-          ) / 60000;
+          totalMinutes += (
 
-          totalMinutes += responseTime;
+            new Date(task.completedAt) -
+
+            new Date(task.createdAt)
+
+          ) / 60000;
 
         });
 
         const averageResponse = completed.length > 0
+
           ? (totalMinutes / completed.length).toFixed(1) + ' mins'
+
           : 'N/A';
 
         document.getElementById('perfResponseTime').textContent =
+
           averageResponse;
 
       }
 
-// Users panel
+      // System user responsibilities
 
-const userSelect = document.getElementById('userSelect');
+      const roleDuties = {
 
-const usersTableBody = document.getElementById('usersTableBody');
+        'Store Manager':
+          'Oversees the store, checks stock and reviews performance.',
 
-// Responsibilities of each user role
+        'Floor Manager':
+          'Checks shelf shortages and creates replenishment tasks.',
 
-const roleDuties = {
+        'Staff Member':
+          'Moves stock from receiving to the shelves and completes tasks.',
 
-    'Store Manager':
-        'Oversees the store, checks stock and reviews performance.',
+        'Receiving Manager':
+          'Records incoming stock, monitors receiving inventory and investigates stock discrepancies.'
 
-    'Floor Manager':
-        'Checks shelf shortages and creates replenishment tasks.',
+      };
 
-    'Staff Member':
-        'Moves stock from receiving to the shelves and completes tasks.',
+      // Retrieve users from MySQL
 
-    'Receiving Manager':
-        'Records incoming stock, monitors receiving inventory and investigates stock discrepancies.'
+      async function loadUsers() {
 
-};
+        const data = await apiRequest('/api/users');
 
-// Retrieve users from MySQL
+        users = data.map(function(user) {
 
-async function loadUsers() {
-
-    const response = await fetch('/api/users');
-
-    if (!response.ok) {
-
-        throw new Error('Unable to retrieve system users.');
-
-    }
-
-    const data = await response.json();
-
-    users = data.map(function(user) {
-
-        return {
+          return {
 
             id: user.user_id,
 
@@ -1780,27 +2729,39 @@ async function loadUsers() {
 
             duties: roleDuties[user.role] || ''
 
-        };
+          };
 
-    });
+        });
 
-    userSelect.innerHTML = '';
+        userSelect.innerHTML = '';
 
-    usersTableBody.innerHTML = '';
+        const usersTableBody =
+          document.getElementById('usersTableBody');
 
-    users.forEach(function(user) {
+        usersTableBody.innerHTML = '';
 
-        const option = document.createElement('option');
+        users.forEach(function(user) {
 
-        option.value = user.username;
+          const option = document.createElement('option');
 
-        option.textContent = user.name + ' — ' + user.role;
+          option.value = user.username;
 
-        userSelect.appendChild(option);
+          option.textContent =
+            user.name + ' — ' + user.role;
 
-        const row = document.createElement('tr');
+          userSelect.appendChild(option);
 
-        [user.name, user.role, user.duties].forEach(function(value) {
+          const row = document.createElement('tr');
+
+          [
+
+            user.name,
+
+            user.role,
+
+            user.duties
+
+          ].forEach(function(value) {
 
             const cell = document.createElement('td');
 
@@ -1808,65 +2769,76 @@ async function loadUsers() {
 
             row.appendChild(cell);
 
+          });
+
+          usersTableBody.appendChild(row);
+
         });
 
-        usersTableBody.appendChild(row);
+        if (users.length === 0) {
 
-    });
+          throw new Error('No system users found.');
 
-    // Select the Floor Manager by default
+        }
 
-    const floorManager = users.find(
-        user => user.role === 'Floor Manager'
-    );
+        const floorManager = users.find(
 
-    if (users.length === 0) {
+          user => user.role === 'Floor Manager'
 
-        throw new Error('No system users found.');
+        );
 
-    }
+        userSelect.value = floorManager
 
-    userSelect.value = floorManager
-        ? floorManager.username
-        : users[0].username;
+          ? floorManager.username
 
-    showSelectedUser();
+          : users[0].username;
 
-}
+        showSelectedUser();
 
-// Display selected user
+      }
 
-function showSelectedUser() {
+      // Display selected user
 
-    selectedUser = users.find(
-        user => user.username === userSelect.value
-    );
+      function showSelectedUser() {
 
-    if (!selectedUser) {
+        selectedUser = users.find(
 
-        return;
+          user => user.username === userSelect.value
 
-    }
+        );
 
-    document.getElementById('selectedUserInfo').textContent =
-        selectedUser.name + ' | ' +
-        selectedUser.role + ': ' +
-        selectedUser.duties;
+        if (!selectedUser) {
 
-    document.getElementById('headerUser').textContent =
-        selectedUser.name + ' — ' + selectedUser.role;
+          return;
 
-}
+        }
 
-userSelect.addEventListener('change', showSelectedUser);
+        document.getElementById('selectedUserInfo').textContent =
 
-      // Click on profile to choose a user
+          selectedUser.name + ' | ' +
 
-      const userProfile = document.getElementById('userProfile');
+          selectedUser.role + ': ' +
 
-      userProfile.setAttribute('role', 'button');
+          selectedUser.duties;
 
-      userProfile.tabIndex = 0;
+        document.getElementById('headerUser').textContent =
+
+          selectedUser.name + ' — ' + selectedUser.role;
+
+      }
+
+      userSelect.addEventListener(
+
+        'change',
+
+        showSelectedUser
+
+      );
+
+      // Click the top-right user profile
+
+      const userProfile =
+        document.getElementById('userProfile');
 
       userProfile.title = 'Choose a user';
 
@@ -1888,643 +2860,82 @@ userSelect.addEventListener('change', showSelectedUser);
 
       });
 
-      // INVENTORY CONTROL
+      // Notification button
 
-const controlProduct = document.getElementById('controlProduct');
-const controlAction = document.getElementById('controlAction');
-const controlQuantity = document.getElementById('controlQuantity');
-const controlReason = document.getElementById('controlReason');
-const controlForm = document.getElementById('inventoryControlForm');
+      document.getElementById('notificationButton')
+        .addEventListener('click', function() {
 
-// Populate the inventory control product dropdown
+          const shortages = productsData.filter(function(product) {
 
-productsData.forEach(function(product) {
+            return product.receivingQty <
+                   calculateQuantityNeeded(product);
 
-  const option = document.createElement('option');
+          });
 
-  option.value = product.name;
-  option.textContent = product.name;
+          if (shortages.length === 0) {
 
-  controlProduct.appendChild(option);
+            alert('No critical stock shortages.');
 
-});
+          } else {
 
-// Display the selected product's current stock
+            alert(
 
-function updateStockInformation() {
+              shortages.length +
 
-  const product = productsData.find(
-    p => p.name === controlProduct.value
-  );
+              ' products currently have insufficient receiving stock.'
 
-  const stockInfo = document.getElementById('currentStockInfo');
+            );
 
-  if (!product) {
+            openTab('#dashboard-panel');
 
-    stockInfo.textContent =
-      'Select a product to view its current stock quantities.';
+          }
 
-    return;
+        });
 
-  }
+      // Initial application display
 
-  stockInfo.textContent =
-    'Receiving stock: ' + product.receivingQty +
-    ' units | Current shelf stock: ' + product.shelfQty +
-    ' units | Required shelf stock: ' + product.reqQty +
-    ' units';
-
-}
-
-controlProduct.addEventListener(
-  'change', updateStockInformation
-);
-
-// Change quantity label according to transaction type
-
-function updateTransactionDetails() {
-
-  const label = document.getElementById('controlQuantityLabel');
-  const help = document.getElementById('controlHelp');
-
-  controlQuantity.value = '';
-
-  if (controlAction.value === 'receive') {
-
-    label.textContent = 'Quantity Received';
-
-    help.textContent =
-      'Enter the number of units physically received.';
-
-    controlQuantity.min = 1;
-
-  } else if (controlAction.value === 'damage') {
-
-    label.textContent = 'Damaged Quantity';
-
-    help.textContent =
-      'Enter the number of damaged units removed from receiving.';
-
-    controlQuantity.min = 1;
-
-  } else if (controlAction.value === 'reconcile') {
-
-    label.textContent = 'Physical Receiving Stock Count';
-
-    help.textContent =
-      'Enter the actual quantity physically counted in receiving.';
-
-    controlQuantity.min = 0;
-
-  } else if (controlAction.value === 'shelf') {
-
-    label.textContent = 'Actual Shelf Quantity';
-
-    help.textContent =
-      'Enter the actual number of units counted on the shop floor.';
-
-    controlQuantity.min = 0;
-
-  }
-
-}
-
-controlAction.addEventListener(
-  'change', updateTransactionDetails
-);
-
-
-// Display stock movement history
-
-function renderStockHistory() {
-
-  const historyBody = document.getElementById('stockHistoryBody');
-
-  historyBody.innerHTML = '';
-
-  if (stockMovementHistory.length === 0) {
-
-    const row = document.createElement('tr');
-
-    const cell = document.createElement('td');
-
-    cell.colSpan = 9;
-
-    cell.textContent = 'No stock transactions recorded yet.';
-
-    row.appendChild(cell);
-
-    historyBody.appendChild(row);
-
-    return;
-
-  }
-
-  stockMovementHistory.forEach(function(movement) {
-
-    const row = document.createElement('tr');
-
-    const values = [
-
-      new Date(movement.date).toLocaleString(),
-
-      movement.product,
-
-      movement.transaction,
-
-      movement.receivingBefore,
-
-      movement.receivingAfter,
-
-      movement.shelfBefore,
-
-      movement.shelfAfter,
-
-      movement.user,
-
-      movement.reason
-
-    ];
-
-    values.forEach(function(value) {
-
-      const cell = document.createElement('td');
-
-      cell.textContent = value;
-
-      row.appendChild(cell);
-
-    });
-
-    historyBody.appendChild(row);
-
-  });
-
-}
-
-// Update inventory accuracy metrics
-
-function updateInventoryAccuracy() {
-
-  document.getElementById('totalReconciliations').textContent =
-    reconciliationCount;
-
-  document.getElementById('totalDiscrepancies').textContent =
-    discrepancyCount;
-
-  const accuracy = reconciliationCount > 0
-
-    ? (accurateCount / reconciliationCount * 100).toFixed(1) + '%'
-
-    : 'N/A';
-
-  document.getElementById('inventoryAccuracy').textContent =
-    accuracy;
-
-}
-
-// Process inventory transactions
-
-controlForm.addEventListener('submit', async function(e) {
-
-    e.preventDefault();
-
-    const product = productsData.find(
-        p => p.name === controlProduct.value
-    );
-
-    const action = controlAction.value;
-
-    const quantity = Number(controlQuantity.value);
-
-    const reason = controlReason.value.trim();
-
-    if (!product) {
-
-        alert('Please select a product.');
-        return;
-
-    }
-
-    if (
-        controlQuantity.value === '' ||
-        !Number.isInteger(quantity) ||
-        quantity < 0
-    ) {
-
-        alert('Please enter a valid quantity.');
-        return;
-
-    }
-
-    if (!reason) {
-
-        alert('Please provide a transaction reason.');
-        return;
-
-    }
-
-    if (action === 'reconcile') {
-
-        const discrepancy = quantity - product.receivingQty;
-
-        const confirmed = confirm(
-
-            'Recorded stock: ' + product.receivingQty +
-
-            '\nPhysical count: ' + quantity +
-
-            '\nDiscrepancy: ' + discrepancy +
-
-            '\nConfirm reconciliation?'
-
-        );
-
-        if (!confirmed) {
-
-            return;
-
-        }
-
-    }
-
-    const submitButton = controlForm.querySelector(
-        'button[type="submit"]'
-    );
-
-    submitButton.disabled = true;
-
-    try {
-
-        const response = await fetch(
-            '/api/inventory/' + product.id, {
-
-                method: 'PATCH',
-
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-
-                body: JSON.stringify({
-
-                    action: action,
-
-                    quantity: quantity,
-
-                    reason: reason,
-
-                    username: selectedUser.username
-
-                })
-
-            }
-        );
-
-        const result = await response.json();
-
-        if (!response.ok) {
-
-            throw new Error(result.error);
-
-        }
-
-        await loadProducts();
-
-        await loadStockMovements();
-
-        controlProduct.value = product.name;
-
-        updateStockInformation();
-
-        controlQuantity.value = '';
-
-        controlReason.value = '';
-
-        alert(result.message);
-
-    } catch (error) {
-
-        alert(error.message);
-
-    } finally {
-
-        submitButton.disabled = false;
-
-    }
-
-});
-
- // Receive new supplier stock
-
-document.getElementById('reorderStockForm')
-    .addEventListener('submit', async function(e) {
-
-        e.preventDefault();
-
-        const productName =
-            document.getElementById('reorderProductName').value;
-
-        const quantity = Number(
-            document.getElementById('reorderQty').value
-        );
-
-        const product = productsData.find(
-            p => p.name === productName
-        );
-
-        if (!product || !Number.isInteger(quantity) || quantity <= 0) {
-
-            alert('Please enter a valid quantity.');
-            return;
-
-        }
-
-        const submitButton = this.querySelector(
-            'button[type="submit"]'
-        );
-
-        submitButton.disabled = true;
+      async function initialiseApplication() {
 
         try {
 
-            const response = await fetch(
-                '/api/inventory/' + product.id, {
+          await loadUsers();
 
-                    method: 'PATCH',
+          await loadProducts();
 
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+          await loadTasks();
 
-                    body: JSON.stringify({
-
-                        action: 'receive',
-
-                        quantity: quantity,
-
-                        username: selectedUser.username,
-
-                        reason: 'Supplier delivery recorded from dashboard.'
-
-                    })
-
-                }
-            );
-
-            const result = await response.json();
-
-            if (!response.ok) {
-
-                throw new Error(result.error);
-
-            }
-
-            await loadProducts();
-
-            await loadStockMovements();
-
-            reorderModal.hide();
-
-            alert(result.message);
+          await loadStockMovements();
 
         } catch (error) {
 
-            alert(error.message);
+          console.error(error);
 
-        } finally {
+          alert(
 
-            submitButton.disabled = false;
+            'Unable to initialise application: ' +
 
-        }
+            error.message
 
-    });
+          );
 
-
-// Retrieve product information from MySQL
-
-async function loadProducts() {
-
-    try {
-
-        const response = await fetch('/api/products');
-
-        if (!response.ok) {
-            throw new Error('Unable to retrieve products.');
-        }
-
-        const data = await response.json();
-
-        productsData = data.map(function(product) {
-
-            return {
-                id: product.product_id,
-                code: product.product_code,
-                barcode: product.barcode,
-                name: product.product_name,
-                shelfQty: product.shelf_qty,
-                reqQty: product.required_shelf_qty,
-                receivingQty: product.receiving_qty,
-                aisle: product.shelf_location,
-                shelfLocationId: product.shelf_location_id,
-                receivingLocation: product.receiving_location
-            };
-
-        });
-
-        // Populate product dropdowns
-
-        productSelect.innerHTML =
-            '<option value="">Select a product</option>';
-
-        controlProduct.innerHTML =
-            '<option value="">Choose a product</option>';
-
-        productsData.forEach(function(product) {
-
-            const option = document.createElement('option');
-
-            option.value = product.name;
-            option.textContent = product.name;
-
-            productSelect.appendChild(option);
-
-            controlProduct.appendChild(option.cloneNode(true));
-
-        });
-
-        // Update the dashboard
-
-        renderTable();
-
-        updateStockInformation();
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert('Unable to load inventory from MySQL.');
-
-    }
-
-}
-
-// Retrieve replenishment tasks from MySQL
-
-async function loadTasks() {
-
-    try {
-
-        const response = await fetch('/api/tasks');
-
-        if (!response.ok) {
-
-            throw new Error('Unable to retrieve tasks.');
-
-        }
-
-        const data = await response.json();
-
-        replenishmentTasks = data.map(function(task) {
-
-            return {
-
-                id: task.task_id,
-                productId: task.product_id,
-                product: task.product_name,
-                quantity: task.quantity,
-                priority: task.priority,
-                location: task.location_name,
-                status: task.status,
-                createdBy: task.created_by,
-                createdAt: task.created_at,
-                completedBy: task.completed_by,
-                completedAt: task.completed_at
-
-            };
-
-        });
-
-        renderTasks();
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert('Unable to load replenishment tasks from MySQL.');
-
-    }
-
-}
-
-// Retrieve stock movement history from MySQL
-
-async function loadStockMovements() {
-
-    try {
-
-        const response = await fetch('/api/stock-movements');
-
-        if (!response.ok) {
-
-            throw new Error('Unable to retrieve stock movements.');
-
-        }
-
-        const data = await response.json();
-
-        stockMovementHistory = data.map(function(movement) {
-
-            return {
-
-                date: movement.created_at,
-
-                product: movement.product_name,
-
-                transaction: movement.movement_type,
-
-                receivingBefore: movement.receiving_before,
-
-                receivingAfter: movement.receiving_after,
-
-                shelfBefore: movement.shelf_before,
-
-                shelfAfter: movement.shelf_after,
-
-                user: movement.full_name,
-
-                reason: movement.reason
-
-            };
-
-        });
-
-        // Calculate reconciliation statistics from database records
-
-        const reconciliations = stockMovementHistory.filter(
-            movement =>
-                movement.transaction === 'Stock Reconciliation'
-        );
-
-        reconciliationCount = reconciliations.length;
-
-        accurateCount = reconciliations.filter(
-            movement =>
-                movement.receivingBefore === movement.receivingAfter
-        ).length;
-
-        discrepancyCount = reconciliationCount - accurateCount;
-
-        renderStockHistory();
-
-        updateInventoryAccuracy();
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert('Unable to retrieve stock movement history.');
-
-    }
-
-}
-
-// Initial application display
-
-async function initialiseApplication() {
-
-    try {
-
-        await loadUsers();
-
-        await loadProducts();
-
-        await loadTasks();
-
-        await loadStockMovements();
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert('Unable to initialise application.');
-
-        document.querySelectorAll(
+          document.querySelectorAll(
             'button[type="submit"], .mark-complete-btn'
-        ).forEach(function(button) {
+          ).forEach(function(button) {
 
             button.disabled = true;
 
-        });
+          });
 
-    }
+        }
 
-}
+      }
 
-initialiseApplication();
+      initialiseApplication();
 
     });
 
   </script>
 
 </body>
+
 </html>

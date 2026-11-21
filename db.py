@@ -1,26 +1,33 @@
 """
 Pick n Pay Wolmaransstad - Database Connection
-Connects the Flask application to the MySQL database.
 """
 
-import os
 import mysql.connector
 
-from dotenv import load_dotenv
-
-load_dotenv()
+from flask import current_app, has_app_context
+from config import Config
 
 
 def get_db_connection():
 
-    # Connect to the MySQL database
+    settings = (
+        current_app.config
+        if has_app_context()
+        else vars(Config)
+    )
 
     connection = mysql.connector.connect(
-        host=os.getenv("DB_HOST"),
-        port=int(os.getenv("DB_PORT", "3306")),
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PASSWORD"),
-        database=os.getenv("DB_NAME")
+
+        host=settings["DB_HOST"],
+
+        port=settings["DB_PORT"],
+
+        user=settings["DB_USER"],
+
+        password=settings["DB_PASSWORD"],
+
+        database=settings["DB_NAME"]
+
     )
 
     return connection
