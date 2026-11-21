@@ -1,4 +1,4 @@
-# Private configuration
+# Private environment variables
 .env
 
 # Python cache files
@@ -11,3 +11,9 @@ venv/
 
 # Mac system files
 .DS_Store
+
+# Database backups
+backups/
+
+# Application logs
+*.log

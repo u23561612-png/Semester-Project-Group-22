@@ -346,3 +346,148 @@ purposes to protect confidential store information.
 
 Actual ordering decisions must also consider shelf life,
 storage capacity and supplier constraints.
+
+## Installation and Application Setup
+
+### System Requirements
+
+The following software is required to run the application:
+
+- Python 3.12
+- MySQL Server 8.0 or later
+- MySQL Workbench
+- Git
+- A web browser
+
+Visual Studio Code is recommended for development.
+
+### Step 1: Clone the Repository
+
+```bash
+git clone https://github.com/u23561612-png/Semester-Project-Group-22.git
+cd Semester-Project-Group-22
+```
+
+### Step 2: Install Python Dependencies
+
+On macOS:
+
+```bash
+python3 -m pip install -r requirements.txt
+```
+
+On Windows:
+
+```powershell
+py -m pip install -r requirements.txt
+```
+
+### Step 3: Configure the MySQL Database
+
+1. Start MySQL Server.
+2. Open MySQL Workbench.
+3. Connect to the local MySQL server.
+4. Open and execute schema.sql.
+5. Open and execute seed.sql.
+
+The schema script creates the pnp_receiving database
+and its six related tables.
+
+The seed script populates the database with sample
+products, users, inventory records, locations,
+replenishment tasks and stock movements.
+
+These scripts should only be executed on a fresh
+database to avoid duplicate sample records.
+
+### Step 4: Configure Environment Variables
+
+Create a file named .env in the main project folder.
+
+Use .env.example as a template.
+
+```env
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_USER=your_database_username
+DB_PASSWORD=your_database_password
+DB_NAME=pnp_receiving
+APP_ENV=development
+DB_TEST_NAME=pnp_receiving_test
+```
+
+Replace the username and password with the local
+MySQL connection details.
+
+The .env file is excluded from version control
+to protect database credentials.
+
+### Step 5: Test the Database Connection
+
+On macOS:
+
+```bash
+python3 test_db.py
+```
+
+On Windows:
+
+```powershell
+py test_db.py
+```
+
+Expected result for a fresh database:
+
+Successfully connected to MySQL!
+Database: pnp_receiving
+Total products: 30
+
+### Step 6: Start the Application
+
+On macOS:
+
+```bash
+python3 app.py
+```
+
+On Windows:
+
+```powershell
+py app.py
+```
+
+Open the following URL in a web browser:
+
+http://127.0.0.1:5001
+
+Keep the terminal running while using the application.
+
+### Demonstration Users
+
+| User | Role |
+|---|---|
+| Sam | Store Manager |
+| Alex | Floor Manager |
+| Jamie | Staff Member |
+| Jordan | Receiving Manager |
+
+Users can be selected from the Users tab or by
+clicking the user profile in the top-right corner.
+
+The current prototype uses user selection rather
+than password-based authentication.
+
+### Deployment Approach
+
+The application is deployed locally using Flask
+and MySQL. It supports Windows and macOS.
+
+The local development server is intended for
+demonstration and testing purposes.
+
+A production deployment would require a production
+WSGI server, secure hosting and authentication.
+
+### Entity Relationship Diagram
+
+![Receiving Stock System ERD](docs/ERD.png)
