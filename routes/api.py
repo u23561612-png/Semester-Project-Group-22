@@ -7,6 +7,7 @@ Group 22
 from flask import Blueprint, jsonify, request, current_app
 from db import get_db_connection
 from contextlib import contextmanager
+from EOQ import calculate_eoq, total_annual_cost, items_in_inventory
 
 import mysql.connector
 
@@ -1433,4 +1434,89 @@ def get_dashboard():
 
         }), 200
 
+# Economic Order Quantity recommendation
 
+@api.route("/api/products/<int:product_id>/eoq", methods=["GET"])
+def get_product_eoq(product_id):
+
+    with database_cursor() as (connection, cursor):
+
+        cursor.execute("""
+            SELECT product_id, product_name
+            FROM products
+            WHERE product_id = %s
+        """, (product_id,))
+
+        product = cursor.fetchone()
+
+        if product is None:
+
+            raise APIError("Product not found.", 404)
+
+        product_name = product["product_name"]
+
+        # Retrieve estimated EOQ input parameters
+
+        model_data = items_in_inventory.get(product_name)
+
+        if model_data is None:
+
+            return jsonify({
+
+                "available": False,
+                "message": "EOQ input data is not available for this product."
+
+            }), 200
+
+        annual_demand = model_data["demand"]
+
+        ordering_cost = model_data["ordering_cost"]
+
+        holding_cost = model_data["holding_cost"]
+
+        # Calculate EOQ using the existing supply chain model
+
+        eoq = calculate_eoq(
+            annual_demand,
+            ordering_cost,
+            holding_cost
+        )
+
+        orders_per_year = annual_demand / eoq
+
+        days_between_orders = 365 / orders_per_year
+
+        annual_cost = total_annual_cost(
+            annual_demand,
+            ordering_cost,
+            holding_cost,
+            eoq
+        )
+
+        return jsonify({
+
+            "available": True,
+
+            "product_id": product_id,
+
+            "product_name": product_name,
+
+            "annual_demand": annual_demand,
+
+            "ordering_cost": ordering_cost,
+
+            "holding_cost": holding_cost,
+
+            "eoq": round(eoq, 2),
+
+            "recommended_quantity": max(1, round(eoq)),
+
+            "orders_per_year": round(orders_per_year, 2),
+
+            "days_between_orders": round(days_between_orders, 2),
+
+            "total_annual_cost": round(annual_cost, 2),
+
+            "data_source": "Estimated prototype model inputs"
+
+        }), 200

@@ -317,3 +317,32 @@ python -m flask --app app routes
 
 API endpoints can be tested through a browser, PowerShell,
 Postman or the Flask test client.
+
+## Supply Chain Model Integration
+
+The Economic Order Quantity (EOQ) model is integrated
+into the Inventory Control section of the web application.
+
+The system retrieves the selected product from MySQL
+and calculates its recommended supplier order quantity
+using the functions defined in EOQ.py.
+
+API endpoint:
+
+GET /api/products/<id>/eoq
+
+The model calculates:
+
+- Economic order quantity
+- Orders per year
+- Days between orders
+- Total annual inventory cost
+
+The model assists supplier ordering decisions without
+automatically increasing receiving inventory.
+
+Demand and cost inputs are estimated for demonstration
+purposes to protect confidential store information.
+
+Actual ordering decisions must also consider shelf life,
+storage capacity and supplier constraints.

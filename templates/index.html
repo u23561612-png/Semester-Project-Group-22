@@ -648,6 +648,135 @@
 
           </div>
 
+          <!-- Economic Order Quantity Recommendation -->
+
+<div class="card border-0 shadow-sm p-4 mb-4">
+
+  <h3 class="h5 fw-bold mb-2">
+    EOQ Supplier Order Recommendation
+  </h3>
+
+  <p class="text-muted">
+
+    Calculate the recommended supplier order quantity
+    for the selected product using the Economic Order
+    Quantity model.
+
+  </p>
+
+  <button type="button"
+          id="calculateEOQBtn"
+          class="btn btn-outline-primary mb-3">
+
+    <i class="bi bi-calculator me-1"></i>
+    Calculate EOQ Recommendation
+
+  </button>
+
+  <div id="eoqMessage" class="alert alert-info">
+
+    Select a product in Inventory Control to calculate
+    its recommended supplier order quantity.
+
+  </div>
+
+  <div id="eoqResults" class="d-none">
+
+    <h5 id="eoqProductName" class="fw-bold mb-3"></h5>
+
+    <div class="row g-3 mb-3">
+
+      <div class="col-md-4">
+
+        <div class="card-metric shadow-sm">
+
+          <span class="text-muted small fw-semibold">
+            Recommended Order Quantity
+          </span>
+
+          <div id="eoqQuantity"
+               class="metric-value text-primary">
+            0
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="col-md-4">
+
+        <div class="card-metric shadow-sm">
+
+          <span class="text-muted small fw-semibold">
+            Orders Per Year
+          </span>
+
+          <div id="eoqOrders"
+               class="metric-value">
+            0
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="col-md-4">
+
+        <div class="card-metric shadow-sm">
+
+          <span class="text-muted small fw-semibold">
+            Days Between Orders
+          </span>
+
+          <div id="eoqDays"
+               class="metric-value">
+            0
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <table class="table table-hover">
+
+      <tbody>
+
+        <tr>
+          <th>Annual Demand</th>
+          <td id="eoqDemand"></td>
+        </tr>
+
+        <tr>
+          <th>Ordering Cost</th>
+          <td id="eoqOrderingCost"></td>
+        </tr>
+
+        <tr>
+          <th>Annual Holding Cost per Unit</th>
+          <td id="eoqHoldingCost"></td>
+        </tr>
+
+        <tr>
+          <th>Total Annual Inventory Cost</th>
+          <td id="eoqTotalCost"></td>
+        </tr>
+
+      </tbody>
+
+    </table>
+
+    <small class="text-muted">
+
+      Model inputs are estimated for demonstration purposes. Actual supplier orders must consider storage capacity, shelf life, demand variation and supplier constraints. This recommendation does not add stock to inventory.
+
+    </small>
+
+  </div>
+
+</div>
+
           <!-- Stock movement history -->
 
           <div class="card border-0 shadow-sm p-4">
@@ -2935,7 +3064,163 @@
     });
 
   </script>
+<script>
 
+document.addEventListener('DOMContentLoaded', function() {
+
+    const eoqButton =
+        document.getElementById('calculateEOQBtn');
+
+    const productSelect =
+        document.getElementById('controlProduct');
+
+    const eoqResults =
+        document.getElementById('eoqResults');
+
+    const eoqMessage =
+        document.getElementById('eoqMessage');
+
+    let requestNumber = 0;
+
+    // Format monetary values in South African Rand
+
+    function formatRand(value) {
+
+        return new Intl.NumberFormat('en-ZA', {
+
+            style: 'currency',
+
+            currency: 'ZAR'
+
+        }).format(value);
+
+    }
+
+    // Clear previous results when changing products
+
+    productSelect.addEventListener('change', function() {
+
+        requestNumber++;
+
+        eoqResults.classList.add('d-none');
+
+        eoqMessage.textContent =
+            'Click Calculate EOQ Recommendation for the selected product.';
+
+    });
+
+    // Calculate the EOQ recommendation
+
+    eoqButton.addEventListener('click', async function() {
+
+        const productId = productSelect.value;
+
+        if (!productId) {
+
+            alert('Please select a product in Inventory Control.');
+
+            return;
+
+        }
+
+        const currentRequest = ++requestNumber;
+
+        eoqButton.disabled = true;
+
+        eoqResults.classList.add('d-none');
+
+        eoqMessage.textContent =
+            'Calculating supplier order recommendation...';
+
+        try {
+
+            const response = await fetch(
+
+                '/api/products/' + productId + '/eoq'
+
+            );
+
+            const result = await response.json();
+
+            if (currentRequest !== requestNumber) {
+
+                return;
+
+            }
+
+            if (!response.ok) {
+
+                throw new Error(result.error);
+
+            }
+
+            if (!result.available) {
+
+                eoqMessage.textContent = result.message;
+
+                return;
+
+            }
+
+            document.getElementById('eoqProductName').textContent =
+
+                result.product_name;
+
+            document.getElementById('eoqQuantity').textContent =
+
+                result.recommended_quantity + ' units';
+
+            document.getElementById('eoqOrders').textContent =
+
+                result.orders_per_year;
+
+            document.getElementById('eoqDays').textContent =
+
+                result.days_between_orders;
+
+            document.getElementById('eoqDemand').textContent =
+
+                result.annual_demand + ' units';
+
+            document.getElementById('eoqOrderingCost').textContent =
+
+                formatRand(result.ordering_cost);
+
+            document.getElementById('eoqHoldingCost').textContent =
+
+                formatRand(result.holding_cost);
+
+            document.getElementById('eoqTotalCost').textContent =
+
+                formatRand(result.total_annual_cost);
+
+            eoqMessage.textContent =
+
+                'EOQ recommendation calculated successfully.';
+
+            eoqResults.classList.remove('d-none');
+
+        } catch (error) {
+
+            if (currentRequest === requestNumber) {
+
+                eoqMessage.textContent =
+
+                    'Unable to calculate EOQ: ' + error.message;
+
+            }
+
+        } finally {
+
+            eoqButton.disabled = false;
+
+        }
+
+    });
+
+});
+
+</script>
 </body>
 
 </html>
