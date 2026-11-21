@@ -1,17 +1,11 @@
-"""
-Pick n Pay Wolmaransstad - Economic Order Quantity Model
-
-Calculates the recommended order quantity and annual inventory costs.
-"""
-
+#Economic order quantity model for the Pick N pay Wolmaransstad store
 import math
 
+def calculate_eoq(demand, ordering_cost, holding_cost):
+    # Validate the input parameters
 
-def calculate_eoq(annual_demand, ordering_cost, holding_cost):
-    """Calculates the optimal supplier order quantity."""
-
-    if annual_demand <= 0:
-        raise ValueError("Annual demand must be greater than zero.")
+    if demand <= 0:
+        raise ValueError("Demand must be greater than zero.")
 
     if ordering_cost <= 0:
         raise ValueError("Ordering cost must be greater than zero.")
@@ -19,101 +13,69 @@ def calculate_eoq(annual_demand, ordering_cost, holding_cost):
     if holding_cost <= 0:
         raise ValueError("Holding cost must be greater than zero.")
 
-    eoq = math.sqrt(
-        (2 * annual_demand * ordering_cost) / holding_cost
-    )
+    # EOQ formula: square root of (2 x D x S / H)
 
-    return eoq
+    return math.sqrt((2 * demand * ordering_cost) / holding_cost)
 
+def total_annual_cost (demand, ordering_cost, holding_cost, order_qty):
+    # Total cost formula  = Ordering cost + Holding cost
+    ordering_cost = (demand / order_qty) * ordering_cost
+    
+    holding_cost = (order_qty / 2) * holding_cost
+    
+    return ordering_cost + holding_cost
 
-def calculate_orders_per_year(annual_demand, order_quantity):
-    """Calculates the number of orders placed per year."""
+# examples of products sold in the Pick n Pay
+# demand, ordering cost and holding cost data estimation has been changed to keep pick n pay data confidential
+items_in_inventory = {
+    "PnP Full Cream Milk 2L":           {"demand": 14600, "ordering_cost": 50, "holding_cost": 2.50},
+    "Albany Superior White Bread 700g": {"demand": 18250, "ordering_cost": 40, "holding_cost": 1.50},
+    "Coca-Cola Original 2L":            {"demand": 21900, "ordering_cost": 50, "holding_cost": 1.80},
+    "PnP Large Eggs 30s":               {"demand": 8760,  "ordering_cost": 45, "holding_cost": 3.00},
+    "Sasko Brown Bread 700g":           {"demand": 14600, "ordering_cost": 40, "holding_cost": 1.50}, 
+    "Nescafe Ricoffy 750g":             {"demand": 7300,  "ordering_cost": 50, "holding_cost": 2.00},
+    "White Star Maize Meal 2.5kg":      {"demand": 12775, "ordering_cost": 45, "holding_cost": 1.80},
+    "Flora Light Spread 500g":          {"demand": 6570,  "ordering_cost": 40, "holding_cost": 2.20},
+    "Clover Gouda Cheese 850g":         {"demand": 4380,  "ordering_cost": 50, "holding_cost": 5.00},
+    "PnP Fresh Chicken Pack 1kg":       {"demand": 10950, "ordering_cost": 60, "holding_cost": 6.00},
+    "Koo Baked Beans 410g":             {"demand": 18250, "ordering_cost": 35, "holding_cost": 1.00},
+    "All Gold Tomato Sauce 700ml":      {"demand": 8030,  "ordering_cost": 40, "holding_cost": 1.50},
+    "Huletts White Sugar 2kg":          {"demand": 10950, "ordering_cost": 45, "holding_cost": 2.00},
+    "Simba Potato Chips 120g":          {"demand": 25550, "ordering_cost": 35, "holding_cost": 1.20},
+    "Cadbury Dairy Milk 150g":          {"demand": 14600, "ordering_cost": 35, "holding_cost": 2.00},
+    "Five Roses Tea Bags 100s":         {"demand": 7300,  "ordering_cost": 40, "holding_cost": 2.50},
+    "Jacobs Kronung Coffee 200g":       {"demand": 5475,  "ordering_cost": 50, "holding_cost": 6.00},
+    "McCain Cut Green Beans 1kg":       {"demand": 4380,  "ordering_cost": 45, "holding_cost": 3.50},
+    "PnP Beef Sausage 1kg":             {"demand": 7300,  "ordering_cost": 60, "holding_cost": 5.00},
+    "Handy Andy Cleaner 750ml":         {"demand": 7300,  "ordering_cost": 40, "holding_cost": 1.50},
+    "Omo Auto Washing Powder 2kg":      {"demand": 5840,  "ordering_cost": 50, "holding_cost": 3.00},
+    "Colgate Triple Action 100ml":      {"demand": 10950, "ordering_cost": 35, "holding_cost": 1.00},
+    "Baby Soft Toilet Paper 9s":        {"demand": 12775, "ordering_cost": 50, "holding_cost": 2.50},
+    "Kellogg's Corn Flakes 1kg":        {"demand": 9125,  "ordering_cost": 45, "holding_cost": 2.20},
+    "Bokomo Weet-Bix 450g":             {"demand": 10220, "ordering_cost": 45, "holding_cost": 2.00},
+    "Dettol Antiseptic 500ml":          {"demand": 5475,  "ordering_cost": 40, "holding_cost": 3.00},
+    "Jungle Oats 1kg":                  {"demand": 7300,  "ordering_cost": 45, "holding_cost": 2.00}
+    
+}
 
-    return annual_demand / order_quantity
-
-
-def calculate_annual_ordering_cost(annual_demand, ordering_cost,
-                                   order_quantity):
-    """Calculates the annual ordering cost."""
-
-    return (annual_demand / order_quantity) * ordering_cost
-
-
-def calculate_annual_holding_cost(order_quantity, holding_cost):
-    """Calculates the annual inventory holding cost."""
-
-    return (order_quantity / 2) * holding_cost
-
-
-def calculate_total_inventory_cost(annual_demand, ordering_cost,
-                                   holding_cost, order_quantity):
-    """Calculates the total annual ordering and holding costs."""
-
-    annual_ordering = calculate_annual_ordering_cost(
-        annual_demand, ordering_cost, order_quantity
-    )
-
-    annual_holding = calculate_annual_holding_cost(
-        order_quantity, holding_cost
-    )
-
-    return annual_ordering + annual_holding
-
-
-def run_eoq_model():
-
-    # Example product and estimated input parameters
-
-    product_name = "PnP Full Cream Milk 2L"
-
-    annual_demand = 14600
-    ordering_cost = 50.00
-    holding_cost = 2.50
-
-    # Calculate EOQ and inventory costs
-
-    eoq = calculate_eoq(
-        annual_demand, ordering_cost, holding_cost
-    )
-
-    orders_per_year = calculate_orders_per_year(
-        annual_demand, eoq
-    )
-
-    annual_ordering = calculate_annual_ordering_cost(
-        annual_demand, ordering_cost, eoq
-    )
-
-    annual_holding = calculate_annual_holding_cost(
-        eoq, holding_cost
-    )
-
-    total_cost = calculate_total_inventory_cost(
-        annual_demand, ordering_cost, holding_cost, eoq
-    )
-
-    # Display results
-
-    print("--------------------------------------------")
-    print("       ECONOMIC ORDER QUANTITY MODEL")
-    print("--------------------------------------------")
-
-    print(f"Product: {product_name}")
-    print(f"Annual Demand: {annual_demand} units")
-    print(f"Ordering Cost: R {ordering_cost:.2f}")
-    print(f"Holding Cost: R {holding_cost:.2f}")
-
-    print("\n--- EOQ Results ---")
-
-    print(f"Economic Order Quantity: {eoq:.2f} units")
-    print(f"Recommended Order: {round(eoq)} units")
-    print(f"Orders per Year: {orders_per_year:.2f}")
-    print(f"Annual Ordering Cost: R {annual_ordering:.2f}")
-    print(f"Annual Holding Cost: R {annual_holding:.2f}")
-    print(f"Total Annual Inventory Cost: R {total_cost:.2f}")
-
-    print("--------------------------------------------")
-
-
-if __name__ == "__main__":
-    run_eoq_model()
+if __name__ == "__main__": 
+    
+    print("----------- EOQ Calculations for Pick n Pay Wolmaransstad ----------- ")
+    
+    for item, data in items_in_inventory.items(): 
+        
+        d = data["demand"]
+        s = data["ordering_cost"]
+        h = data["holding_cost"]
+        
+        eoq = calculate_eoq(d, s, h)           #testing function by entering parameters into the eoq function
+        orders = d / eoq                       #entering order formula
+        days = 365 / orders                    # calculating the days inbetween orders
+        cost = total_annual_cost(d, s, h, eoq) #calculating annual cost
+        
+        #Printing results
+        print(f"\nProduct: {item}")
+        print(f"Optimal Order Quantity (EOQ): {round(eoq, 1)}")  #rounding eoq to 1 decimal place
+        print(f"Orders per year: {round(orders, 1)}")            #rounding orders to 1 decimal place
+        print(f"Days between orders: {round(days, 1)}")          #rounding days to 1 decimal place
+        print(f"Total annual cost: R{round(cost, 2)}")           #rounding cost to 2 decimal places

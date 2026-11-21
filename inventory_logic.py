@@ -1,35 +1,37 @@
-"""
-Pick n Pay Wolmaransstad - Receiving Stock System Logic
-Pure calculation and inventory state update functions.
-"""
-
+#inventoy logic behind the dashboard, to update stock levels etc
 import math
 
 
-def calculate_eoq(annual_demand, ordering_cost, holding_cost):
-    """Calculates Economic Order Quantity (EOQ)[cite: 18]."""
+def calculate_eoq (annual_demand, ordering_cost, holding_cost):
+    
+    #calculating economic order quantity using the EOQ formula
     if holding_cost <= 0 or annual_demand <= 0:
         return 0.0
-    return math.sqrt((2 * annual_demand * ordering_cost) / holding_cost)
+    
+    return math.sqrt( (2 * annual_demand * ordering_cost) / holding_cost)  #returning value
 
 
-def calculate_quantity_needed(required_shelf_qty, current_shelf_qty):
-    """Calculates how many units are needed on the shop floor shelf."""
-    needed = required_shelf_qty - current_shelf_qty
-    return max(0, needed)
+def calculate_quantity_needed (required_shelf_quantity, current_shelf_quantity):
+    #calculating how many units are in need on the shop floor shelves
+    
+    quantity_needed = required_shelf_quantity - current_shelf_quantity
+    
+    return max( 0, quantity_needed )
 
 
-def check_stock_status(receiving_qty, quantity_needed):
-    """
-    Determines stock status for a product based on receiving stock.
-    Returns: 'OUT OF STOCK', 'Sufficient', or 'Insufficient'
-    """
+def checking_stock_status(receiving_qty, quantity_needed):
+    
+    #this function determines the stock status for a product based on the receiving stock and 
+    # the quantity needed. It returns one of three statuses: 'OUT OF STOCK', 'Sufficient', or 'Insufficient'.
+   
     if receiving_qty == 0:
-        return "OUT OF STOCK"
+        return "OUT OF STOCK "
+    
     elif receiving_qty >= quantity_needed:
-        return "Sufficient"
+        return "Sufficient "
+    
     else:
-        return "Insufficient"
+        return "Insufficient "
 
 
 def complete_replenishment_task(shelf_qty, required_shelf_qty,
@@ -75,17 +77,21 @@ def complete_replenishment_task(shelf_qty, required_shelf_qty,
     )
 
 
-def reorder_supplier_stock(current_receiving_qty, reorder_amount):
-    """Adds incoming supplier stock to the receiving area."""
+def reorder_supplier_stock (current_receiving_qty, reorder_amount):
+    #function that adds stock coming from supplier to recieving area
+    
     return current_receiving_qty + reorder_amount
 
 
 def update_performance_stats(pending_tasks, completed_tasks, action="complete"):
-    """Updates pending and completed task metrics."""
+
+    # Updating the pending and completed task metrics
+
     if action == "dispatch":
         pending_tasks += 1
+
     elif action == "complete":
         pending_tasks = max(0, pending_tasks - 1)
         completed_tasks += 1
-        
+
     return pending_tasks, completed_tasks
