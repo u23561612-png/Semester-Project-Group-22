@@ -831,63 +831,11 @@
 
     // 30 Fast-Moving Pick n Pay Grocery Products
 
-    const productsData = [
-      { name: "PnP Full Cream Milk 2L", shelfQty: 5, reqQty: 25, receivingQty: 20, aisle: "Aisle 1 (Dairy)" },
-      { name: "Albany Superior White Bread 700g", shelfQty: 4, reqQty: 30, receivingQty: 12, aisle: "Aisle 2 (Bakery)" },
-      { name: "Coca-Cola Original 2L", shelfQty: 8, reqQty: 40, receivingQty: 50, aisle: "Aisle 3 (Beverages)" },
-      { name: "PnP Large Eggs 30s", shelfQty: 3, reqQty: 15, receivingQty: 8, aisle: "Aisle 1 (Dairy)" },
-      { name: "Sasko Brown Bread 700g", shelfQty: 6, reqQty: 25, receivingQty: 35, aisle: "Aisle 2 (Bakery)" },
-      { name: "Nescafe Ricoffy 750g", shelfQty: 10, reqQty: 20, receivingQty: 25, aisle: "Aisle 4 (Pantry)" },
-      { name: "Tastic Long Grain Rice 2kg", shelfQty: 2, reqQty: 18, receivingQty: 5, aisle: "Aisle 4 (Pantry)" },
-      { name: "White Star Maize Meal 2.5kg", shelfQty: 5, reqQty: 35, receivingQty: 40, aisle: "Aisle 4 (Pantry)" },
-      { name: "Flora Light Spread 500g", shelfQty: 7, reqQty: 15, receivingQty: 20, aisle: "Aisle 1 (Dairy)" },
-      { name: "Clover Gouda Cheese 850g", shelfQty: 2, reqQty: 12, receivingQty: 4, aisle: "Aisle 1 (Dairy)" },
-      { name: "PnP Fresh Chicken Pack 1kg", shelfQty: 6, reqQty: 20, receivingQty: 8, aisle: "Butchery" },
-      { name: "Koo Baked Beans 410g", shelfQty: 12, reqQty: 50, receivingQty: 60, aisle: "Aisle 5 (Canned)" },
-      { name: "All Gold Tomato Sauce 700ml", shelfQty: 4, reqQty: 22, receivingQty: 15, aisle: "Aisle 5 (Condiments)" },
-      { name: "Huletts White Sugar 2kg", shelfQty: 8, reqQty: 30, receivingQty: 45, aisle: "Aisle 4 (Pantry)" },
-      { name: "Sunfoil Sunflower Oil 2L", shelfQty: 3, reqQty: 25, receivingQty: 10, aisle: "Aisle 4 (Pantry)" },
-      { name: "Simba Potato Chips 120g", shelfQty: 15, reqQty: 45, receivingQty: 60, aisle: "Aisle 6 (Snacks)" },
-      { name: "Cadbury Dairy Milk 150g", shelfQty: 10, reqQty: 30, receivingQty: 12, aisle: "Aisle 6 (Sweets)" },
-      { name: "Five Roses Tea Bags 100s", shelfQty: 5, reqQty: 20, receivingQty: 25, aisle: "Aisle 4 (Pantry)" },
-      { name: "Jacobs Kronung Coffee 200g", shelfQty: 4, reqQty: 15, receivingQty: 18, aisle: "Aisle 4 (Pantry)" },
-      { name: "Danone Ultra Mel Custard 1L", shelfQty: 8, reqQty: 24, receivingQty: 30, aisle: "Aisle 1 (Dairy)" },
-      { name: "McCain Cut Green Beans 1kg", shelfQty: 3, reqQty: 12, receivingQty: 6, aisle: "Aisle 7 (Frozen)" },
-      { name: "PnP Beef Sausage 1kg", shelfQty: 5, reqQty: 18, receivingQty: 22, aisle: "Butchery" },
-      { name: "Handy Andy Cleaner 750ml", shelfQty: 6, reqQty: 20, receivingQty: 30, aisle: "Aisle 8 (Household)" },
-      { name: "Omo Auto Washing Powder 2kg", shelfQty: 4, reqQty: 16, receivingQty: 9, aisle: "Aisle 8 (Household)" },
-      { name: "Colgate Triple Action 100ml", shelfQty: 14, reqQty: 30, receivingQty: 40, aisle: "Aisle 9 (Toiletries)" },
-      { name: "Baby Soft Toilet Paper 9s", shelfQty: 2, reqQty: 20, receivingQty: 15, aisle: "Aisle 8 (Household)" },
-      { name: "Kellogg's Corn Flakes 1kg", shelfQty: 6, reqQty: 25, receivingQty: 35, aisle: "Aisle 4 (Cereal)" },
-      { name: "Bokomo Weet-Bix 450g", shelfQty: 9, reqQty: 28, receivingQty: 30, aisle: "Aisle 4 (Cereal)" },
-      { name: "Dettol Antiseptic 500ml", shelfQty: 5, reqQty: 15, receivingQty: 20, aisle: "Aisle 9 (Health)" },
-      { name: "Jungle Oats 1kg", shelfQty: 7, reqQty: 20, receivingQty: 25, aisle: "Aisle 4 (Cereal)" }
-    ];
+    let productsData = [];
 
     // System users
 
-    const users = [
-      {
-        name: 'Sam',
-        role: 'Store Manager',
-        duties: 'Oversees the store, checks stock and reviews performance.'
-      },
-      {
-        name: 'Alex',
-        role: 'Floor Manager',
-        duties: 'Checks shelf shortages and creates replenishment tasks.'
-      },
-      {
-        name: 'Jamie',
-        role: 'Staff Member',
-        duties: 'Moves stock from receiving to the shelves and completes tasks.'
-      },
-      {
-        name: 'Jordan',
-        role: 'Receiving Manager',
-        duties: 'Records incoming stock, monitors receiving inventory and investigates stock discrepancies.'
-      }
-    ];
+    let users = [];
 
     let replenishmentTasks = [];
     let stockMovementHistory = [];
@@ -895,7 +843,7 @@
     let discrepancyCount = 0;
     let accurateCount = 0;
     let nextTaskId = 1;
-    let selectedUser = users[1];
+    let selectedUser = null;
 
     document.addEventListener('DOMContentLoaded', function() {
 
@@ -1341,16 +1289,12 @@
 
         // Shelf location dropdown - prototype locations
 
-        for (let shelf = 1; shelf <= 4; shelf++) {
+        const option = document.createElement('option');
 
-          const option = document.createElement('option');
-
-          option.value = product.aisle + ', Shelf ' + shelf;
-          option.textContent = option.value;
-
-          shelfSelect.appendChild(option);
-
-        }
+        option.value = product.aisle;
+        option.textContent = product.aisle;
+        shelfSelect.appendChild(option);
+        shelfSelect.value = product.aisle;
 
       }
 
@@ -1409,90 +1353,93 @@
 
       });
 
-      // Dispatch replenishment task
+// Dispatch replenishment task
 
-      taskForm.addEventListener('submit', function(e) {
+taskForm.addEventListener('submit', async function(e) {
 
-        e.preventDefault();
+    e.preventDefault();
 
-        const product = productsData.find(
-          p => p.name === productSelect.value
-        );
+    const product = productsData.find(
+        p => p.name === productSelect.value
+    );
 
-        const quantity = Number(
-          document.getElementById('modalQtyNeeded').value
-        );
+    const quantity = Number(
+        document.getElementById('modalQtyNeeded').value
+    );
 
-        const priority = document.getElementById('modalPriority').value;
+    const priority =
+        document.getElementById('modalPriority').value;
 
-        const shelfLocation = shelfSelect.value;
+    if (!product || !shelfSelect.value) {
 
-        if (!product || !shelfLocation) {
+        alert('Please select a product and shelf location.');
+        return;
 
-          alert('Please select a product and shelf location.');
-          return;
+    }
 
-        }
+    if (!Number.isInteger(quantity) || quantity <= 0) {
 
-        if (!Number.isInteger(quantity) || quantity <= 0) {
+        alert('Please enter a valid quantity.');
+        return;
 
-          alert('Please enter a valid quantity.');
-          return;
+    }
 
-        }
+    const submitButton = taskForm.querySelector(
+        'button[type="submit"]'
+    );
 
-        if (quantity > product.receivingQty) {
+    submitButton.disabled = true;
 
-          alert('Insufficient stock available in receiving.');
-          return;
+    try {
 
-        }
+        const response = await fetch('/api/tasks', {
 
-        if (quantity > calculateQuantityNeeded(product)) {
+            method: 'POST',
 
-          alert('The quantity exceeds the shelf requirement.');
-          return;
+            headers: {
+                'Content-Type': 'application/json'
+            },
 
-        }
+            body: JSON.stringify({
 
-        const existingTask = replenishmentTasks.some(task => {
+                product_id: product.id,
+                quantity: quantity,
+                priority: priority,
+                username: selectedUser.username
 
-          return task.product === product.name &&
-                 task.status === 'Pending';
+            })
 
         });
 
-        if (existingTask) {
+        const result = await response.json();
 
-          alert('A pending task already exists for this product.');
-          return;
+        if (!response.ok) {
+
+            throw new Error(result.error);
 
         }
-
-        const newTask = {
-          id: nextTaskId++,
-          product: product.name,
-          quantity: quantity,
-          priority: priority,
-          location: shelfLocation,
-          status: 'Pending',
-          createdBy: selectedUser.name,
-          createdAt: new Date().toISOString(),
-          completedAt: null,
-          completedBy: null
-        };
-
-        replenishmentTasks.push(newTask);
-
-        renderTasks();
 
         taskForm.reset();
 
         taskModal.hide();
 
+        await loadTasks();
+
         openTab('#tasks-panel');
 
-      });
+        alert('Replenishment task successfully saved to MySQL.');
+
+    } catch (error) {
+
+        alert(error.message);
+
+    } finally {
+
+        submitButton.disabled = false;
+
+    }
+
+});
 
       // Display replenishment tasks
 
@@ -1660,155 +1607,75 @@
 
       // Complete replenishment task
 
-      function completeTask(taskId) {
+async function completeTask(taskId) {
 
-        const task = replenishmentTasks.find(
-          t => t.id === taskId
-        );
+    const task = replenishmentTasks.find(
+        t => t.id === taskId
+    );
 
-        if (!task || task.status !== 'Pending') {
+    if (!task || task.status !== 'Pending') {
 
-          return;
+        return;
+
+    }
+
+    try {
+
+        const response = await fetch('/api/tasks/' + taskId, {
+
+            method: 'PATCH',
+
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            body: JSON.stringify({
+
+                username: selectedUser.username
+
+            })
+
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(result.error);
 
         }
 
-        const product = productsData.find(
-          p => p.name === task.product
-        );
+        // Retrieve updated data from MySQL
 
-        if (!product) {
+        await loadProducts();
 
-          return;
+        await loadTasks();
 
-        }
-
-        if (task.quantity > product.receivingQty) {
-
-          alert('Insufficient stock to complete this task.');
-          return;
-
-        }
-
-        if (task.quantity > calculateQuantityNeeded(product)) {
-
-          alert('Shelf requirements have changed.');
-          return;
-
-        }
-
-        // Move stock from receiving to the shelf
-
-        const receivingBefore = product.receivingQty;
-
-        const shelfBefore = product.shelfQty;
-
-        product.shelfQty += task.quantity;
-
-        product.receivingQty -= task.quantity;
-
-        recordStockMovement(
-
-          product,
-
-          'Replenishment',
-
-          receivingBefore,
-
-          shelfBefore,
-
-          'Stock moved from receiving to the shop floor. Task #' + task.id
-
-);     
-
-        task.status = 'Completed';
-
-        task.completedAt = new Date().toISOString();
-
-        task.completedBy = selectedUser.name;
-
-        renderTable();
-
-        renderTasks();
+        await loadStockMovements();
 
         // Out of stock notification
 
-        if (product.receivingQty === 0) {
+        if (result.receiving_qty === 0) {
 
-          document.getElementById('toastMessage').textContent =
-            'WARNING: ' + product.name +
-            ' is now OUT OF STOCK in Receiving!';
+            document.getElementById('toastMessage').textContent =
+                'WARNING: ' + task.product +
+                ' is now OUT OF STOCK in Receiving!';
 
-          toast.show();
+            toast.show();
 
         }
 
         alert('Replenishment task completed successfully.');
 
-      }
+    } catch (error) {
 
-      // Receive new supplier stock
+        alert(error.message);
 
-      document.getElementById('reorderStockForm')
-        .addEventListener('submit', function(e) {
+    }
 
-          e.preventDefault();
+}
 
-          const productName =
-            document.getElementById('reorderProductName').value;
-
-          const quantity = Number(
-            document.getElementById('reorderQty').value
-          );
-
-          const product = productsData.find(
-            p => p.name === productName
-          );
-
-          if (!product) {
-
-            return;
-
-          }
-
-          if (!Number.isInteger(quantity) || quantity <= 0) {
-
-            alert('Please enter a valid quantity.');
-            return;
-
-          }
-
-          const receivingBefore = product.receivingQty;
-
-          const shelfBefore = product.shelfQty;
-
-          product.receivingQty += quantity;
-
-          recordStockMovement(
-
-            product,
-
-            'Stock Received',
-
-            receivingBefore,
-
-            shelfBefore,
-
-           'Supplier delivery recorded from dashboard.'
-
-);
-
-updateStockInformation();
-
-          renderTable();
-
-          reorderModal.hide();
-
-          alert(
-            'Stock received successfully! Added ' +
-            quantity + ' units of ' + product.name
-          );
-
-        });
+ 
 
       // Performance monitoring
 
@@ -1861,17 +1728,71 @@ updateStockInformation();
 
       }
 
-      // Users panel
+// Users panel
 
-      const userSelect = document.getElementById('userSelect');
+const userSelect = document.getElementById('userSelect');
 
-      const usersTableBody = document.getElementById('usersTableBody');
+const usersTableBody = document.getElementById('usersTableBody');
 
-      users.forEach(function(user, index) {
+// Responsibilities of each user role
+
+const roleDuties = {
+
+    'Store Manager':
+        'Oversees the store, checks stock and reviews performance.',
+
+    'Floor Manager':
+        'Checks shelf shortages and creates replenishment tasks.',
+
+    'Staff Member':
+        'Moves stock from receiving to the shelves and completes tasks.',
+
+    'Receiving Manager':
+        'Records incoming stock, monitors receiving inventory and investigates stock discrepancies.'
+
+};
+
+// Retrieve users from MySQL
+
+async function loadUsers() {
+
+    const response = await fetch('/api/users');
+
+    if (!response.ok) {
+
+        throw new Error('Unable to retrieve system users.');
+
+    }
+
+    const data = await response.json();
+
+    users = data.map(function(user) {
+
+        return {
+
+            id: user.user_id,
+
+            name: user.full_name,
+
+            username: user.username,
+
+            role: user.role,
+
+            duties: roleDuties[user.role] || ''
+
+        };
+
+    });
+
+    userSelect.innerHTML = '';
+
+    usersTableBody.innerHTML = '';
+
+    users.forEach(function(user) {
 
         const option = document.createElement('option');
 
-        option.value = index;
+        option.value = user.username;
 
         option.textContent = user.name + ' — ' + user.role;
 
@@ -1881,37 +1802,63 @@ updateStockInformation();
 
         [user.name, user.role, user.duties].forEach(function(value) {
 
-          const cell = document.createElement('td');
+            const cell = document.createElement('td');
 
-          cell.textContent = value;
+            cell.textContent = value;
 
-          row.appendChild(cell);
+            row.appendChild(cell);
 
         });
 
         usersTableBody.appendChild(row);
 
-      });
+    });
 
-      // Display selected user
+    // Select the Floor Manager by default
 
-      function showSelectedUser() {
+    const floorManager = users.find(
+        user => user.role === 'Floor Manager'
+    );
 
-        selectedUser = users[Number(userSelect.value)];
+    if (users.length === 0) {
 
-        document.getElementById('selectedUserInfo').textContent =
-          selectedUser.name + ' | ' +
-          selectedUser.role + ': ' +
-          selectedUser.duties;
+        throw new Error('No system users found.');
 
-        document.getElementById('headerUser').textContent =
-          selectedUser.name + ' — ' + selectedUser.role;
+    }
 
-      }
+    userSelect.value = floorManager
+        ? floorManager.username
+        : users[0].username;
 
-      userSelect.value = '1';
+    showSelectedUser();
 
-      userSelect.addEventListener('change', showSelectedUser);
+}
+
+// Display selected user
+
+function showSelectedUser() {
+
+    selectedUser = users.find(
+        user => user.username === userSelect.value
+    );
+
+    if (!selectedUser) {
+
+        return;
+
+    }
+
+    document.getElementById('selectedUserInfo').textContent =
+        selectedUser.name + ' | ' +
+        selectedUser.role + ': ' +
+        selectedUser.duties;
+
+    document.getElementById('headerUser').textContent =
+        selectedUser.name + ' — ' + selectedUser.role;
+
+}
+
+userSelect.addEventListener('change', showSelectedUser);
 
       // Click on profile to choose a user
 
@@ -2046,43 +1993,6 @@ controlAction.addEventListener(
   'change', updateTransactionDetails
 );
 
-// Record a stock movement
-
-function recordStockMovement(
-  product,
-  transaction,
-  receivingBefore,
-  shelfBefore,
-  reason
-) {
-
-  const movement = {
-
-    date: new Date().toISOString(),
-
-    product: product.name,
-
-    transaction: transaction,
-
-    receivingBefore: receivingBefore,
-
-    receivingAfter: product.receivingQty,
-
-    shelfBefore: shelfBefore,
-
-    shelfAfter: product.shelfQty,
-
-    user: selectedUser.name,
-
-    reason: reason
-
-  };
-
-  stockMovementHistory.unshift(movement);
-
-  renderStockHistory();
-
-}
 
 // Display stock movement history
 
@@ -2175,183 +2085,442 @@ function updateInventoryAccuracy() {
 
 // Process inventory transactions
 
-controlForm.addEventListener('submit', function(e) {
+controlForm.addEventListener('submit', async function(e) {
 
-  e.preventDefault();
+    e.preventDefault();
 
-  const product = productsData.find(
-    p => p.name === controlProduct.value
-  );
-
-  const action = controlAction.value;
-
-  const quantity = Number(controlQuantity.value);
-
-  const reason = controlReason.value.trim();
-
-  if (!product) {
-
-    alert('Please select a product.');
-
-    return;
-
-  }
-
-  if (
-    controlQuantity.value === '' ||
-    !Number.isInteger(quantity) ||
-    quantity < 0
-  ) {
-
-    alert('Please enter a valid stock quantity.');
-
-    return;
-
-  }
-
-  if (!reason) {
-
-    alert('Please provide a reason for the transaction.');
-
-    return;
-
-  }
-
-  const receivingBefore = product.receivingQty;
-
-  const shelfBefore = product.shelfQty;
-
-  let transaction = '';
-
-  // Receive new supplier stock
-
-  if (action === 'receive') {
-
-    if (quantity <= 0) {
-
-      alert('The received quantity must be greater than zero.');
-
-      return;
-
-    }
-
-    product.receivingQty += quantity;
-
-    transaction = 'Stock Received';
-
-  }
-
-  // Remove damaged stock
-
-  else if (action === 'damage') {
-
-    if (quantity <= 0 || quantity > product.receivingQty) {
-
-      alert('Damaged quantity exceeds available stock or is invalid.');
-
-      return;
-
-    }
-
-    product.receivingQty -= quantity;
-
-    transaction = 'Damaged Stock';
-
-  }
-
-  // Reconcile physical stock with system stock
-
-  else if (action === 'reconcile') {
-
-    const discrepancy = quantity - product.receivingQty;
-
-    const confirmed = confirm(
-
-      'Recorded stock: ' + product.receivingQty +
-
-      '\nPhysical count: ' + quantity +
-
-      '\nDiscrepancy: ' + discrepancy +
-
-      '\nConfirm reconciliation?'
-
+    const product = productsData.find(
+        p => p.name === controlProduct.value
     );
 
-    if (!confirmed) {
+    const action = controlAction.value;
 
-      return;
+    const quantity = Number(controlQuantity.value);
 
-    }
+    const reason = controlReason.value.trim();
 
-    reconciliationCount++;
+    if (!product) {
 
-    if (discrepancy === 0) {
-
-      accurateCount++;
-
-    } else {
-
-      discrepancyCount++;
+        alert('Please select a product.');
+        return;
 
     }
 
-    product.receivingQty = quantity;
+    if (
+        controlQuantity.value === '' ||
+        !Number.isInteger(quantity) ||
+        quantity < 0
+    ) {
 
-    transaction = 'Stock Reconciliation';
+        alert('Please enter a valid quantity.');
+        return;
 
-  }
+    }
 
-  // Update actual shelf count
+    if (!reason) {
 
-  else if (action === 'shelf') {
+        alert('Please provide a transaction reason.');
+        return;
 
-    product.shelfQty = quantity;
+    }
 
-    transaction = 'Shelf Count Updated';
+    if (action === 'reconcile') {
 
-  }
+        const discrepancy = quantity - product.receivingQty;
 
-  // Save the stock movement
+        const confirmed = confirm(
 
-  recordStockMovement(
+            'Recorded stock: ' + product.receivingQty +
 
-    product,
+            '\nPhysical count: ' + quantity +
 
-    transaction,
+            '\nDiscrepancy: ' + discrepancy +
 
-    receivingBefore,
+            '\nConfirm reconciliation?'
 
-    shelfBefore,
+        );
 
-    reason
+        if (!confirmed) {
 
-  );
+            return;
 
-  // Refresh all relevant information
+        }
 
-  renderTable();
+    }
 
-  renderTasks();
+    const submitButton = controlForm.querySelector(
+        'button[type="submit"]'
+    );
 
-  updateStockInformation();
+    submitButton.disabled = true;
 
-  updateInventoryAccuracy();
+    try {
 
-  controlQuantity.value = '';
+        const response = await fetch(
+            '/api/inventory/' + product.id, {
 
-  controlReason.value = '';
+                method: 'PATCH',
 
-  alert('Stock transaction recorded successfully.');
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify({
+
+                    action: action,
+
+                    quantity: quantity,
+
+                    reason: reason,
+
+                    username: selectedUser.username
+
+                })
+
+            }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(result.error);
+
+        }
+
+        await loadProducts();
+
+        await loadStockMovements();
+
+        controlProduct.value = product.name;
+
+        updateStockInformation();
+
+        controlQuantity.value = '';
+
+        controlReason.value = '';
+
+        alert(result.message);
+
+    } catch (error) {
+
+        alert(error.message);
+
+    } finally {
+
+        submitButton.disabled = false;
+
+    }
 
 });
 
-      // Initial application display
+ // Receive new supplier stock
 
-      showSelectedUser();
+document.getElementById('reorderStockForm')
+    .addEventListener('submit', async function(e) {
 
-      renderTable();
+        e.preventDefault();
 
-      renderTasks();
+        const productName =
+            document.getElementById('reorderProductName').value;
+
+        const quantity = Number(
+            document.getElementById('reorderQty').value
+        );
+
+        const product = productsData.find(
+            p => p.name === productName
+        );
+
+        if (!product || !Number.isInteger(quantity) || quantity <= 0) {
+
+            alert('Please enter a valid quantity.');
+            return;
+
+        }
+
+        const submitButton = this.querySelector(
+            'button[type="submit"]'
+        );
+
+        submitButton.disabled = true;
+
+        try {
+
+            const response = await fetch(
+                '/api/inventory/' + product.id, {
+
+                    method: 'PATCH',
+
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+
+                    body: JSON.stringify({
+
+                        action: 'receive',
+
+                        quantity: quantity,
+
+                        username: selectedUser.username,
+
+                        reason: 'Supplier delivery recorded from dashboard.'
+
+                    })
+
+                }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok) {
+
+                throw new Error(result.error);
+
+            }
+
+            await loadProducts();
+
+            await loadStockMovements();
+
+            reorderModal.hide();
+
+            alert(result.message);
+
+        } catch (error) {
+
+            alert(error.message);
+
+        } finally {
+
+            submitButton.disabled = false;
+
+        }
+
+    });
+
+
+// Retrieve product information from MySQL
+
+async function loadProducts() {
+
+    try {
+
+        const response = await fetch('/api/products');
+
+        if (!response.ok) {
+            throw new Error('Unable to retrieve products.');
+        }
+
+        const data = await response.json();
+
+        productsData = data.map(function(product) {
+
+            return {
+                id: product.product_id,
+                code: product.product_code,
+                barcode: product.barcode,
+                name: product.product_name,
+                shelfQty: product.shelf_qty,
+                reqQty: product.required_shelf_qty,
+                receivingQty: product.receiving_qty,
+                aisle: product.shelf_location,
+                shelfLocationId: product.shelf_location_id,
+                receivingLocation: product.receiving_location
+            };
+
+        });
+
+        // Populate product dropdowns
+
+        productSelect.innerHTML =
+            '<option value="">Select a product</option>';
+
+        controlProduct.innerHTML =
+            '<option value="">Choose a product</option>';
+
+        productsData.forEach(function(product) {
+
+            const option = document.createElement('option');
+
+            option.value = product.name;
+            option.textContent = product.name;
+
+            productSelect.appendChild(option);
+
+            controlProduct.appendChild(option.cloneNode(true));
+
+        });
+
+        // Update the dashboard
+
+        renderTable();
+
+        updateStockInformation();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert('Unable to load inventory from MySQL.');
+
+    }
+
+}
+
+// Retrieve replenishment tasks from MySQL
+
+async function loadTasks() {
+
+    try {
+
+        const response = await fetch('/api/tasks');
+
+        if (!response.ok) {
+
+            throw new Error('Unable to retrieve tasks.');
+
+        }
+
+        const data = await response.json();
+
+        replenishmentTasks = data.map(function(task) {
+
+            return {
+
+                id: task.task_id,
+                productId: task.product_id,
+                product: task.product_name,
+                quantity: task.quantity,
+                priority: task.priority,
+                location: task.location_name,
+                status: task.status,
+                createdBy: task.created_by,
+                createdAt: task.created_at,
+                completedBy: task.completed_by,
+                completedAt: task.completed_at
+
+            };
+
+        });
+
+        renderTasks();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert('Unable to load replenishment tasks from MySQL.');
+
+    }
+
+}
+
+// Retrieve stock movement history from MySQL
+
+async function loadStockMovements() {
+
+    try {
+
+        const response = await fetch('/api/stock-movements');
+
+        if (!response.ok) {
+
+            throw new Error('Unable to retrieve stock movements.');
+
+        }
+
+        const data = await response.json();
+
+        stockMovementHistory = data.map(function(movement) {
+
+            return {
+
+                date: movement.created_at,
+
+                product: movement.product_name,
+
+                transaction: movement.movement_type,
+
+                receivingBefore: movement.receiving_before,
+
+                receivingAfter: movement.receiving_after,
+
+                shelfBefore: movement.shelf_before,
+
+                shelfAfter: movement.shelf_after,
+
+                user: movement.full_name,
+
+                reason: movement.reason
+
+            };
+
+        });
+
+        // Calculate reconciliation statistics from database records
+
+        const reconciliations = stockMovementHistory.filter(
+            movement =>
+                movement.transaction === 'Stock Reconciliation'
+        );
+
+        reconciliationCount = reconciliations.length;
+
+        accurateCount = reconciliations.filter(
+            movement =>
+                movement.receivingBefore === movement.receivingAfter
+        ).length;
+
+        discrepancyCount = reconciliationCount - accurateCount;
+
+        renderStockHistory();
+
+        updateInventoryAccuracy();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert('Unable to retrieve stock movement history.');
+
+    }
+
+}
+
+// Initial application display
+
+async function initialiseApplication() {
+
+    try {
+
+        await loadUsers();
+
+        await loadProducts();
+
+        await loadTasks();
+
+        await loadStockMovements();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert('Unable to initialise application.');
+
+        document.querySelectorAll(
+            'button[type="submit"], .mark-complete-btn'
+        ).forEach(function(button) {
+
+            button.disabled = true;
+
+        });
+
+    }
+
+}
+
+initialiseApplication();
 
     });
 

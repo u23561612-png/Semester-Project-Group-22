@@ -1,0 +1,4 @@
+# Please install the following packages that are required:
+Flask
+mysql-connector-python
+python-dotenv
