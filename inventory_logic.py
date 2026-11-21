@@ -32,25 +32,47 @@ def check_stock_status(receiving_qty, quantity_needed):
         return "Insufficient"
 
 
-def complete_replenishment_task(shelf_qty, required_shelf_qty, receiving_qty, qty_to_move):
+def complete_replenishment_task(shelf_qty, required_shelf_qty,
+                                receiving_qty, qty_to_move):
     """
-    Simulates completing a replenishment task:
-    1. Moves inventory from receiving to shelf.
-    2. Deducts quantity from receiving stock.
-    3. Returns updated values and out-of-stock warning message if receiving reaches 0.
+    Moves stock from receiving to the shop floor
+    while maintaining accurate inventory quantities.
     """
-    # Restock shelf
-    new_shelf_qty = min(required_shelf_qty, shelf_qty + qty_to_move)
-    
-    # Deduct from receiving stock
-    new_receiving_qty = max(0, receiving_qty - qty_to_move)
-    
-    # Check for out-of-stock trigger
+
+    if any(qty < 0 for qty in (
+        shelf_qty, required_shelf_qty, receiving_qty
+    )):
+        raise ValueError("Stock quantities cannot be negative.")
+
+    if qty_to_move <= 0:
+        raise ValueError("Quantity to move must be positive.")
+
+    quantity_needed = calculate_quantity_needed(
+        required_shelf_qty, shelf_qty
+    )
+
+    if qty_to_move > receiving_qty:
+        raise ValueError("Insufficient receiving stock.")
+
+    if qty_to_move > quantity_needed:
+        raise ValueError("Quantity exceeds shelf requirement.")
+
+    new_shelf_qty = shelf_qty + qty_to_move
+
+    new_receiving_qty = receiving_qty - qty_to_move
+
     out_of_stock_warning = None
+
     if new_receiving_qty == 0:
-        out_of_stock_warning = "WARNING: Item is now OUT OF STOCK in Receiving! Please place a reorder."
-        
-    return new_shelf_qty, new_receiving_qty, out_of_stock_warning
+        out_of_stock_warning = (
+            "WARNING: Item is now OUT OF STOCK in Receiving!"
+        )
+
+    return (
+        new_shelf_qty,
+        new_receiving_qty,
+        out_of_stock_warning
+    )
 
 
 def reorder_supplier_stock(current_receiving_qty, reorder_amount):

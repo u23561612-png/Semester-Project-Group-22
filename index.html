@@ -4,11 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pick n Pay Wolmaransstad - Receiving Stock System</title>
-  <!-- Bootstrap 5 CSS -->
+
+  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
   <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  
+
   <style>
     :root {
       --pnp-red: #e2001a;
@@ -70,7 +72,7 @@
       cursor: pointer;
     }
 
-    .sidebar-nav .nav-link:hover, 
+    .sidebar-nav .nav-link:hover,
     .sidebar-nav .nav-link.active {
       background-color: #f8f9fa;
       color: var(--pnp-dark-blue);
@@ -124,111 +126,199 @@
       font-weight: 700;
     }
 
-    .priority-high { background-color: #dc3545; color: white; }
-    .priority-medium { background-color: #fd7e14; color: white; }
-    .priority-low { background-color: #ffc107; color: #212529; }
+    .priority-high {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .priority-medium {
+      background-color: #fd7e14;
+      color: white;
+    }
+
+    .priority-low {
+      background-color: #ffc107;
+      color: #212529;
+    }
   </style>
 </head>
+
 <body>
 
-  <!-- Toast Notification Container for Out of Stock Pop-ups -->
+  <!-- Out of stock notification -->
   <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
-    <div id="outOfStockToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div id="outOfStockToast" class="toast align-items-center text-white bg-danger border-0" role="alert">
       <div class="d-flex">
         <div class="toast-body" id="toastMessage">
           <strong>ALERT:</strong> Item is now Out of Stock!
         </div>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
       </div>
     </div>
   </div>
 
   <div class="app-container">
-    
-    <!-- LEFT SIDEBAR NAVIGATION -->
+
+    <!-- SIDEBAR -->
     <nav class="sidebar">
+
       <div class="sidebar-header">
         <i class="bi bi-box-seam-fill text-warning fs-3"></i>
         <div>
           <span class="fw-bold text-dark fs-6">Receiving System</span>
-          <small class="text-muted d-block" style="font-size: 0.75rem;">Pick n Pay Wolmaransstad</small>
+          <small class="text-muted d-block" style="font-size: 0.75rem;">
+            Pick n Pay Wolmaransstad
+          </small>
         </div>
       </div>
 
-      <ul class="sidebar-nav" role="tablist">
-        <li class="nav-item">
-          <a class="nav-link active" data-bs-toggle="tab" data-bs-target="#dashboard-panel">
+      <ul class="sidebar-nav">
+
+         ="nav-item">
+          <a class="nav-link active" data-bs-target="#dashboard-panel">
             <i class="bi bi-grid-fill"></i> Dashboard
           </a>
         </li>
+
         <li class="nav-item">
-          <a class="nav-link" data-bs-toggle="tab" data-bs-target="#search-panel">
+          <a class="nav-link" data-bs-target="#search-panel">
             <i class="bi bi-search"></i> Stock Search
           </a>
         </li>
+
         <li class="nav-item">
-          <a class="nav-link" data-bs-toggle="tab" data-bs-target="#tasks-panel">
-            <i class="bi bi-clipboard-check"></i> Replenishment Tasks <span class="badge bg-danger ms-1" id="taskBadgeCount">0</span>
+          <a class="nav-link" data-bs-target="#tasks-panel">
+            <i class="bi bi-clipboard-check"></i>
+            Replenishment Tasks
+            <span class="badge bg-danger ms-1" id="taskBadgeCount">0</span>
           </a>
         </li>
+
         <li class="nav-item">
-          <a class="nav-link" data-bs-toggle="tab" data-bs-target="#performance-panel">
+         <a class="nav-link" data-bs-target="#inventory-panel">
+          <i class="bi bi-boxes"></i> Inventory Control
+         </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" data-bs-target="#performance-panel">
             <i class="bi bi-bar-chart-fill"></i> Performance
           </a>
         </li>
+
         <li class="nav-item">
-          <a class="nav-link" data-bs-toggle="tab" data-bs-target="#users-panel">
+          <a class="nav-link" data-bs-target="#users-panel">
             <i class="bi bi-people-fill"></i> Users
           </a>
         </li>
+
       </ul>
     </nav>
 
-    <!-- MAIN CONTENT VIEW -->
+    <!-- MAIN CONTENT -->
     <main class="main-content">
-      
+
       <header class="top-header shadow-sm">
+
         <div class="d-flex align-items-center gap-2">
           <span class="badge bg-dark fs-6">1</span>
-          <h1 class="h5 fw-bold mb-0 text-dark">Receiving Inventory Dashboard</h1>
+          <h1 class="h5 fw-bold mb-0 text-dark">
+            Receiving Inventory Dashboard
+          </h1>
         </div>
+
         <div class="d-flex align-items-center gap-3">
-          <button class="btn btn-light position-relative border"><i class="bi bi-bell"></i></button>
-          <div class="d-flex align-items-center gap-2">
+
+          <button class="btn btn-light position-relative border">
+            <i class="bi bi-bell"></i>
+          </button>
+
+          <div id="userProfile" class="d-flex align-items-center gap-2" style="cursor: pointer;">
             <i class="bi bi-person-circle fs-4 text-danger"></i>
-            <span class="fw-bold small">Floor Manager</span>
+            <span id="headerUser" class="fw-bold small">
+              Alex — Floor Manager
+            </span>
           </div>
+
         </div>
       </header>
 
       <div class="tab-content">
-        
-        <!-- 1. DASHBOARD PANEL -->
+
+        <!-- 1. DASHBOARD -->
         <div class="tab-pane fade show active" id="dashboard-panel">
+
           <div class="d-flex justify-content-between align-items-center mb-4">
-            <p class="text-muted mb-0">Overview of shelf requirements vs receiving area stock</p>
+            <p class="text-muted mb-0">
+              Overview of shelf requirements vs receiving area stock
+            </p>
+
             <button class="btn btn-primary" id="openNewTaskModalBtn">
-              <i class="bi bi-plus-lg me-1"></i> New Replenishment Task
+              <i class="bi bi-plus-lg me-1"></i>
+              New Replenishment Task
             </button>
           </div>
 
-          <!-- Dynamic Metrics Cards Header -->
+          <!-- KPI Cards -->
           <div class="row g-3 mb-4">
-            <div class="col-md-3"><div class="card-metric shadow-sm"><span class="text-muted small fw-semibold">Total products</span><div class="metric-value" id="kpiTotalProducts">30</div></div></div>
-            <div class="col-md-3"><div class="card-metric shadow-sm"><span class="text-muted small fw-semibold">Receiving stock</span><div class="metric-value" id="kpiReceivingStock">0</div></div></div>
-            <div class="col-md-3"><div class="card-metric shadow-sm border-danger"><span class="text-muted small fw-semibold">Insufficient stock items</span><div class="metric-value text-danger" id="kpiInsufficient">0</div></div></div>
-            <div class="col-md-3"><div class="card-metric shadow-sm border-success"><span class="text-muted small fw-semibold">Sufficient stock items</span><div class="metric-value text-success" id="kpiSufficient">0</div></div></div>
+
+            <div class="col-md-3">
+              <div class="card-metric shadow-sm">
+                <span class="text-muted small fw-semibold">Total products</span>
+                <div class="metric-value" id="kpiTotalProducts">30</div>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="card-metric shadow-sm">
+                <span class="text-muted small fw-semibold">Receiving stock</span>
+                <div class="metric-value" id="kpiReceivingStock">0</div>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="card-metric shadow-sm border-danger">
+                <span class="text-muted small fw-semibold">
+                  Insufficient stock items
+                </span>
+                <div class="metric-value text-danger" id="kpiInsufficient">0</div>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="card-metric shadow-sm border-success">
+                <span class="text-muted small fw-semibold">
+                  Sufficient stock items
+                </span>
+                <div class="metric-value text-success" id="kpiSufficient">0</div>
+              </div>
+            </div>
+
           </div>
 
           <div class="row g-4">
+
+            <!-- Stock Replenishment Table -->
             <div class="col-lg-8">
+
               <div class="card border-0 shadow-sm">
+
                 <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                  <h2 class="h6 fw-bold mb-0">Stock Replenishment Table</h2>
-                  <input type="text" id="tableSearchInput" class="form-control form-control-sm w-50" placeholder="Filter 30 products...">
+
+                  <h2 class="h6 fw-bold mb-0">
+                    Stock Replenishment Table
+                  </h2>
+
+                  <input type="text" id="tableSearchInput"
+                         class="form-control form-control-sm w-50"
+                         placeholder="Filter 30 products...">
+
                 </div>
+
                 <div class="table-responsive" style="max-height: 520px; overflow-y: auto;">
+
                   <table class="table table-hover align-middle mb-0" id="inventoryTable">
+
                     <thead class="table-dark sticky-top">
                       <tr>
                         <th>Product</th>
@@ -240,139 +330,507 @@
                         <th>Action</th>
                       </tr>
                     </thead>
-                    <tbody id="inventoryTableBody">
-                      <!-- Populated dynamically -->
-                    </tbody>
+
+                    <tbody id="inventoryTableBody"></tbody>
+
                   </table>
+
                 </div>
+
               </div>
+
             </div>
 
-            <!-- Priority Items Widget -->
+            <!-- Critical Stock Alerts -->
             <div class="col-lg-4">
+
               <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white py-3"><h2 class="h6 fw-bold mb-0">Critical Stock Alerts</h2></div>
-                <div class="card-body" id="priorityWidgetBody">
-                  <!-- Populated automatically -->
+
+                <div class="card-header bg-white py-3">
+                  <h2 class="h6 fw-bold mb-0">
+                    Critical Stock Alerts
+                  </h2>
+                </div>
+
+                <div class="card-body" id="priorityWidgetBody"></div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- 2. STOCK SEARCH -->
+        <div class="tab-pane fade" id="search-panel">
+
+          <div class="card border-0 shadow-sm p-4">
+
+            <h3 class="h5 fw-bold mb-3">Product Search</h3>
+
+            <input type="text" id="productSearchInput"
+                   class="form-control form-control-lg"
+                   placeholder="Search for a product, e.g. milk...">
+
+            <div id="productSearchResults" class="mt-3"></div>
+
+          </div>
+
+        </div>
+
+        <!-- 3. REPLENISHMENT TASKS -->
+        <div class="tab-pane fade" id="tasks-panel">
+
+          <div class="card border-0 shadow-sm p-4">
+
+            <h3 class="h5 fw-bold mb-3">
+              Active Replenishment Tasks
+            </h3>
+
+            <div id="tasksContainer">
+
+              <p class="text-muted">
+                No active replenishment tasks dispatched yet.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- INVENTORY CONTROL -->
+<div class="tab-pane fade" id="inventory-panel">
+
+  <div class="card border-0 shadow-sm p-4 mb-4">
+
+    <h3 class="h5 fw-bold mb-2">
+      Inventory Control
+    </h3>
+
+    <p class="text-muted">
+      Manage incoming stock, damaged products,
+      physical stock counts and shelf quantities.
+    </p>
+
+    <form id="inventoryControlForm">
+
+      <div class="row g-3 mb-3">
+
+        <div class="col-md-6">
+
+          <label class="form-label fw-semibold">
+            Select Product
+          </label>
+
+          <select id="controlProduct" class="form-select" required>
+            <option value="">Choose a product</option>
+          </select>
+
+        </div>
+
+        <div class="col-md-6">
+
+          <label class="form-label fw-semibold">
+            Transaction Type
+          </label>
+
+          <select id="controlAction" class="form-select" required>
+
+            <option value="receive">Receive Stock</option>
+            <option value="damage">Record Damaged Stock</option>
+            <option value="reconcile">Reconcile Receiving Stock</option>
+            <option value="shelf">Update Shelf Count</option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+      <div id="currentStockInfo" class="alert alert-info">
+        Select a product to view its current stock quantities.
+      </div>
+
+      <div class="mb-3">
+
+        <label id="controlQuantityLabel" class="form-label fw-semibold">
+          Quantity Received
+        </label>
+
+        <input type="number" id="controlQuantity"
+               class="form-control" min="1" step="1" required>
+
+        <small id="controlHelp" class="text-muted">
+          Enter the number of units physically received.
+        </small>
+
+      </div>
+
+      <div class="mb-3">
+
+        <label class="form-label fw-semibold">
+          Reason / Reference
+        </label>
+
+        <textarea id="controlReason"
+                  class="form-control" rows="2"
+                  placeholder="Enter the reason for this stock transaction..."
+                  required></textarea>
+
+      </div>
+
+      <button type="submit" class="btn btn-primary">
+        <i class="bi bi-check-circle me-1"></i>
+        Confirm Stock Transaction
+      </button>
+
+    </form>
+
+  </div>
+
+  <!-- Inventory Accuracy -->
+  <div class="row g-3 mb-4">
+
+    <div class="col-md-4">
+      <div class="card-metric shadow-sm">
+        <span class="text-muted small fw-semibold">
+          Stock Reconciliations
+        </span>
+        <div id="totalReconciliations" class="metric-value">0</div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card-metric shadow-sm">
+        <span class="text-muted small fw-semibold">
+          Discrepancies Identified
+        </span>
+        <div id="totalDiscrepancies"
+             class="metric-value text-danger">0</div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card-metric shadow-sm">
+        <span class="text-muted small fw-semibold">
+          Inventory Record Accuracy
+        </span>
+        <div id="inventoryAccuracy"
+             class="metric-value text-success">N/A</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Stock Movement History -->
+  <div class="card border-0 shadow-sm p-4">
+
+    <h3 class="h5 fw-bold mb-3">
+      Stock Movement History
+    </h3>
+
+    <div class="table-responsive">
+
+      <table class="table table-hover align-middle">
+
+        <thead class="table-dark">
+
+          <tr>
+            <th>Date &amp; Time</th>
+            <th>Product</th>
+            <th>Transaction</th>
+            <th>Receiving Before</th>
+            <th>Receiving After</th>
+            <th>Shelf Before</th>
+            <th>Shelf After</th>
+            <th>User</th>
+            <th>Reason</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="stockHistoryBody">
+
+          <tr>
+            <td colspan="9" class="text-muted">
+              No stock transactions recorded yet.
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>
+
+        <!-- 4. PERFORMANCE -->
+        <div class="tab-pane fade" id="performance-panel">
+
+          <div class="card border-0 shadow-sm p-4">
+
+            <h3 class="h5 fw-bold mb-3">
+              Performance Monitoring
+            </h3>
+
+            <div class="row g-3">
+
+              <div class="col-md-4">
+                <div class="card p-3 shadow-sm bg-light">
+                  Pending Tasks:
+                  <span id="perfPending" class="fw-bold text-warning fs-4">0</span>
                 </div>
               </div>
+
+              <div class="col-md-4">
+                <div class="card p-3 shadow-sm bg-light">
+                  Completed Today:
+                  <span id="perfCompleted" class="fw-bold text-success fs-4">0</span>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="card p-3 shadow-sm bg-light">
+                  Avg Response Time:
+                  <span id="perfResponseTime" class="fw-bold text-primary fs-4">N/A</span>
+                </div>
+              </div>
+
             </div>
+
           </div>
+
         </div>
 
-        <!-- 2. STOCK SEARCH PANEL -->
-        <div class="tab-pane fade" id="search-panel">
-          <div class="card border-0 shadow-sm p-4">
-            <h3 class="h5 fw-bold mb-3">Product Search</h3>
-            <input type="text" id="productSearchInput" class="form-control form-control-lg" placeholder="Search product name, barcode or SKU...">
-          </div>
-        </div>
-
-        <!-- 3. TASKS PANEL -->
-        <div class="tab-pane fade" id="tasks-panel">
-          <div class="card border-0 shadow-sm p-4">
-            <h3 class="h5 fw-bold mb-3">Active Replenishment Tasks</h3>
-            <div id="tasksContainer">
-              <p class="text-muted" id="noTasksMsg">No active replenishment tasks dispatched yet.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- 4. PERFORMANCE PANEL -->
-        <div class="tab-pane fade" id="performance-panel">
-          <div class="card border-0 shadow-sm p-4">
-            <h3 class="h5 fw-bold mb-3">Performance Monitoring</h3>
-            <div class="row">
-              <div class="col-md-4"><div class="card p-3 shadow-sm bg-light">Pending Tasks: <span id="perfPending" class="fw-bold text-warning fs-4">0</span></div></div>
-              <div class="col-md-4"><div class="card p-3 shadow-sm bg-light">Completed Today: <span id="perfCompleted" class="fw-bold text-success fs-4">0</span></div></div>
-              <div class="col-md-4"><div class="card p-3 shadow-sm bg-light">Avg Response Time: <span class="fw-bold text-primary fs-4">12 mins</span></div></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 5. USERS PANEL -->
+        <!-- 5. USERS -->
         <div class="tab-pane fade" id="users-panel">
-          <div class="card border-0 shadow-sm p-4"><h3 class="h5 fw-bold">User Role Management</h3><p class="text-muted">Manage system users and access privileges.</p></div>
+
+          <div class="card border-0 shadow-sm p-4">
+
+            <h3 class="h5 fw-bold mb-2">System Users</h3>
+
+            <p class="text-muted">
+              View the team and select a user.
+            </p>
+
+            <label for="userSelect" class="form-label fw-bold">
+              Choose a user
+            </label>
+
+            <select id="userSelect" class="form-select mb-3"></select>
+
+            <div id="selectedUserInfo" class="alert alert-info"></div>
+
+            <div class="table-responsive">
+
+              <table class="table table-hover align-middle">
+
+                <thead class="table-dark">
+                  <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Main duties</th>
+                  </tr>
+                </thead>
+
+                <tbody id="usersTableBody"></tbody>
+
+              </table>
+
+            </div>
+
+          </div>
+
         </div>
 
       </div>
     </main>
   </div>
 
-  <!-- Dispatch Modal -->
+  <!-- DISPATCH REPLENISHMENT TASK MODAL -->
   <div class="modal fade" id="createTaskModal" tabindex="-1">
+
     <div class="modal-dialog modal-dialog-centered">
+
       <div class="modal-content">
+
         <div class="modal-header bg-dark text-white">
-          <h5 class="modal-title fw-bold">Dispatch Replenishment Task</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+
+          <h5 class="modal-title fw-bold">
+            Dispatch Replenishment Task
+          </h5>
+
+          <button type="button" class="btn-close btn-close-white"
+                  data-bs-dismiss="modal"></button>
+
         </div>
+
         <form id="replenishmentTaskForm">
+
           <div class="modal-body">
+
             <div class="mb-3">
-              <label class="form-label fw-semibold">Product Name</label>
-              <input type="text" id="modalProductName" class="form-control" placeholder="Type item name" required>
+
+              <label class="form-label fw-semibold">
+                Product Name
+              </label>
+
+              <select id="modalProductName" class="form-select" required>
+                <option value="">Select a product</option>
+              </select>
+
             </div>
+
             <div class="row g-2 mb-3">
+
               <div class="col-md-6">
-                <label class="form-label fw-semibold">Quantity Needed</label>
-                <input type="number" id="modalQtyNeeded" class="form-control" required min="1">
+
+                <label class="form-label fw-semibold">
+                  Quantity Needed
+                </label>
+
+                <input type="number" id="modalQtyNeeded"
+                       class="form-control" min="1" required>
+
               </div>
+
               <div class="col-md-6">
-                <label class="form-label fw-semibold">Select Priority</label>
+
+                <label class="form-label fw-semibold">
+                  Select Priority
+                </label>
+
                 <select id="modalPriority" class="form-select">
+
                   <option value="High">High Priority</option>
                   <option value="Medium" selected>Medium Priority</option>
                   <option value="Low">Low Priority</option>
+
                 </select>
+
               </div>
+
             </div>
+
             <div class="mb-3">
-              <label class="form-label fw-semibold">Shelf Location</label>
-              <input type="text" id="modalShelfLoc" class="form-control" value="Aisle 3, Shelf 2" required>
+
+              <label class="form-label fw-semibold">
+                Shelf Location
+              </label>
+
+              <select id="modalShelfLoc" class="form-select" required>
+                <option value="">Select shelf location</option>
+              </select>
+
             </div>
+
+            <div id="taskStockInfo" class="alert alert-light border small">
+              Select a product to view stock availability.
+            </div>
+
           </div>
+
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Dispatch Task</button>
+
+            <button type="button" class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+              Cancel
+            </button>
+
+            <button type="submit" class="btn btn-primary">
+              Dispatch Task
+            </button>
+
           </div>
+
         </form>
+
       </div>
+
     </div>
+
   </div>
 
-  <!-- Supplier Reorder Modal -->
+  <!-- SUPPLIER STOCK MODAL -->
   <div class="modal fade" id="reorderModal" tabindex="-1">
+
     <div class="modal-dialog modal-dialog-centered">
+
       <div class="modal-content">
+
         <div class="modal-header bg-danger text-white">
-          <h5 class="modal-title fw-bold"><i class="bi bi-truck me-2"></i>Place Supplier Reorder</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+
+          <h5 class="modal-title fw-bold">
+            <i class="bi bi-truck me-2"></i>
+            Receive Supplier Stock
+          </h5>
+
+          <button type="button" class="btn-close btn-close-white"
+                  data-bs-dismiss="modal"></button>
+
         </div>
+
         <form id="reorderStockForm">
+
           <div class="modal-body">
+
             <div class="mb-3">
-              <label class="form-label fw-semibold">Product Name</label>
-              <input type="text" id="reorderProductName" class="form-control" readonly>
+
+              <label class="form-label fw-semibold">
+                Product Name
+              </label>
+
+              <input type="text" id="reorderProductName"
+                     class="form-control" readonly>
+
             </div>
+
             <div class="mb-3">
-              <label class="form-label fw-semibold">Quantity to Order into Receiving</label>
-              <input type="number" id="reorderQty" class="form-control" value="50" min="10" required>
+
+              <label class="form-label fw-semibold">
+                Quantity Received
+              </label>
+
+              <input type="number" id="reorderQty"
+                     class="form-control" min="1" value="50" required>
+
             </div>
+
           </div>
+
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-danger" data-bs-dismiss="modal">Receive New Supplier Stock</button>
+
+            <button type="button" class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+              Cancel
+            </button>
+
+            <button type="submit" class="btn btn-danger">
+              Receive New Supplier Stock
+            </button>
+
           </div>
+
         </form>
+
       </div>
+
     </div>
+
   </div>
 
-  <!-- Bootstrap JS Bundle -->
+  <!-- Bootstrap JavaScript -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
   <script>
+
     // 30 Fast-Moving Pick n Pay Grocery Products
+
     const productsData = [
       { name: "PnP Full Cream Milk 2L", shelfQty: 5, reqQty: 25, receivingQty: 20, aisle: "Aisle 1 (Dairy)" },
       { name: "Albany Superior White Bread 700g", shelfQty: 4, reqQty: 30, receivingQty: 12, aisle: "Aisle 2 (Bakery)" },
@@ -406,15 +864,129 @@
       { name: "Jungle Oats 1kg", shelfQty: 7, reqQty: 20, receivingQty: 25, aisle: "Aisle 4 (Cereal)" }
     ];
 
+    // System users
+
+    const users = [
+      {
+        name: 'Sam',
+        role: 'Store Manager',
+        duties: 'Oversees the store, checks stock and reviews performance.'
+      },
+      {
+        name: 'Alex',
+        role: 'Floor Manager',
+        duties: 'Checks shelf shortages and creates replenishment tasks.'
+      },
+      {
+        name: 'Jamie',
+        role: 'Staff Member',
+        duties: 'Moves stock from receiving to the shelves and completes tasks.'
+      },
+      {
+        name: 'Jordan',
+        role: 'Receiving Manager',
+        duties: 'Records incoming stock, monitors receiving inventory and investigates stock discrepancies.'
+      }
+    ];
+
+    let replenishmentTasks = [];
+    let stockMovementHistory = [];
+    let reconciliationCount = 0;
+    let discrepancyCount = 0;
+    let accurateCount = 0;
+    let nextTaskId = 1;
+    let selectedUser = users[1];
+
     document.addEventListener('DOMContentLoaded', function() {
+
       const tbody = document.getElementById('inventoryTableBody');
-      const taskModal = new bootstrap.Modal(document.getElementById('createTaskModal'));
-      const reorderModal = new bootstrap.Modal(document.getElementById('reorderModal'));
       const priorityWidget = document.getElementById('priorityWidgetBody');
-      const toastEl = document.getElementById('outOfStockToast');
-      const toast = new bootstrap.Toast(toastEl);
+
+      const taskModal = new bootstrap.Modal(
+        document.getElementById('createTaskModal')
+      );
+
+      const reorderModal = new bootstrap.Modal(
+        document.getElementById('reorderModal')
+      );
+
+      const toast = new bootstrap.Toast(
+        document.getElementById('outOfStockToast')
+      );
+
+      const productSelect = document.getElementById('modalProductName');
+      const shelfSelect = document.getElementById('modalShelfLoc');
+      const taskForm = document.getElementById('replenishmentTaskForm');
+      const tasksContainer = document.getElementById('tasksContainer');
+
+      // Sidebar tab switching
+
+      function openTab(targetId) {
+
+        document.querySelectorAll('.sidebar-nav .nav-link').forEach(link => {
+          link.classList.remove('active');
+
+          if (link.getAttribute('data-bs-target') === targetId) {
+            link.classList.add('active');
+          }
+        });
+
+        document.querySelectorAll('.tab-pane').forEach(panel => {
+          panel.classList.remove('show', 'active');
+        });
+
+        const target = document.querySelector(targetId);
+
+        if (target) {
+          target.classList.add('show', 'active');
+        }
+      }
+
+      document.querySelectorAll('.sidebar-nav .nav-link').forEach(link => {
+
+        link.addEventListener('click', function(e) {
+
+          e.preventDefault();
+
+          openTab(this.getAttribute('data-bs-target'));
+
+        });
+
+      });
+
+      // Calculate quantity needed on shelf
+
+      function calculateQuantityNeeded(product) {
+
+        return Math.max(0, product.reqQty - product.shelfQty);
+
+      }
+
+      // Calculate replenishment priority
+
+      function calculatePriority(product) {
+
+        const shortage = calculateQuantityNeeded(product);
+
+        const shortageRatio = product.reqQty > 0
+          ? shortage / product.reqQty
+          : 0;
+
+        if (shortageRatio >= 0.75) {
+          return 'High';
+        }
+
+        if (shortageRatio >= 0.40) {
+          return 'Medium';
+        }
+
+        return 'Low';
+      }
+
+      // Render dashboard table and KPI cards
 
       function renderTable() {
+
         tbody.innerHTML = '';
         priorityWidget.innerHTML = '';
 
@@ -422,391 +994,1368 @@
         let insufficientCount = 0;
         let sufficientCount = 0;
 
-        productsData.forEach((p) => {
-          const qtyNeeded = Math.max(0, p.reqQty - p.shelfQty);
-          const isSufficient = p.receivingQty >= qtyNeeded && p.receivingQty > 0;
-          const isOutOfStock = p.receivingQty === 0;
+        productsData.forEach(function(product) {
 
-          sumReceiving += p.receivingQty;
-          if (isSufficient) sufficientCount++;
-          else insufficientCount++;
+          const qtyNeeded = calculateQuantityNeeded(product);
 
-          let badgeHTML = `<span class="badge badge-sufficient">Sufficient</span>`;
+          const isSufficient = product.receivingQty >= qtyNeeded;
+          const isOutOfStock = product.receivingQty === 0;
+
+          sumReceiving += product.receivingQty;
+
+          if (isSufficient) {
+            sufficientCount++;
+          } else {
+            insufficientCount++;
+          }
+
+          let badgeHTML = `
+            <span class="badge badge-sufficient">Sufficient</span>
+          `;
+
           if (isOutOfStock) {
-            badgeHTML = `<span class="badge badge-outofstock">OUT OF STOCK</span>`;
+
+            badgeHTML = `
+              <span class="badge badge-outofstock">OUT OF STOCK</span>
+            `;
+
           } else if (!isSufficient) {
-            badgeHTML = `<span class="badge badge-insufficient">Insufficient</span>`;
+
+            badgeHTML = `
+              <span class="badge badge-insufficient">Insufficient</span>
+            `;
+
           }
 
           let actionBtn = `
-            <button class="btn btn-sm btn-outline-primary restock-btn" 
-              data-product="${p.name}" 
-              data-qty="${qtyNeeded}" 
-              data-aisle="${p.aisle}">
+            <button class="btn btn-sm btn-outline-primary restock-btn"
+                    data-product="${product.name}">
               Restock
             </button>
           `;
 
-          if (isOutOfStock) {
+          if (qtyNeeded === 0) {
+
             actionBtn = `
-              <button class="btn btn-sm btn-danger reorder-btn" 
-                data-product="${p.name}">
-                <i class="bi bi-cart-plus me-1"></i>Reorder
+              <button class="btn btn-sm btn-outline-success" disabled>
+                Shelf Full
               </button>
             `;
+
+          }
+
+          if (isOutOfStock) {
+
+            actionBtn = `
+              <button class="btn btn-sm btn-danger reorder-btn"
+                      data-product="${product.name}">
+                <i class="bi bi-cart-plus me-1"></i>
+                Receive Stock
+              </button>
+            `;
+
           }
 
           const row = document.createElement('tr');
+
           row.innerHTML = `
-            <td class="fw-bold">${p.name}</td>
-            <td>${p.shelfQty}</td>
-            <td>${p.reqQty}</td>
-            <td class="${qtyNeeded > 0 ? 'text-danger fw-bold' : 'text-success'}">${qtyNeeded}</td>
-            <td class="${isOutOfStock ? 'text-danger fw-bold fs-6' : ''}">${p.receivingQty}</td>
+            <td class="fw-bold">${product.name}</td>
+            <td>${product.shelfQty}</td>
+            <td>${product.reqQty}</td>
+            <td class="${qtyNeeded > 0 ? 'text-danger fw-bold' : 'text-success'}">
+              ${qtyNeeded}
+            </td>
+            <td>${product.receivingQty}</td>
             <td>${badgeHTML}</td>
             <td>${actionBtn}</td>
           `;
+
           tbody.appendChild(row);
 
-          // Populate Top Critical Alerts Side Widget
-          if (!isSufficient && priorityWidget.children.length < 3) {
-            const alertBox = document.createElement('div');
-            alertBox.className = `p-2 mb-2 bg-light border-start border-4 ${isOutOfStock ? 'border-dark' : 'border-danger'} rounded`;
-            alertBox.innerHTML = `
-              <div class="d-flex justify-content-between">
-                <span class="fw-bold">${p.name}</span>
-                <span class="badge ${isOutOfStock ? 'bg-dark' : 'priority-high'}">${isOutOfStock ? 'OUT OF STOCK' : 'High Alert'}</span>
-              </div>
-              <small class="text-muted">Receiving Stock: <strong>${p.receivingQty}</strong> units</small>
-              <button class="btn ${isOutOfStock ? 'btn-danger' : 'btn-outline-danger'} btn-sm w-100 mt-2 ${isOutOfStock ? 'reorder-btn' : 'restock-btn'}" data-product="${p.name}" data-qty="${qtyNeeded}" data-aisle="${p.aisle}">
-                ${isOutOfStock ? 'Place Reorder' : 'Create Urgent Task'}
-              </button>
-            `;
-            priorityWidget.appendChild(alertBox);
-          }
         });
 
-        // Update Header Displays
-        document.getElementById('kpiTotalProducts').textContent = productsData.length;
-        document.getElementById('kpiReceivingStock').textContent = sumReceiving;
-        document.getElementById('kpiInsufficient').textContent = insufficientCount;
-        document.getElementById('kpiSufficient').textContent = sufficientCount;
-      }
+        // Display the three most critical stock shortages
 
-      // Initial Render
-      renderTable();
+        const criticalProducts = productsData.filter(product => {
 
-      // Main Blue "+ New Replenishment Task" Button Event
-      const openModalBtn = document.getElementById('openNewTaskModalBtn');
-      if (openModalBtn) {
-        openModalBtn.addEventListener('click', function() {
-          document.getElementById('modalProductName').value = "";
-          document.getElementById('modalQtyNeeded').value = "10";
-          document.getElementById('modalPriority').value = "Medium";
-          document.getElementById('modalShelfLoc').value = "Aisle 1, Shelf 1";
-          taskModal.show();
+          return product.receivingQty < calculateQuantityNeeded(product);
+
         });
-      }
 
-      // Action Handlers
-      document.addEventListener('click', function(e) {
-        if (e.target && e.target.classList.contains('restock-btn')) {
-          const prodName = e.target.getAttribute('data-product');
-          const qty = e.target.getAttribute('data-qty');
-          const aisle = e.target.getAttribute('data-aisle');
+        criticalProducts.sort(function(a, b) {
 
-          document.getElementById('modalProductName').value = prodName;
-          document.getElementById('modalQtyNeeded').value = qty > 0 ? qty : 10;
-          document.getElementById('modalShelfLoc').value = aisle;
-          taskModal.show();
-        }
+          const ratioA = a.reqQty > 0
+            ? calculateQuantityNeeded(a) / a.reqQty
+            : 0;
 
-        if (e.target && e.target.classList.contains('reorder-btn')) {
-          const prodName = e.target.getAttribute('data-product');
-          document.getElementById('reorderProductName').value = prodName;
-          reorderModal.show();
-        }
-      });
+          const ratioB = b.reqQty > 0
+            ? calculateQuantityNeeded(b) / b.reqQty
+            : 0;
 
-      // Handle Reorder Form Submission
-      const reorderForm = document.getElementById('reorderStockForm');
-      if (reorderForm) {
-        reorderForm.addEventListener('submit', function(e) {
-          e.preventDefault();
-          const prodName = document.getElementById('reorderProductName').value;
-          const reorderQty = parseInt(document.getElementById('reorderQty').value || '50');
+          return ratioB - ratioA;
 
-          const foundProduct = productsData.find(p => p.name.toLowerCase() === prodName.toLowerCase());
-          if (foundProduct) {
-            foundProduct.receivingQty += reorderQty;
-            renderTable();
-            alert(`Stock Received! Added ${reorderQty} units of ${prodName} into Receiving Stock.`);
-          }
         });
-      }
 
-      // Sidebar Tab Switching
-      document.querySelectorAll('.sidebar-nav .nav-link').forEach(link => {
-        link.addEventListener('click', function(e) {
-          e.preventDefault();
-          document.querySelectorAll('.sidebar-nav .nav-link').forEach(l => l.classList.remove('active'));
-          document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('show', 'active'));
-          this.classList.add('active');
-          const target = document.querySelector(this.getAttribute('data-bs-target'));
-          if(target) target.classList.add('show', 'active');
-        });
-      });
+        criticalProducts.slice(0, 3).forEach(function(product) {
 
-      // Table Filter Search
-      const tableSearch = document.getElementById('tableSearchInput');
-      if(tableSearch) {
-        tableSearch.addEventListener('input', function(e) {
-          const term = e.target.value.toLowerCase();
-          document.querySelectorAll('#inventoryTable tbody tr').forEach(row => {
-            row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
-          });
-        });
-      }
+          const isOutOfStock = product.receivingQty === 0;
 
-      // Task Form Submission Dispatch
-      const taskForm = document.getElementById('replenishmentTaskForm');
-      const tasksContainer = document.getElementById('tasksContainer');
-      const noTasksMsg = document.getElementById('noTasksMsg');
-      const taskBadgeCount = document.getElementById('taskBadgeCount');
-      const perfPending = document.getElementById('perfPending');
-      const perfCompleted = document.getElementById('perfCompleted');
+          const alertBox = document.createElement('div');
 
-      if(taskForm) {
-        taskForm.addEventListener('submit', function(e) {
-          e.preventDefault();
-          const prodName = document.getElementById('modalProductName').value;
-          const qtyNeeded = parseInt(document.getElementById('modalQtyNeeded').value);
-          const priority = document.getElementById('modalPriority').value;
-          const shelfLoc = document.getElementById('modalShelfLoc').value;
+          alertBox.className =
+            'p-2 mb-2 bg-light border-start border-4 border-danger rounded';
 
-          if (noTasksMsg) noTasksMsg.style.display = 'none';
+          alertBox.innerHTML = `
+            <div class="d-flex justify-content-between">
 
-          const badgeClass = priority === 'High' ? 'priority-high' : (priority === 'Medium' ? 'priority-medium' : 'priority-low');
-          const borderClass = priority === 'High' ? 'border-danger' : (priority === 'Medium' ? 'border-warning' : 'border-info');
+              <span class="fw-bold">${product.name}</span>
 
-          const newTaskHTML = `
-            <div class="card mb-3 border-start border-4 ${borderClass} shadow-sm task-card" data-product="${prodName}" data-qty="${qtyNeeded}">
-              <div class="card-body d-flex justify-content-between align-items-center">
-                <div>
-                  <h5 class="fw-bold mb-1">${prodName}</h5>
-                  <p class="text-muted small mb-0">Quantity Needed: <strong>${qtyNeeded}</strong> | Location: <strong>${shelfLoc}</strong> | Priority: <span class="badge ${badgeClass}">${priority}</span></p>
-                </div>
-                <button class="btn btn-success btn-sm mark-complete-btn">Mark Complete</button>
-              </div>
+              <span class="badge priority-high">
+                ${isOutOfStock ? 'OUT OF STOCK' : 'High Alert'}
+              </span>
+
             </div>
+
+            <small class="text-muted">
+              Receiving Stock:
+              <strong>${product.receivingQty}</strong> units
+            </small>
+
+            <button class="btn btn-outline-danger btn-sm w-100 mt-2
+                           ${isOutOfStock ? 'reorder-btn' : 'restock-btn'}"
+                    data-product="${product.name}">
+
+              ${isOutOfStock ? 'Receive Stock' : 'Create Urgent Task'}
+
+            </button>
           `;
-          tasksContainer.insertAdjacentHTML('beforeend', newTaskHTML);
 
-          let currentPending = parseInt(taskBadgeCount.textContent || '0') + 1;
-          taskBadgeCount.textContent = currentPending;
-          perfPending.textContent = currentPending;
+          priorityWidget.appendChild(alertBox);
 
-          attachCompleteHandlers();
         });
+
+        if (criticalProducts.length === 0) {
+
+          priorityWidget.textContent = 'No critical stock shortages.';
+
+        }
+
+        // Update KPIs
+
+        document.getElementById('kpiTotalProducts').textContent =
+          productsData.length;
+
+        document.getElementById('kpiReceivingStock').textContent =
+          sumReceiving;
+
+        document.getElementById('kpiInsufficient').textContent =
+          insufficientCount;
+
+        document.getElementById('kpiSufficient').textContent =
+          sufficientCount;
+
+        filterTable();
+        searchProducts();
+
       }
 
-      function attachCompleteHandlers() {
-        document.querySelectorAll('.mark-complete-btn').forEach(btn => {
-          btn.onclick = function() {
-            const card = this.closest('.task-card');
-            if (card) {
-              const prodName = card.getAttribute('data-product');
-              const qtyNeeded = parseInt(card.getAttribute('data-qty') || '0');
+      // Filter dashboard table
 
-              // Deduct stock from receiving inventory
-              const foundProduct = productsData.find(p => p.name.toLowerCase() === prodName.toLowerCase());
-              if (foundProduct) {
-                foundProduct.shelfQty += qtyNeeded;
-                if (foundProduct.shelfQty > foundProduct.reqQty) foundProduct.shelfQty = foundProduct.reqQty;
+      function filterTable() {
 
-                // Subtract from Receiving Stock
-                foundProduct.receivingQty = Math.max(0, foundProduct.receivingQty - qtyNeeded);
+        const searchTerm = document.getElementById('tableSearchInput')
+          .value.toLowerCase().trim();
 
-                // If receiving stock hits 0, trigger pop-up alert
-                if (foundProduct.receivingQty === 0) {
-                  document.getElementById('toastMessage').innerHTML = `<strong>WARNING:</strong> ${foundProduct.name} is now <strong>OUT OF STOCK</strong> in Receiving! Please place a reorder.`;
-                  toast.show();
-                }
-              }
+        tbody.querySelectorAll('tr').forEach(function(row) {
 
-              card.remove();
+          row.style.display =
+            row.textContent.toLowerCase().includes(searchTerm)
+              ? ''
+              : 'none';
 
-              // Re-render table & widgets
-              renderTable();
-
-              let currentPending = Math.max(0, parseInt(taskBadgeCount.textContent || '1') - 1);
-              taskBadgeCount.textContent = currentPending;
-              perfPending.textContent = currentPending;
-              perfCompleted.textContent = parseInt(perfCompleted.textContent || '0') + 1;
-
-              if (tasksContainer.querySelectorAll('.task-card').length === 0 && noTasksMsg) {
-                noTasksMsg.style.display = 'block';
-              }
-            }
-          };
         });
+
       }
-    });
-  </script>
- <script>
-(function () {
-  const searchInput = document.getElementById('productSearchInput');
-  const inventoryTable = document.getElementById('inventoryTable');
 
-  if (!searchInput || !inventoryTable) {
-    console.error('Search box or inventory table not found.');
-    return;}
+      document.getElementById('tableSearchInput')
+        .addEventListener('input', filterTable);
 
-  searchInput.placeholder = 'Search for a product, e.g. milk...';
+      // Product search page
 
-  // Remove any previous search results.
-  const previousResults = document.getElementById('productSearchResults');
-  if (previousResults) previousResults.remove();
+      function searchProducts() {
 
-  const results = document.createElement('div');
-  results.id = 'productSearchResults';
-  results.className = 'mt-3';
-  searchInput.insertAdjacentElement('afterend', results);
+        const query = document.getElementById('productSearchInput')
+          .value.toLowerCase().trim();
 
-  searchInput.addEventListener('input', function () {
-    const query = searchInput.value.trim().toLowerCase();
-    results.replaceChildren();
+        const results = document.getElementById('productSearchResults');
 
-    if (!query) return;
+        results.innerHTML = '';
 
-    const rows = Array.from(
-      inventoryTable.querySelectorAll('tbody tr'));
+        if (!query) {
+          return;
+        }
 
-    const matches = rows.filter(function (row) {
-      const productName = row.cells[0].textContent.toLowerCase();
-      return productName.includes(query);});
+        const matches = productsData.filter(product => {
 
-    if (matches.length === 0) {
-      results.textContent = 'No products found. Try milk or bread.';
-      return;}
+          return product.name.toLowerCase().includes(query);
 
-    const message = document.createElement('p');
-    message.textContent = matches.length + ' product(s) found';
-    results.appendChild(message);
+        });
 
-    const wrapper = document.createElement('div');
-    wrapper.className = 'table-responsive';
+        if (matches.length === 0) {
 
-    const table = document.createElement('table');
-    table.className = 'table table-hover align-middle';
+          results.textContent = 'No products found.';
+          return;
 
-    // Copy the stock table headings without the Action column.
-    const heading = inventoryTable.tHead.cloneNode(true);
-    heading.querySelector('tr').lastElementChild.remove();
-    table.appendChild(heading);
+        }
 
-    const body = document.createElement('tbody');
+        const message = document.createElement('p');
 
-    matches.forEach(function (row) {
-      const copy = row.cloneNode(true);
+        message.textContent = matches.length + ' product(s) found';
 
-      // Show the result even if the main table filters it out.
-      copy.style.display = '';
+        results.appendChild(message);
 
-      // Remove the Action column from search results.
-      copy.lastElementChild.remove();
-      body.appendChild(copy);});
+        const wrapper = document.createElement('div');
 
-    table.appendChild(body);
-    wrapper.appendChild(table);
-    results.appendChild(wrapper);});})();
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  const usersPanel = document.getElementById('users-panel');
+        wrapper.className = 'table-responsive';
 
-  if (!usersPanel) return;
+        const table = document.createElement('table');
 
-  // Sample users — change these names to your own.
-  const users = [
-    {name: 'Sam',
-      role: 'Store Manager',
-      duties: 'Oversees the store, checks stock and reviews performance.'},
-    {name: 'Alex',
-      role: 'Floor Manager',
-      duties: 'Checks shelf shortages and creates replenishment tasks.'},
-    {name: 'Jamie',
-      role: 'Staff Member',
-      duties: 'Moves stock from receiving to the shelves and completes tasks.'}];
+        table.className = 'table table-hover align-middle';
 
-  usersPanel.innerHTML = `
-    <div class="card border-0 shadow-sm p-4">
-      <h3 class="h5 fw-bold mb-2">System Users</h3>
-      <p class="text-muted">
-        View the team and select a user for this demonstration.
-      </p>
-
-      <label for="demoUserSelect" class="form-label fw-bold">
-        Select a demo user
-      </label>
-      <select id="demoUserSelect" class="form-select mb-3"></select>
-
-      <div id="selectedUserInfo"
-           class="alert alert-info"
-           aria-live="polite"></div>
-
-      <div class="table-responsive">
-        <table class="table table-hover align-middle">
+        table.innerHTML = `
           <thead class="table-dark">
             <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Main duties</th>
+              <th>Product</th>
+              <th>Shelf Qty</th>
+              <th>Req. Shelf Qty</th>
+              <th>Qty Needed</th>
+              <th>Receiving Stock</th>
+              <th>Status</th>
             </tr>
           </thead>
-          <tbody id="usersTableBody"></tbody>
-        </table>
-      </div>
-    </div>
-  `;
+          <tbody></tbody>
+        `;
 
-  const userSelect = document.getElementById('demoUserSelect');
-  const tableBody = document.getElementById('usersTableBody');
-  const selectedInfo = document.getElementById('selectedUserInfo');
-  const headerUser = document.querySelector(
-    '.top-header .fw-bold.small');
+        matches.forEach(function(product) {
 
-  users.forEach(function (user, index) {
-    // Add the user to the dropdown.
-    const option = document.createElement('option');
-    option.value = index;
-    option.textContent = user.name + ' — ' + user.role;
-    userSelect.appendChild(option);
+          const qtyNeeded = calculateQuantityNeeded(product);
 
-    // Add the user to the table.
+          const sufficient = product.receivingQty >= qtyNeeded;
+
+          let badge = `
+            <span class="badge badge-sufficient">Sufficient</span>
+          `;
+
+          if (product.receivingQty === 0) {
+
+            badge = `
+              <span class="badge badge-outofstock">OUT OF STOCK</span>
+            `;
+
+          } else if (!sufficient) {
+
+            badge = `
+              <span class="badge badge-insufficient">Insufficient</span>
+            `;
+
+          }
+
+          const row = document.createElement('tr');
+
+          row.innerHTML = `
+            <td class="fw-bold">${product.name}</td>
+            <td>${product.shelfQty}</td>
+            <td>${product.reqQty}</td>
+            <td class="text-danger fw-bold">${qtyNeeded}</td>
+            <td>${product.receivingQty}</td>
+            <td>${badge}</td>
+          `;
+
+          table.querySelector('tbody').appendChild(row);
+
+        });
+
+        wrapper.appendChild(table);
+        results.appendChild(wrapper);
+
+      }
+
+      document.getElementById('productSearchInput')
+        .addEventListener('input', searchProducts);
+
+      // Populate product dropdown
+
+      productsData.forEach(function(product) {
+
+        const option = document.createElement('option');
+
+        option.value = product.name;
+        option.textContent = product.name;
+
+        productSelect.appendChild(option);
+
+      });
+
+      // Update replenishment task details
+
+      function updateTaskDetails() {
+
+        const product = productsData.find(
+          p => p.name === productSelect.value
+        );
+
+        const quantityInput = document.getElementById('modalQtyNeeded');
+        const stockInfo = document.getElementById('taskStockInfo');
+
+        shelfSelect.innerHTML =
+          '<option value="">Select shelf location</option>';
+
+        if (!product) {
+
+          quantityInput.value = '';
+          quantityInput.removeAttribute('max');
+
+          stockInfo.textContent =
+            'Select a product to view stock availability.';
+
+          return;
+
+        }
+
+        const shortage = calculateQuantityNeeded(product);
+
+        const availableQuantity = Math.min(
+          shortage, product.receivingQty
+        );
+
+        quantityInput.value = availableQuantity;
+        quantityInput.max = availableQuantity;
+
+        document.getElementById('modalPriority').value =
+          calculatePriority(product);
+
+        stockInfo.textContent =
+          'Shelf requirement: ' + shortage +
+          ' units | Receiving stock available: ' +
+          product.receivingQty + ' units';
+
+        // Shelf location dropdown - prototype locations
+
+        for (let shelf = 1; shelf <= 4; shelf++) {
+
+          const option = document.createElement('option');
+
+          option.value = product.aisle + ', Shelf ' + shelf;
+          option.textContent = option.value;
+
+          shelfSelect.appendChild(option);
+
+        }
+
+      }
+
+      productSelect.addEventListener('change', updateTaskDetails);
+
+      // Open new replenishment task
+
+      document.getElementById('openNewTaskModalBtn')
+        .addEventListener('click', function() {
+
+          taskForm.reset();
+
+          productSelect.value = '';
+
+          updateTaskDetails();
+
+          taskModal.show();
+
+        });
+
+      // Dashboard restock and receiving buttons
+
+      document.addEventListener('click', function(e) {
+
+        const restockButton = e.target.closest('.restock-btn');
+
+        const reorderButton = e.target.closest('.reorder-btn');
+
+        if (restockButton) {
+
+          taskForm.reset();
+
+          productSelect.value =
+            restockButton.getAttribute('data-product');
+
+          updateTaskDetails();
+
+          if (restockButton.classList.contains('btn-outline-danger')) {
+
+            document.getElementById('modalPriority').value = 'High';
+
+          }
+
+          taskModal.show();
+
+        }
+
+        if (reorderButton) {
+
+          document.getElementById('reorderProductName').value =
+            reorderButton.getAttribute('data-product');
+
+          reorderModal.show();
+
+        }
+
+      });
+
+      // Dispatch replenishment task
+
+      taskForm.addEventListener('submit', function(e) {
+
+        e.preventDefault();
+
+        const product = productsData.find(
+          p => p.name === productSelect.value
+        );
+
+        const quantity = Number(
+          document.getElementById('modalQtyNeeded').value
+        );
+
+        const priority = document.getElementById('modalPriority').value;
+
+        const shelfLocation = shelfSelect.value;
+
+        if (!product || !shelfLocation) {
+
+          alert('Please select a product and shelf location.');
+          return;
+
+        }
+
+        if (!Number.isInteger(quantity) || quantity <= 0) {
+
+          alert('Please enter a valid quantity.');
+          return;
+
+        }
+
+        if (quantity > product.receivingQty) {
+
+          alert('Insufficient stock available in receiving.');
+          return;
+
+        }
+
+        if (quantity > calculateQuantityNeeded(product)) {
+
+          alert('The quantity exceeds the shelf requirement.');
+          return;
+
+        }
+
+        const existingTask = replenishmentTasks.some(task => {
+
+          return task.product === product.name &&
+                 task.status === 'Pending';
+
+        });
+
+        if (existingTask) {
+
+          alert('A pending task already exists for this product.');
+          return;
+
+        }
+
+        const newTask = {
+          id: nextTaskId++,
+          product: product.name,
+          quantity: quantity,
+          priority: priority,
+          location: shelfLocation,
+          status: 'Pending',
+          createdBy: selectedUser.name,
+          createdAt: new Date().toISOString(),
+          completedAt: null,
+          completedBy: null
+        };
+
+        replenishmentTasks.push(newTask);
+
+        renderTasks();
+
+        taskForm.reset();
+
+        taskModal.hide();
+
+        openTab('#tasks-panel');
+
+      });
+
+      // Display replenishment tasks
+
+      function renderTasks() {
+
+        tasksContainer.innerHTML = '';
+
+        const pending = replenishmentTasks.filter(
+          task => task.status === 'Pending'
+        );
+
+        const completed = replenishmentTasks.filter(
+          task => task.status === 'Completed'
+        );
+
+        const priorities = {
+          High: 1,
+          Medium: 2,
+          Low: 3
+        };
+
+        pending.sort(function(a, b) {
+
+          return priorities[a.priority] - priorities[b.priority]
+            || a.createdAt.localeCompare(b.createdAt);
+
+        });
+
+        if (pending.length === 0) {
+
+          const message = document.createElement('p');
+
+          message.className = 'text-muted';
+
+          message.textContent =
+            'No active replenishment tasks dispatched yet.';
+
+          tasksContainer.appendChild(message);
+
+        }
+
+        pending.forEach(function(task) {
+
+          const badgeClass = task.priority === 'High'
+            ? 'priority-high'
+            : task.priority === 'Medium'
+              ? 'priority-medium'
+              : 'priority-low';
+
+          const borderClass = task.priority === 'High'
+            ? 'border-danger'
+            : task.priority === 'Medium'
+              ? 'border-warning'
+              : 'border-info';
+
+          const card = document.createElement('div');
+
+          card.className =
+            'card mb-3 border-start border-4 shadow-sm ' + borderClass;
+
+          const body = document.createElement('div');
+
+          body.className =
+            'card-body d-flex justify-content-between align-items-center';
+
+          const details = document.createElement('div');
+
+          const title = document.createElement('h5');
+
+          title.className = 'fw-bold mb-1';
+          title.textContent = task.product;
+
+          const information = document.createElement('p');
+
+          information.className = 'text-muted small mb-1';
+
+          information.textContent =
+            'Quantity: ' + task.quantity +
+            ' | Location: ' + task.location;
+
+          const priorityBadge = document.createElement('span');
+
+          priorityBadge.className = 'badge ' + badgeClass;
+
+          priorityBadge.textContent = task.priority + ' Priority';
+
+          const created = document.createElement('p');
+
+          created.className = 'text-muted small mt-2 mb-0';
+
+          created.textContent =
+            'Dispatched by: ' + task.createdBy +
+            ' | ' + new Date(task.createdAt).toLocaleString();
+
+          details.append(title, information, priorityBadge, created);
+
+          const button = document.createElement('button');
+
+          button.className = 'btn btn-success btn-sm';
+
+          button.textContent = 'Mark Complete';
+
+          button.addEventListener('click', function() {
+
+            completeTask(task.id);
+
+          });
+
+          body.append(details, button);
+
+          card.appendChild(body);
+
+          tasksContainer.appendChild(card);
+
+        });
+
+        // Completed task history
+
+        if (completed.length > 0) {
+
+          const heading = document.createElement('h5');
+
+          heading.className = 'fw-bold mt-4';
+
+          heading.textContent = 'Completed Tasks';
+
+          tasksContainer.appendChild(heading);
+
+          completed.forEach(function(task) {
+
+            const card = document.createElement('div');
+
+            card.className = 'card bg-light mb-2 p-3';
+
+            const title = document.createElement('strong');
+
+            title.textContent = task.product;
+
+            const details = document.createElement('small');
+
+            details.className = 'text-muted';
+
+            details.textContent =
+              task.quantity + ' units replenished' +
+              ' | Completed by: ' + task.completedBy +
+              ' | ' + new Date(task.completedAt).toLocaleString();
+
+            const status = document.createElement('span');
+
+            status.className = 'text-success fw-bold';
+
+            status.textContent = 'Completed';
+
+            card.append(title, details, status);
+
+            tasksContainer.appendChild(card);
+
+          });
+
+        }
+
+        updatePerformance();
+
+      }
+
+      // Complete replenishment task
+
+      function completeTask(taskId) {
+
+        const task = replenishmentTasks.find(
+          t => t.id === taskId
+        );
+
+        if (!task || task.status !== 'Pending') {
+
+          return;
+
+        }
+
+        const product = productsData.find(
+          p => p.name === task.product
+        );
+
+        if (!product) {
+
+          return;
+
+        }
+
+        if (task.quantity > product.receivingQty) {
+
+          alert('Insufficient stock to complete this task.');
+          return;
+
+        }
+
+        if (task.quantity > calculateQuantityNeeded(product)) {
+
+          alert('Shelf requirements have changed.');
+          return;
+
+        }
+
+        // Move stock from receiving to the shelf
+
+        const receivingBefore = product.receivingQty;
+
+        const shelfBefore = product.shelfQty;
+
+        product.shelfQty += task.quantity;
+
+        product.receivingQty -= task.quantity;
+
+        recordStockMovement(
+
+          product,
+
+          'Replenishment',
+
+          receivingBefore,
+
+          shelfBefore,
+
+          'Stock moved from receiving to the shop floor. Task #' + task.id
+
+);     
+
+        task.status = 'Completed';
+
+        task.completedAt = new Date().toISOString();
+
+        task.completedBy = selectedUser.name;
+
+        renderTable();
+
+        renderTasks();
+
+        // Out of stock notification
+
+        if (product.receivingQty === 0) {
+
+          document.getElementById('toastMessage').textContent =
+            'WARNING: ' + product.name +
+            ' is now OUT OF STOCK in Receiving!';
+
+          toast.show();
+
+        }
+
+        alert('Replenishment task completed successfully.');
+
+      }
+
+      // Receive new supplier stock
+
+      document.getElementById('reorderStockForm')
+        .addEventListener('submit', function(e) {
+
+          e.preventDefault();
+
+          const productName =
+            document.getElementById('reorderProductName').value;
+
+          const quantity = Number(
+            document.getElementById('reorderQty').value
+          );
+
+          const product = productsData.find(
+            p => p.name === productName
+          );
+
+          if (!product) {
+
+            return;
+
+          }
+
+          if (!Number.isInteger(quantity) || quantity <= 0) {
+
+            alert('Please enter a valid quantity.');
+            return;
+
+          }
+
+          const receivingBefore = product.receivingQty;
+
+          const shelfBefore = product.shelfQty;
+
+          product.receivingQty += quantity;
+
+          recordStockMovement(
+
+            product,
+
+            'Stock Received',
+
+            receivingBefore,
+
+            shelfBefore,
+
+           'Supplier delivery recorded from dashboard.'
+
+);
+
+updateStockInformation();
+
+          renderTable();
+
+          reorderModal.hide();
+
+          alert(
+            'Stock received successfully! Added ' +
+            quantity + ' units of ' + product.name
+          );
+
+        });
+
+      // Performance monitoring
+
+      function updatePerformance() {
+
+        const pending = replenishmentTasks.filter(
+          task => task.status === 'Pending'
+        );
+
+        const completed = replenishmentTasks.filter(
+          task => task.status === 'Completed'
+        );
+
+        const today = new Date().toDateString();
+
+        const completedToday = completed.filter(task => {
+
+          return new Date(task.completedAt).toDateString() === today;
+
+        });
+
+        document.getElementById('taskBadgeCount').textContent =
+          pending.length;
+
+        document.getElementById('perfPending').textContent =
+          pending.length;
+
+        document.getElementById('perfCompleted').textContent =
+          completedToday.length;
+
+        let totalMinutes = 0;
+
+        completed.forEach(function(task) {
+
+          const responseTime = (
+            new Date(task.completedAt) -
+            new Date(task.createdAt)
+          ) / 60000;
+
+          totalMinutes += responseTime;
+
+        });
+
+        const averageResponse = completed.length > 0
+          ? (totalMinutes / completed.length).toFixed(1) + ' mins'
+          : 'N/A';
+
+        document.getElementById('perfResponseTime').textContent =
+          averageResponse;
+
+      }
+
+      // Users panel
+
+      const userSelect = document.getElementById('userSelect');
+
+      const usersTableBody = document.getElementById('usersTableBody');
+
+      users.forEach(function(user, index) {
+
+        const option = document.createElement('option');
+
+        option.value = index;
+
+        option.textContent = user.name + ' — ' + user.role;
+
+        userSelect.appendChild(option);
+
+        const row = document.createElement('tr');
+
+        [user.name, user.role, user.duties].forEach(function(value) {
+
+          const cell = document.createElement('td');
+
+          cell.textContent = value;
+
+          row.appendChild(cell);
+
+        });
+
+        usersTableBody.appendChild(row);
+
+      });
+
+      // Display selected user
+
+      function showSelectedUser() {
+
+        selectedUser = users[Number(userSelect.value)];
+
+        document.getElementById('selectedUserInfo').textContent =
+          selectedUser.name + ' | ' +
+          selectedUser.role + ': ' +
+          selectedUser.duties;
+
+        document.getElementById('headerUser').textContent =
+          selectedUser.name + ' — ' + selectedUser.role;
+
+      }
+
+      userSelect.value = '1';
+
+      userSelect.addEventListener('change', showSelectedUser);
+
+      // Click on profile to choose a user
+
+      const userProfile = document.getElementById('userProfile');
+
+      userProfile.setAttribute('role', 'button');
+
+      userProfile.tabIndex = 0;
+
+      userProfile.title = 'Choose a user';
+
+      userProfile.addEventListener('click', function() {
+
+        openTab('#users-panel');
+
+      });
+
+      userProfile.addEventListener('keydown', function(e) {
+
+        if (e.key === 'Enter' || e.key === ' ') {
+
+          e.preventDefault();
+
+          openTab('#users-panel');
+
+        }
+
+      });
+
+      // INVENTORY CONTROL
+
+const controlProduct = document.getElementById('controlProduct');
+const controlAction = document.getElementById('controlAction');
+const controlQuantity = document.getElementById('controlQuantity');
+const controlReason = document.getElementById('controlReason');
+const controlForm = document.getElementById('inventoryControlForm');
+
+// Populate the inventory control product dropdown
+
+productsData.forEach(function(product) {
+
+  const option = document.createElement('option');
+
+  option.value = product.name;
+  option.textContent = product.name;
+
+  controlProduct.appendChild(option);
+
+});
+
+// Display the selected product's current stock
+
+function updateStockInformation() {
+
+  const product = productsData.find(
+    p => p.name === controlProduct.value
+  );
+
+  const stockInfo = document.getElementById('currentStockInfo');
+
+  if (!product) {
+
+    stockInfo.textContent =
+      'Select a product to view its current stock quantities.';
+
+    return;
+
+  }
+
+  stockInfo.textContent =
+    'Receiving stock: ' + product.receivingQty +
+    ' units | Current shelf stock: ' + product.shelfQty +
+    ' units | Required shelf stock: ' + product.reqQty +
+    ' units';
+
+}
+
+controlProduct.addEventListener(
+  'change', updateStockInformation
+);
+
+// Change quantity label according to transaction type
+
+function updateTransactionDetails() {
+
+  const label = document.getElementById('controlQuantityLabel');
+  const help = document.getElementById('controlHelp');
+
+  controlQuantity.value = '';
+
+  if (controlAction.value === 'receive') {
+
+    label.textContent = 'Quantity Received';
+
+    help.textContent =
+      'Enter the number of units physically received.';
+
+    controlQuantity.min = 1;
+
+  } else if (controlAction.value === 'damage') {
+
+    label.textContent = 'Damaged Quantity';
+
+    help.textContent =
+      'Enter the number of damaged units removed from receiving.';
+
+    controlQuantity.min = 1;
+
+  } else if (controlAction.value === 'reconcile') {
+
+    label.textContent = 'Physical Receiving Stock Count';
+
+    help.textContent =
+      'Enter the actual quantity physically counted in receiving.';
+
+    controlQuantity.min = 0;
+
+  } else if (controlAction.value === 'shelf') {
+
+    label.textContent = 'Actual Shelf Quantity';
+
+    help.textContent =
+      'Enter the actual number of units counted on the shop floor.';
+
+    controlQuantity.min = 0;
+
+  }
+
+}
+
+controlAction.addEventListener(
+  'change', updateTransactionDetails
+);
+
+// Record a stock movement
+
+function recordStockMovement(
+  product,
+  transaction,
+  receivingBefore,
+  shelfBefore,
+  reason
+) {
+
+  const movement = {
+
+    date: new Date().toISOString(),
+
+    product: product.name,
+
+    transaction: transaction,
+
+    receivingBefore: receivingBefore,
+
+    receivingAfter: product.receivingQty,
+
+    shelfBefore: shelfBefore,
+
+    shelfAfter: product.shelfQty,
+
+    user: selectedUser.name,
+
+    reason: reason
+
+  };
+
+  stockMovementHistory.unshift(movement);
+
+  renderStockHistory();
+
+}
+
+// Display stock movement history
+
+function renderStockHistory() {
+
+  const historyBody = document.getElementById('stockHistoryBody');
+
+  historyBody.innerHTML = '';
+
+  if (stockMovementHistory.length === 0) {
+
     const row = document.createElement('tr');
 
-    [user.name, user.role, user.duties].forEach(function (value) {
+    const cell = document.createElement('td');
+
+    cell.colSpan = 9;
+
+    cell.textContent = 'No stock transactions recorded yet.';
+
+    row.appendChild(cell);
+
+    historyBody.appendChild(row);
+
+    return;
+
+  }
+
+  stockMovementHistory.forEach(function(movement) {
+
+    const row = document.createElement('tr');
+
+    const values = [
+
+      new Date(movement.date).toLocaleString(),
+
+      movement.product,
+
+      movement.transaction,
+
+      movement.receivingBefore,
+
+      movement.receivingAfter,
+
+      movement.shelfBefore,
+
+      movement.shelfAfter,
+
+      movement.user,
+
+      movement.reason
+
+    ];
+
+    values.forEach(function(value) {
+
       const cell = document.createElement('td');
+
       cell.textContent = value;
-      row.appendChild(cell);});
 
-    tableBody.appendChild(row);});
+      row.appendChild(cell);
 
-  function showSelectedUser() {
-    const user = users[Number(userSelect.value)];
+    });
 
-    selectedInfo.textContent =
-      user.name + ' | ' + user.role + ': ' + user.duties;
+    historyBody.appendChild(row);
 
-    if (headerUser) {
-      headerUser.textContent = user.name + ' — ' + user.role;}}
+  });
 
-  // Start with the Floor Manager selected.
-  userSelect.value = '1';
-  showSelectedUser();
+}
 
-  userSelect.addEventListener('change', showSelectedUser);});
-</script>
+// Update inventory accuracy metrics
+
+function updateInventoryAccuracy() {
+
+  document.getElementById('totalReconciliations').textContent =
+    reconciliationCount;
+
+  document.getElementById('totalDiscrepancies').textContent =
+    discrepancyCount;
+
+  const accuracy = reconciliationCount > 0
+
+    ? (accurateCount / reconciliationCount * 100).toFixed(1) + '%'
+
+    : 'N/A';
+
+  document.getElementById('inventoryAccuracy').textContent =
+    accuracy;
+
+}
+
+// Process inventory transactions
+
+controlForm.addEventListener('submit', function(e) {
+
+  e.preventDefault();
+
+  const product = productsData.find(
+    p => p.name === controlProduct.value
+  );
+
+  const action = controlAction.value;
+
+  const quantity = Number(controlQuantity.value);
+
+  const reason = controlReason.value.trim();
+
+  if (!product) {
+
+    alert('Please select a product.');
+
+    return;
+
+  }
+
+  if (
+    controlQuantity.value === '' ||
+    !Number.isInteger(quantity) ||
+    quantity < 0
+  ) {
+
+    alert('Please enter a valid stock quantity.');
+
+    return;
+
+  }
+
+  if (!reason) {
+
+    alert('Please provide a reason for the transaction.');
+
+    return;
+
+  }
+
+  const receivingBefore = product.receivingQty;
+
+  const shelfBefore = product.shelfQty;
+
+  let transaction = '';
+
+  // Receive new supplier stock
+
+  if (action === 'receive') {
+
+    if (quantity <= 0) {
+
+      alert('The received quantity must be greater than zero.');
+
+      return;
+
+    }
+
+    product.receivingQty += quantity;
+
+    transaction = 'Stock Received';
+
+  }
+
+  // Remove damaged stock
+
+  else if (action === 'damage') {
+
+    if (quantity <= 0 || quantity > product.receivingQty) {
+
+      alert('Damaged quantity exceeds available stock or is invalid.');
+
+      return;
+
+    }
+
+    product.receivingQty -= quantity;
+
+    transaction = 'Damaged Stock';
+
+  }
+
+  // Reconcile physical stock with system stock
+
+  else if (action === 'reconcile') {
+
+    const discrepancy = quantity - product.receivingQty;
+
+    const confirmed = confirm(
+
+      'Recorded stock: ' + product.receivingQty +
+
+      '\nPhysical count: ' + quantity +
+
+      '\nDiscrepancy: ' + discrepancy +
+
+      '\nConfirm reconciliation?'
+
+    );
+
+    if (!confirmed) {
+
+      return;
+
+    }
+
+    reconciliationCount++;
+
+    if (discrepancy === 0) {
+
+      accurateCount++;
+
+    } else {
+
+      discrepancyCount++;
+
+    }
+
+    product.receivingQty = quantity;
+
+    transaction = 'Stock Reconciliation';
+
+  }
+
+  // Update actual shelf count
+
+  else if (action === 'shelf') {
+
+    product.shelfQty = quantity;
+
+    transaction = 'Shelf Count Updated';
+
+  }
+
+  // Save the stock movement
+
+  recordStockMovement(
+
+    product,
+
+    transaction,
+
+    receivingBefore,
+
+    shelfBefore,
+
+    reason
+
+  );
+
+  // Refresh all relevant information
+
+  renderTable();
+
+  renderTasks();
+
+  updateStockInformation();
+
+  updateInventoryAccuracy();
+
+  controlQuantity.value = '';
+
+  controlReason.value = '';
+
+  alert('Stock transaction recorded successfully.');
+
+});
+
+      // Initial application display
+
+      showSelectedUser();
+
+      renderTable();
+
+      renderTasks();
+
+    });
+
+  </script>
+
 </body>
 </html>
