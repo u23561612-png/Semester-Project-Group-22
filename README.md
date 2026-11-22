@@ -283,3 +283,26 @@ The model uses estimated demand and costs to protect store information. It does 
 - The project runs locally on Windows and macOS for demos and testing.
 - A live website would need secure hosting, proper login security and a production WSGI server.
 
+## 11. Team Members and Contributions
+
+### 11.1 Sofia Stavrou - u23546787
+- MySQL database design and ERD.
+- Flask and MySQL integration.
+- Inventory management and stock movements.
+- EOQ model integration.
+- Database backup and recovery.
+- README documentation.
+
+### 11.2 Stefan Potgieter - 23561612
+- Dashboard development.
+- Frontend design and functionality.
+- REST API development.
+- Input validation, filtering and pagination.
+- Flask Blueprint structure.
+
+### 11.3 Shared Responsibilities
+- Project proposal.
+- System integration.
+- Testing and debugging.
+- GitHub collaboration.
+- Final project report.
