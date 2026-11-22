@@ -7,7 +7,7 @@ Group 22
 from flask import Blueprint, jsonify, request, current_app
 from db import get_db_connection
 from contextlib import contextmanager
-from EOQ import calculate_eoq, total_annual_cost, items_in_inventory
+from models.eoq import calculate_eoq, total_annual_cost, items_in_inventory
 
 import mysql.connector
 

@@ -48,8 +48,8 @@ py -m pip install -r requirements.txt
 
 - Start MySQL Server and open MySQL Workbench.
 - Connect to your local MySQL server.
-- Open and run `schema.sql` to create the database and its tables.
-- Open and run `seed.sql` to add sample data.
+- Open and run `database/schema.sql` to create the database and its tables.
+- Open and run `database/seed.sql` to add sample data.
 - Only run these scripts on a fresh database to avoid duplicate records.
 
 ### 3.4 Set up the `.env` file
@@ -246,8 +246,8 @@ Example error: `{"error":"Product not found."}`
 | `db.py` | Connects to MySQL |
 | `templates/index.html` | Displays the website |
 | `EOQ.py` | Calculates supplier order recommendations |
-| `schema.sql` | Creates database tables |
-| `seed.sql` | Adds sample records |
+| `database/schema.sql` | Creates database tables |
+| `database/seed.sql` | Adds sample records |
 | `test_db.py` | Tests the database connection |
 | `requirements.txt` | Lists Python packages |
 
@@ -306,3 +306,31 @@ The model uses estimated demand and costs to protect store information. It does 
 - Testing and debugging.
 - GitHub collaboration.
 - Final project report.
+
+## 12. Automated Testing
+
+The project includes 14 automated tests for inventory and replenishment logic.
+
+### Run tests
+
+macOS:
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+Windows:
+```powershell
+py -m unittest discover -s tests -v
+```
+
+### Tested functions
+
+- EOQ calculations.
+- Stock availability.
+- Required shelf quantities.
+- Replenishment tasks.
+- Invalid stock quantities.
+- Supplier stock orders.
+- Performance statistics.
+
+All 14 tests passed successfully.
