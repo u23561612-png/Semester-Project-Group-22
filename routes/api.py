@@ -12,6 +12,7 @@ from models.eoq import calculate_eoq, total_annual_cost, items_in_inventory
 import mysql.connector
 
 
+import math
 
 api = Blueprint("api", __name__)
 
@@ -1436,6 +1437,8 @@ def get_dashboard():
 
 # Economic Order Quantity recommendation
 
+
+
 @api.route("/api/products/<int:product_id>/eoq", methods=["GET"])
 def get_product_eoq(product_id):
 
@@ -1450,73 +1453,103 @@ def get_product_eoq(product_id):
         product = cursor.fetchone()
 
         if product is None:
-
             raise APIError("Product not found.", 404)
 
         product_name = product["product_name"]
-
-        # Retrieve estimated EOQ input parameters
-
         model_data = items_in_inventory.get(product_name)
 
-        if model_data is None:
-
-            return jsonify({
-
-                "available": False,
-                "message": "EOQ input data is not available for this product."
-
-            }), 200
-
-        annual_demand = model_data["demand"]
-
-        ordering_cost = model_data["ordering_cost"]
-
-        holding_cost = model_data["holding_cost"]
-
-        # Calculate EOQ using the existing supply chain model
-
-        eoq = calculate_eoq(
-            annual_demand,
-            ordering_cost,
-            holding_cost
+        # Check whether the user entered custom inputs
+        custom_inputs = any(
+            field in request.args
+            for field in (
+                "annual_demand",
+                "ordering_cost",
+                "holding_cost"
+            )
         )
 
-        orders_per_year = annual_demand / eoq
+        if custom_inputs:
 
-        days_between_orders = 365 / orders_per_year
+            try:
+                annual_demand = float(request.args["annual_demand"])
+                ordering_cost = float(request.args["ordering_cost"])
+                holding_cost = float(request.args["holding_cost"])
 
-        annual_cost = total_annual_cost(
-            annual_demand,
-            ordering_cost,
-            holding_cost,
-            eoq
-        )
+            except (KeyError, ValueError, TypeError):
+                raise APIError("Please enter three valid EOQ inputs.", 400)
+
+            data_source = "Custom user inputs"
+
+        else:
+
+            if model_data is None:
+                return jsonify({
+                    "available": False,
+                    "message": "Enter your own EOQ inputs for this product."
+                }), 200
+
+            annual_demand = model_data["demand"]
+            ordering_cost = model_data["ordering_cost"]
+            holding_cost = model_data["holding_cost"]
+
+            data_source = "Estimated prototype model inputs"
+
+        # Validate the EOQ inputs
+        if any(
+            not math.isfinite(value) or value <= 0
+            for value in (
+                annual_demand,
+                ordering_cost,
+                holding_cost
+            )
+        ):
+            raise APIError("All EOQ inputs must be greater than zero.", 400)
+
+        try:
+
+            eoq = calculate_eoq(
+                annual_demand,
+                ordering_cost,
+                holding_cost
+            )
+
+            orders_per_year = annual_demand / eoq
+
+            days_between_orders = 365 / orders_per_year
+
+            annual_cost = total_annual_cost(
+                annual_demand,
+                ordering_cost,
+                holding_cost,
+                eoq
+            )
+
+            if not all(math.isfinite(value) for value in (
+                eoq,
+                orders_per_year,
+                days_between_orders,
+                annual_cost
+            )):
+                raise ValueError("Invalid calculation.")
+
+        except (ValueError, ZeroDivisionError, OverflowError):
+            raise APIError("Unable to calculate EOQ with these values.", 400)
 
         return jsonify({
 
             "available": True,
-
             "product_id": product_id,
-
             "product_name": product_name,
-
             "annual_demand": annual_demand,
-
             "ordering_cost": ordering_cost,
-
             "holding_cost": holding_cost,
-
             "eoq": round(eoq, 2),
-
             "recommended_quantity": max(1, round(eoq)),
-
             "orders_per_year": round(orders_per_year, 2),
-
             "days_between_orders": round(days_between_orders, 2),
-
             "total_annual_cost": round(annual_cost, 2),
-
-            "data_source": "Estimated prototype model inputs"
+            "data_source": data_source
 
         }), 200
+
+       

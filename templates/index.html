@@ -663,7 +663,56 @@
     Quantity model.
 
   </p>
+  <div class="row g-3 mb-3">
 
+  <div class="col-md-4">
+    <label for="eoqDemandInput" class="form-label fw-semibold">
+      Annual Demand (units)
+    </label>
+
+    <input type="number"
+           id="eoqDemandInput"
+           class="form-control"
+           min="1"
+           step="1"
+           placeholder="Enter annual demand"
+           required>
+  </div>
+
+  <div class="col-md-4">
+    <label for="eoqOrderingCostInput" class="form-label fw-semibold">
+      Ordering Cost (R per order)
+    </label>
+
+    <input type="number"
+           id="eoqOrderingCostInput"
+           class="form-control"
+           min="0.01"
+           step="0.01"
+           placeholder="Enter ordering cost"
+           required>
+  </div>
+
+  <div class="col-md-4">
+    <label for="eoqHoldingCostInput" class="form-label fw-semibold">
+      Annual Holding Cost (R per unit)
+    </label>
+
+    <input type="number"
+           id="eoqHoldingCostInput"
+           class="form-control"
+           min="0.01"
+           step="0.01"
+           placeholder="Enter holding cost"
+           required>
+  </div>
+
+</div>
+
+<p class="small text-muted">
+  You can edit the suggested values to calculate a custom
+  supplier order recommendation.
+</p>
   <button type="button"
           id="calculateEOQBtn"
           class="btn btn-outline-primary mb-3">
@@ -3068,134 +3117,218 @@
 
 document.addEventListener('DOMContentLoaded', function() {
 
-    const eoqButton =
-        document.getElementById('calculateEOQBtn');
+    const eoqButton = document.getElementById('calculateEOQBtn');
+    const productSelect = document.getElementById('controlProduct');
 
-    const productSelect =
-        document.getElementById('controlProduct');
+    const eoqResults = document.getElementById('eoqResults');
+    const eoqMessage = document.getElementById('eoqMessage');
 
-    const eoqResults =
-        document.getElementById('eoqResults');
+    const demandInput = document.getElementById('eoqDemandInput');
+    const orderingInput = document.getElementById('eoqOrderingCostInput');
+    const holdingInput = document.getElementById('eoqHoldingCostInput');
 
-    const eoqMessage =
-        document.getElementById('eoqMessage');
+    const inputs = [demandInput, orderingInput, holdingInput];
 
     let requestNumber = 0;
-
-    // Format monetary values in South African Rand
 
     function formatRand(value) {
 
         return new Intl.NumberFormat('en-ZA', {
-
             style: 'currency',
-
             currency: 'ZAR'
-
         }).format(value);
 
     }
 
-    // Clear previous results when changing products
+    // Load the default values for the selected product
 
-    productSelect.addEventListener('change', function() {
+    async function loadEOQDefaults() {
 
-        requestNumber++;
+        const productId = productSelect.value;
+        const currentRequest = ++requestNumber;
 
         eoqResults.classList.add('d-none');
+        eoqButton.disabled = true;
 
-        eoqMessage.textContent =
-            'Click Calculate EOQ Recommendation for the selected product.';
+        inputs.forEach(input => {
+            input.value = '';
+            input.disabled = true;
+        });
+
+        if (!productId) {
+
+            eoqMessage.textContent =
+                'Please select a product in Inventory Control.';
+
+            return;
+        }
+
+        eoqMessage.textContent = 'Loading suggested EOQ values...';
+
+        try {
+
+            const response = await fetch(
+                '/api/products/' + productId + '/eoq'
+            );
+
+            const result = await response.json();
+
+            if (currentRequest !== requestNumber) {
+                return;
+            }
+
+            if (!response.ok) {
+                throw new Error(result.error || 'Unable to load values.');
+            }
+
+            if (result.available) {
+
+                demandInput.value = result.annual_demand;
+                orderingInput.value = result.ordering_cost;
+                holdingInput.value = result.holding_cost;
+
+                eoqMessage.textContent =
+                    'Edit the suggested values or click Calculate EOQ Recommendation.';
+
+            } else {
+
+                eoqMessage.textContent =
+                    'Enter your own EOQ values for this product.';
+
+            }
+
+        } catch (error) {
+
+            if (currentRequest === requestNumber) {
+                eoqMessage.textContent =
+                    'Unable to load defaults. Enter your own EOQ values.';
+            }
+
+        } finally {
+
+            if (currentRequest === requestNumber) {
+
+                inputs.forEach(input => {
+                    input.disabled = false;
+                });
+
+                eoqButton.disabled = false;
+
+            }
+
+        }
+
+    }
+
+    productSelect.addEventListener('change', loadEOQDefaults);
+
+    // Clear old results when a value changes
+
+    inputs.forEach(input => {
+
+        input.addEventListener('input', function() {
+
+            requestNumber++;
+            eoqResults.classList.add('d-none');
+
+            eoqMessage.textContent =
+                'Click Calculate EOQ Recommendation to update the results.';
+
+            eoqButton.disabled = !productSelect.value;
+
+        });
 
     });
 
-    // Calculate the EOQ recommendation
+    // Calculate the recommendation using the entered values
 
     eoqButton.addEventListener('click', async function() {
 
         const productId = productSelect.value;
 
         if (!productId) {
-
-            alert('Please select a product in Inventory Control.');
-
+            alert('Please select a product.');
             return;
+        }
 
+        if (inputs.some(input => !input.reportValidity())) {
+            return;
+        }
+
+        const annualDemand = Number(demandInput.value);
+        const orderingCost = Number(orderingInput.value);
+        const holdingCost = Number(holdingInput.value);
+
+        if ([annualDemand, orderingCost, holdingCost].some(
+            value => !Number.isFinite(value) || value <= 0
+        )) {
+            alert('All EOQ values must be greater than zero.');
+            return;
         }
 
         const currentRequest = ++requestNumber;
 
         eoqButton.disabled = true;
-
         eoqResults.classList.add('d-none');
 
-        eoqMessage.textContent =
-            'Calculating supplier order recommendation...';
+        eoqMessage.textContent = 'Calculating recommendation...';
+
+        const parameters = new URLSearchParams({
+
+            annual_demand: annualDemand,
+            ordering_cost: orderingCost,
+            holding_cost: holdingCost
+
+        });
 
         try {
 
             const response = await fetch(
-
-                '/api/products/' + productId + '/eoq'
-
+                '/api/products/' + productId + '/eoq?' +
+                parameters.toString()
             );
 
             const result = await response.json();
 
             if (currentRequest !== requestNumber) {
-
                 return;
-
             }
 
-            if (!response.ok) {
+            if (!response.ok || !result.available) {
 
-                throw new Error(result.error);
-
-            }
-
-            if (!result.available) {
-
-                eoqMessage.textContent = result.message;
-
-                return;
+                throw new Error(
+                    result.error ||
+                    result.message ||
+                    'Unable to calculate EOQ.'
+                );
 
             }
 
             document.getElementById('eoqProductName').textContent =
-
                 result.product_name;
 
             document.getElementById('eoqQuantity').textContent =
-
                 result.recommended_quantity + ' units';
 
             document.getElementById('eoqOrders').textContent =
-
                 result.orders_per_year;
 
             document.getElementById('eoqDays').textContent =
-
                 result.days_between_orders;
 
             document.getElementById('eoqDemand').textContent =
-
                 result.annual_demand + ' units';
 
             document.getElementById('eoqOrderingCost').textContent =
-
                 formatRand(result.ordering_cost);
 
             document.getElementById('eoqHoldingCost').textContent =
-
                 formatRand(result.holding_cost);
 
             document.getElementById('eoqTotalCost').textContent =
-
                 formatRand(result.total_annual_cost);
 
             eoqMessage.textContent =
-
                 'EOQ recommendation calculated successfully.';
 
             eoqResults.classList.remove('d-none');
@@ -3205,18 +3338,21 @@ document.addEventListener('DOMContentLoaded', function() {
             if (currentRequest === requestNumber) {
 
                 eoqMessage.textContent =
-
                     'Unable to calculate EOQ: ' + error.message;
 
             }
 
         } finally {
 
-            eoqButton.disabled = false;
+            if (currentRequest === requestNumber) {
+                eoqButton.disabled = false;
+            }
 
         }
 
     });
+
+    loadEOQDefaults();
 
 });
 
